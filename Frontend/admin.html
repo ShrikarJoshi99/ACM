@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | ACM JIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-slate-950 font-sans text-slate-100 antialiased">
+  <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.17),transparent_31%),radial-gradient(circle_at_82%_8%,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#020617,#0f172a_52%,#020617)]"></div>
+  <div id="global-navbar"></div>
+
+  <main class="mx-auto max-w-7xl px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+    <header class="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div class="max-w-3xl">
+        <p class="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">Admin Panel</p>
+        <h1 class="mt-4 text-4xl font-black text-white sm:text-6xl">Manage ACM JIT events.</h1>
+        <p class="mt-5 text-lg leading-8 text-slate-300">Add upcoming events and past glories from here. This demo stores data in this browser using localStorage.</p>
+      </div>
+      <a href="events.html" class="rounded-xl bg-cyan-400 px-6 py-3 text-center font-black text-slate-950 shadow-xl shadow-cyan-500/20 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:bg-white">View Events Page</a>
+    </header>
+
+    <section class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+      <form id="event-admin-form" class="rounded-3xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur">
+        <h2 class="text-2xl font-black text-white">Add Event</h2>
+        <div class="mt-6 grid gap-5">
+          <label>
+            <span class="mb-2 block text-sm font-bold text-slate-300">Event Type</span>
+            <select id="event-type" class="w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-all duration-300 ease-in-out focus:border-cyan-300">
+              <option value="upcoming">Upcoming Dynamic Event</option>
+              <option value="past">Past Glory</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="mb-2 block text-sm font-bold text-slate-300">Title</span>
+            <input id="event-title" required type="text" placeholder="Frontend Craft Lab" class="w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-all duration-300 ease-in-out placeholder:text-slate-500 focus:border-cyan-300" />
+          </label>
+
+          <label>
+            <span class="mb-2 block text-sm font-bold text-slate-300">Date / Label</span>
+            <input id="event-date" required type="text" placeholder="August 2026" class="w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-all duration-300 ease-in-out placeholder:text-slate-500 focus:border-violet-300" />
+          </label>
+
+          <label id="event-status-wrap">
+            <span class="mb-2 block text-sm font-bold text-slate-300">Registration Status</span>
+            <select id="event-status" class="w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-all duration-300 ease-in-out focus:border-emerald-300">
+              <option>Registration Open</option>
+              <option>Opening Soon</option>
+              <option>Seats Filling Fast</option>
+              <option>Closed</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="mb-2 block text-sm font-bold text-slate-300">Description</span>
+            <textarea id="event-description" required rows="5" placeholder="Write a short event description..." class="w-full resize-none rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-all duration-300 ease-in-out placeholder:text-slate-500 focus:border-cyan-300"></textarea>
+          </label>
+
+          <button type="submit" class="rounded-xl bg-cyan-400 px-6 py-4 font-black text-slate-950 shadow-xl shadow-cyan-500/20 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:bg-white">Save Event</button>
+        </div>
+      </form>
+
+      <section class="rounded-3xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-2xl font-black text-white">Saved Events</h2>
+          <button id="reset-events" type="button" class="rounded-xl border border-rose-300/30 bg-rose-400/10 px-4 py-2 text-sm font-black text-rose-200 transition-all duration-300 ease-in-out hover:border-rose-200 hover:bg-rose-400/20">Reset Demo Data</button>
+        </div>
+        <div id="admin-events-list" class="mt-6 space-y-4"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
