@@ -224,9 +224,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 
-  const resetToken = crypto
-    .randomBytes(32)
-    .toString("hex");
+ const resetToken = crypto
+  .randomBytes(3)
+  .toString("hex")
+  .slice(0, 5);
 
   user.resetPasswordToken = resetToken;
 
