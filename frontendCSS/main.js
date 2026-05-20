@@ -298,14 +298,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (forgotPasswordForm) {
+      const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
+      const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
+      const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
+      const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
+      const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
+      let resetTokenSent = false;
+
       forgotPasswordForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const submitButton = forgotPasswordForm.querySelector("button[type='submit']");
+        const formData = new FormData(forgotPasswordForm);
+
+        if (!resetTokenSent) {
+          setButtonBusy(submitButton, "Sending Token...");
+          window.setTimeout(() => {
+            const demoToken = String(Math.floor(100000 + Math.random() * 900000));
+
+            localStorage.setItem("acm-jit-password-reset", JSON.stringify({
+              identifier: formData.get("identifier"),
+              token: demoToken,
+              requestedAt: new Date().toISOString()
+            }));
+
+            resetTokenSent = true;
+            if (requestField) requestField.style.display = "none";
+            if (identifierInput) identifierInput.disabled = true;
+            if (resetTokenInput) resetTokenInput.disabled = false;
+            if (newPasswordInput) newPasswordInput.disabled = false;
+            if (tokenNote) {
+              tokenNote.style.display = "";
+              tokenNote.textContent = `Demo token sent to ${formData.get("identifier")}: ${demoToken}`;
+            }
+            restoreButton(submitButton);
+            submitButton.textContent = "Reset Password";
+            resetTokenInput?.focus();
+          }, 600);
+          return;
+        }
+
+        const resetRequest = JSON.parse(localStorage.getItem("acm-jit-password-reset") || "{}");
+        if (formData.get("resetToken") !== resetRequest.token) {
+          alert("Invalid reset token. Please check the token and try again.");
+          resetTokenInput?.focus();
+          return;
+        }
 
         setButtonBusy(submitButton, "Resetting...");
         window.setTimeout(() => {
+          localStorage.removeItem("acm-jit-password-reset");
           restoreButton(submitButton);
           forgotPasswordForm.reset();
+          resetTokenSent = false;
+          if (requestField) requestField.style.display = "";
+          if (identifierInput) identifierInput.disabled = false;
+          if (resetTokenInput) resetTokenInput.disabled = true;
+          if (newPasswordInput) newPasswordInput.disabled = true;
+          if (tokenNote) tokenNote.style.display = "none";
+          submitButton.textContent = "Send Reset Token";
           alert("Password reset successful. Return to sign in with your new password.");
         }, 600);
       });
