@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Join Us | ACM JIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: #020617; color: #f1f5f9; min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    :root {
+      --cyan-200: #a5f3fc; --cyan-300: #67e8f9; --cyan-400: #22d3ee;
+      --violet-300: #c4b5fd;
+      --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+      --nav-h: 74px;
+    }
+
+    .bg-overlay {
+      pointer-events: none; position: fixed; inset: 0; z-index: -10;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(34,211,238,0.2),  transparent 31%),
+        radial-gradient(circle at 82% 16%, rgba(139,92,246,0.2), transparent 30%),
+        linear-gradient(180deg, #020617, #0f172a 55%, #020617);
+    }
+
+    /* ── Full-page centering ── */
+    .page-wrap {
+      display: grid; place-items: center;
+      min-height: 100vh; padding: 7rem 1rem;
+    }
+    @media (min-width: 640px) { .page-wrap { padding: 7rem 1.5rem; } }
+
+    /* ── Card shell ── */
+    .auth-shell {
+      display: grid; width: 100%; max-width: 72rem;
+      overflow: hidden; border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 25px 50px -12px rgba(8,51,68,0.3);
+      backdrop-filter: blur(20px);
+    }
+    @media (min-width: 1024px) {
+      .auth-shell { grid-template-columns: 0.95fr 1.05fr; }
+    }
+
+    /* ── Left panel ── */
+    .auth-left {
+      display: none;
+      flex-direction: column; justify-content: space-between;
+      padding: 2.5rem;
+      background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.1), #020617);
+    }
+    @media (min-width: 1024px) { .auth-left { display: flex; } }
+
+    .auth-left-label {
+      font-size: 0.75rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.3em; color: var(--cyan-200);
+    }
+    .auth-left-title {
+      margin-top: 1.25rem; font-size: 3rem; font-weight: 900;
+      line-height: 1.1; color: #fff;
+    }
+    .auth-left-desc {
+      margin-top: 1.25rem; line-height: 2; color: var(--slate-300);
+    }
+    .auth-promise {
+      border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.5); padding: 1.25rem;
+    }
+    .auth-promise-label { font-size: 0.875rem; font-weight: 700; color: var(--slate-400); }
+    .auth-promise-text { margin-top: 0.5rem; font-size: 1.25rem; font-weight: 900; color: #fff; }
+
+    /* ── Right panel ── */
+    .auth-right { padding: 1.5rem; }
+    @media (min-width: 640px) { .auth-right { padding: 2.5rem; } }
+
+    .auth-form-wrap { max-width: 28rem; margin-inline: auto; }
+
+    /* ── Toggle tabs ── */
+    .auth-tabs {
+      display: inline-flex; margin-bottom: 2rem;
+      border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.7); padding: 0.25rem;
+    }
+    .auth-tab {
+      border-radius: 0.5rem; padding: 0.5rem 1rem;
+      font-size: 0.875rem; font-weight: 900; cursor: pointer; border: none;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+      color: var(--slate-300); background: transparent;
+    }
+    .auth-tab.active { background: var(--cyan-400); color: #020617; }
+    .auth-tab:hover:not(.active) { color: #fff; }
+
+    .auth-title { font-size: 1.875rem; font-weight: 900; color: #fff; }
+    .auth-desc { margin-top: 0.75rem; line-height: 1.75; color: var(--slate-300); }
+
+    /* ── Form ── */
+    .auth-form { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .form-group { display: block; }
+    .form-label {
+      display: block; margin-bottom: 0.5rem;
+      font-size: 0.875rem; font-weight: 700; color: var(--slate-300);
+    }
+    .form-input {
+      width: 100%; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.7); color: #fff;
+      padding: 1rem; outline: none;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 1rem;
+    }
+    .form-input::placeholder { color: var(--slate-500); }
+    .form-input:focus {
+      border-color: var(--cyan-300); background: #020617;
+      box-shadow: 0 10px 15px -3px rgba(8,51,68,0.4);
+    }
+    .form-input.violet:focus { border-color: var(--violet-300); box-shadow: 0 10px 15px -3px rgba(30,20,68,0.4); }
+
+    .btn-submit {
+      width: 100%; border-radius: 0.75rem;
+      background: var(--cyan-400); color: #020617;
+      font-weight: 900; padding: 1rem 1.5rem;
+      border: none; cursor: pointer; font-size: 1rem;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      box-shadow: 0 20px 25px -5px rgba(34,211,238,0.2);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .btn-submit:hover { transform: translateY(-4px); background: #fff; }
+
+    .auth-note {
+      margin-top: 1.5rem; text-align: center;
+      font-size: 0.875rem; color: var(--slate-400);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div id="global-navbar"></div>
+
+  <main class="page-wrap">
+    <section class="auth-shell">
+      <div class="auth-left">
+        <div>
+          <p class="auth-left-label">Membership Portal</p>
+          <h1 class="auth-left-title">Step into the chapter.</h1>
+          <p class="auth-left-desc">Access member updates, resources, event registrations, and opportunities through the ACM JIT student portal.</p>
+        </div>
+        <div class="auth-promise">
+          <p class="auth-promise-label">Community promise</p>
+          <p class="auth-promise-text">Come curious. Leave more capable.</p>
+        </div>
+      </div>
+
+      <div class="auth-right">
+        <div class="auth-form-wrap">
+          <div class="auth-tabs">
+            <button type="button" class="auth-tab active" data-auth-mode="signin">Sign In</button>
+            <button type="button" class="auth-tab" data-auth-mode="register">Register for Membership</button>
+          </div>
+
+          <h2 id="auth-title" class="auth-title">Welcome Back</h2>
+          <p id="auth-copy" class="auth-desc">Sign in to access chapter updates, resources, and member-only opportunities.</p>
+
+          <div class="auth-form">
+            <label class="form-group">
+              <span class="form-label">Student Email / USN</span>
+              <input type="text" placeholder="name@jyothyit.ac.in or 1JT..." class="form-input"/>
+            </label>
+            <label class="form-group">
+              <span class="form-label">Password</span>
+              <input type="password" placeholder="Enter your password" class="form-input violet"/>
+            </label>
+            <button id="auth-submit" type="button" class="btn-submit">Sign In</button>
+          </div>
+
+          <p class="auth-note">Use your official student identity for a smoother verification experience.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>

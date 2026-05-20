@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Events | ACM JIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: #020617; color: #f1f5f9; min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    :root {
+      --cyan-300: #67e8f9; --cyan-400: #22d3ee;
+      --violet-300: #c4b5fd; --emerald-300: #6ee7b7;
+      --slate-300: #cbd5e1; --slate-400: #94a3b8;
+      --max-w: 80rem; --px: 1rem; --nav-h: 74px;
+    }
+    @media (min-width: 640px)  { :root { --px: 1.5rem; } }
+    @media (min-width: 1024px) { :root { --px: 2rem; } }
+
+    .bg-overlay {
+      pointer-events: none; position: fixed; inset: 0; z-index: -10;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(16,185,129,0.16), transparent 31%),
+        radial-gradient(circle at 82% 8%,  rgba(34,211,238,0.14), transparent 28%),
+        linear-gradient(180deg, #020617, #0f172a 52%, #020617);
+    }
+
+    .main-content {
+      max-width: var(--max-w); margin-inline: auto;
+      padding: calc(var(--nav-h) + 3.5rem) var(--px) 5rem;
+    }
+
+    .page-header { margin-bottom: 3rem; max-width: 56rem; }
+    .label {
+      font-size: 0.75rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.3em; color: var(--cyan-300);
+    }
+    .page-title {
+      margin-top: 1rem; font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 900; color: #fff; line-height: 1.1;
+    }
+    .page-subtitle {
+      margin-top: 1.25rem; font-size: 1.125rem; line-height: 2; color: var(--slate-300);
+    }
+
+    /* ── Two-column layout ── */
+    .events-grid {
+      display: grid; gap: 2rem;
+    }
+    @media (min-width: 1024px) {
+      .events-grid { grid-template-columns: 1.1fr 0.9fr; }
+    }
+
+    /* ── Section headers ── */
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .section-title { font-size: 1.5rem; font-weight: 900; color: #fff; }
+    .badge-live {
+      border-radius: 9999px; background: rgba(52,211,153,0.1);
+      padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 900;
+      color: var(--emerald-300);
+    }
+
+    /* ── Upcoming cards ── */
+    #upcoming-events-list { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    /* ── Past glories container ── */
+    .past-wrap {
+      border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06); padding: 1.5rem; backdrop-filter: blur(12px);
+    }
+    #past-events-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ── Dynamic event card styles (injected by JS) ── */
+    /* These styles are referenced in main.js via class names. The JS uses
+       Tailwind-like class strings; we override them here with equivalent CSS. */
+
+    /* Upcoming event card */
+    #upcoming-events-list article {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(103,232,249,0.2);
+      background: rgba(255,255,255,0.06);
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    #upcoming-events-list article:hover {
+      transform: translateY(-4px);
+      border-color: rgba(103,232,249,0.6);
+    }
+    #upcoming-events-list article:nth-child(3n+2) {
+      border-color: rgba(196,181,253,0.2);
+    }
+    #upcoming-events-list article:nth-child(3n+2):hover {
+      border-color: rgba(196,181,253,0.6);
+    }
+    #upcoming-events-list article:nth-child(3n+3) {
+      border-color: rgba(110,231,183,0.2);
+    }
+    #upcoming-events-list article:nth-child(3n+3):hover {
+      border-color: rgba(110,231,183,0.6);
+    }
+
+    /* JS-rendered event styles */
+    .event-card-top {
+      display: flex; flex-wrap: wrap;
+      align-items: flex-start; justify-content: space-between; gap: 1rem;
+    }
+    .event-date { font-size: 0.875rem; font-weight: 900; color: var(--cyan-300); }
+    .event-title { margin-top: 0.5rem; font-size: 1.5rem; font-weight: 900; color: #fff; }
+    .event-desc { margin-top: 1rem; line-height: 1.75; color: var(--slate-300); }
+
+    .status-badge {
+      border-radius: 9999px; padding: 0.25rem 0.75rem;
+      font-size: 0.75rem; font-weight: 900; white-space: nowrap;
+    }
+
+    /* Past event dot+text */
+    #past-events-list > div {
+      display: flex; gap: 1rem;
+    }
+    #past-events-list span {
+      display: block; margin-top: 0.25rem;
+      height: 0.75rem; width: 0.75rem; flex-shrink: 0;
+      border-radius: 9999px; background: var(--cyan-300);
+    }
+    #past-events-list h3 { font-weight: 900; color: #fff; }
+    #past-events-list p { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.75; color: var(--slate-400); }
+
+    .empty-msg {
+      border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06); padding: 1.5rem;
+      color: var(--slate-300);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div id="global-navbar"></div>
+
+  <main class="main-content">
+    <header class="page-header">
+      <p class="label">Events</p>
+      <h1 class="page-title">Workshops, competitions, and chapter moments.</h1>
+      <p class="page-subtitle">Explore all our upcoming events, competitions, and workshops. Keep checking back as we add more exciting opportunities!</p>
+    </header>
+
+    <div class="events-grid">
+      <div>
+        <div class="section-head">
+          <h2 class="section-title">Upcoming Dynamic Events</h2>
+          <span class="badge-live">Live queue</span>
+        </div>
+        <div id="upcoming-events-list"></div>
+      </div>
+
+      <aside>
+        <h2 class="section-title" style="margin-bottom:1.25rem;">Past Glories</h2>
+        <div class="past-wrap">
+          <div id="past-events-list"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
