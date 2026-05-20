@@ -242,124 +242,286 @@ document.addEventListener("DOMContentLoaded", () => {
     const verifyForm = document.getElementById("verify-form");
     const forgotPasswordForm = document.getElementById("forgot-password-form");
 
-    if (loginForm) {
-      loginForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const submitButton = loginForm.querySelector("button[type='submit']");
-        const identifier = new FormData(loginForm).get("identifier");
+ if (loginForm) {
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        setButtonBusy(submitButton, "Signing In...");
-        window.setTimeout(() => {
-          localStorage.setItem("acm-jit-auth-user", JSON.stringify({
-            identifier,
-            signedInAt: new Date().toISOString()
-          }));
-          restoreButton(submitButton);
-          alert("Sign in successful. Welcome back to ACM JIT.");
-          loginForm.reset();
-        }, 500);
+    const submitButton = loginForm.querySelector("button[type='submit']");
+    const formData = new FormData(loginForm);
+
+    setButtonBusy(submitButton, "Signing In...");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+       body: JSON.stringify({
+  email: formData.get("identifier"),
+  password: formData.get("password"),
+}),
       });
+
+      const data = await response.json();
+
+      restoreButton(submitButton);
+
+      if (!response.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      // Save token
+      localStorage.setItem("token", data.accessToken);
+
+      // Save user
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      alert("Login successful");
+
+      loginForm.reset();
+
+      // Redirect
+      window.location.href = "index.html";
+
+    } catch (error) {
+      console.error(error);
+      restoreButton(submitButton);
+      alert("Server error");
     }
+  });
+}
 
     if (registerForm) {
-      registerForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const submitButton = registerForm.querySelector("button[type='submit']");
-        const formData = new FormData(registerForm);
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        setButtonBusy(submitButton, "Creating Account...");
-        window.setTimeout(() => {
-          localStorage.setItem("acm-jit-pending-registration", JSON.stringify({
-            fullName: formData.get("fullName"),
-            email: formData.get("email"),
-            requestedAt: new Date().toISOString()
-          }));
-          window.location.href = "verify.html";
-        }, 600);
+    const submitButton = registerForm.querySelector("button[type='submit']");
+    const formData = new FormData(registerForm);
+
+    setButtonBusy(submitButton, "Creating Account...");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      body: JSON.stringify({
+  name: formData.get("fullName"),
+  email: formData.get("email"),
+  password: formData.get("password"),
+}),
       });
-    }
 
+      const data = await response.json();
+
+      restoreButton(submitButton);
+
+      if (!response.ok) {
+        alert(data.message || "Registration failed");
+        return;
+      }
+
+      alert("Registration successful");
+
+      registerForm.reset();
+
+     window.location.href = "verify.html";
+
+    } catch (error) {
+      console.error(error);
+      restoreButton(submitButton);
+      alert("Server error");
+    }
+  });
+}
     if (verifyForm) {
-      verifyForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const submitButton = verifyForm.querySelector("button[type='submit']");
-        const formData = new FormData(verifyForm);
+  verifyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        setButtonBusy(submitButton, "Confirming...");
-        window.setTimeout(() => {
-          localStorage.setItem("acm-jit-verified-account", JSON.stringify({
-            email: formData.get("email"),
-            verifiedAt: new Date().toISOString()
-          }));
-          localStorage.removeItem("acm-jit-pending-registration");
-          window.location.href = "join-us.html";
-        }, 600);
+    const submitButton = verifyForm.querySelector("button[type='submit']");
+    const formData = new FormData(verifyForm);
+
+    setButtonBusy(submitButton, "Confirming...");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/verify-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          code: formData.get("verificationCode"),
+        }),
       });
+
+      const data = await response.json();
+
+      restoreButton(submitButton);
+
+      if (!response.ok) {
+        alert(data.message || "Verification failed");
+        return;
+      }
+
+      alert("Account verified successfully");
+
+      verifyForm.reset();
+
+      window.location.href = "join-us.html";
+
+    } catch (error) {
+      console.error(error);
+      restoreButton(submitButton);
+      alert("Server error");
     }
+  });
+}
 
     if (forgotPasswordForm) {
-      const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
-      const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
-      const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
-      const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
-      const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
-      let resetTokenSent = false;
+  const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
+  const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
+  const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
+  const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
+  const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
 
-      forgotPasswordForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const submitButton = forgotPasswordForm.querySelector("button[type='submit']");
-        const formData = new FormData(forgotPasswordForm);
+  let resetTokenSent = false;
 
-        if (!resetTokenSent) {
-          setButtonBusy(submitButton, "Sending Token...");
-          window.setTimeout(() => {
-            const demoToken = String(Math.floor(100000 + Math.random() * 900000));
+  forgotPasswordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-            localStorage.setItem("acm-jit-password-reset", JSON.stringify({
-              identifier: formData.get("identifier"),
-              token: demoToken,
-              requestedAt: new Date().toISOString()
-            }));
+    const submitButton = forgotPasswordForm.querySelector("button[type='submit']");
+    const formData = new FormData(forgotPasswordForm);
 
-            resetTokenSent = true;
-            if (requestField) requestField.style.display = "none";
-            if (identifierInput) identifierInput.disabled = true;
-            if (resetTokenInput) resetTokenInput.disabled = false;
-            if (newPasswordInput) newPasswordInput.disabled = false;
-            if (tokenNote) {
-              tokenNote.style.display = "";
-              tokenNote.textContent = `Demo token sent to ${formData.get("identifier")}: ${demoToken}`;
-            }
-            restoreButton(submitButton);
-            submitButton.textContent = "Reset Password";
-            resetTokenInput?.focus();
-          }, 600);
+    // STEP 1 — SEND RESET TOKEN
+    if (!resetTokenSent) {
+      setButtonBusy(submitButton, "Sending Token...");
+
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/auth/forgot-password",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+  body: JSON.stringify({
+  email: formData.get("identifier"),
+}),
+          }
+        );
+
+        const data = await response.json();
+
+        restoreButton(submitButton);
+
+        if (!response.ok) {
+          alert(data.message || "Failed to send token");
           return;
         }
 
-        const resetRequest = JSON.parse(localStorage.getItem("acm-jit-password-reset") || "{}");
-        if (formData.get("resetToken") !== resetRequest.token) {
-          alert("Invalid reset token. Please check the token and try again.");
-          resetTokenInput?.focus();
-          return;
+        resetTokenSent = true;
+
+        if (requestField) requestField.style.display = "none";
+
+        if (identifierInput) identifierInput.disabled = true;
+
+        if (resetTokenInput) resetTokenInput.disabled = false;
+
+        if (newPasswordInput) newPasswordInput.disabled = false;
+
+        if (tokenNote) {
+          tokenNote.style.display = "";
+          tokenNote.textContent =
+            "Reset token sent successfully.";
         }
 
-        setButtonBusy(submitButton, "Resetting...");
-        window.setTimeout(() => {
-          localStorage.removeItem("acm-jit-password-reset");
-          restoreButton(submitButton);
-          forgotPasswordForm.reset();
-          resetTokenSent = false;
-          if (requestField) requestField.style.display = "";
-          if (identifierInput) identifierInput.disabled = false;
-          if (resetTokenInput) resetTokenInput.disabled = true;
-          if (newPasswordInput) newPasswordInput.disabled = true;
-          if (tokenNote) tokenNote.style.display = "none";
-          submitButton.textContent = "Send Reset Token";
-          alert("Password reset successful. Return to sign in with your new password.");
-        }, 600);
-      });
+        submitButton.textContent = "Reset Password";
+
+        resetTokenInput?.focus();
+
+      } catch (error) {
+        console.error(error);
+        restoreButton(submitButton);
+        alert("Server error");
+      }
+
+      return;
     }
+
+    // STEP 2 — RESET PASSWORD
+    setButtonBusy(submitButton, "Resetting...");
+
+try {
+
+  const token = formData.get("resetToken");
+
+
+
+  const response = await fetch(
+    `http://localhost:5000/api/auth/reset-password/${token}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: formData.get("newPassword"),
+      }),
+    }
+  );
+
+ const text = await response.text();
+
+
+
+let data;
+
+try {
+  data = JSON.parse(text);
+} catch {
+ 
+  return;
+}
+
+
+  restoreButton(submitButton);
+
+  if (!response.ok) {
+    alert(data.message || "Password reset failed");
+    return;
+  }
+
+  alert("Password reset successful");
+
+  forgotPasswordForm.reset();
+
+  resetTokenSent = false;
+
+  if (requestField) requestField.style.display = "";
+
+  if (identifierInput) identifierInput.disabled = false;
+
+  if (resetTokenInput) resetTokenInput.disabled = true;
+
+  if (newPasswordInput) newPasswordInput.disabled = true;
+
+  if (tokenNote) tokenNote.style.display = "none";
+
+  submitButton.textContent = "Send Reset Token";
+
+  window.location.href = "join-us.html";
+
+} catch (error) {
+  console.error(error);
+  restoreButton(submitButton);
+  alert("Server error");
+}
+  });
+}
   };
 
   renderPublicEvents();
