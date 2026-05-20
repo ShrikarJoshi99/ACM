@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In | ACM JIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #020617; }
+    .bg-overlay {
+      background:
+        radial-gradient(circle at 18% 18%, rgba(34,211,238,0.2), transparent 31%),
+        radial-gradient(circle at 82% 16%, rgba(139,92,246,0.2), transparent 30%),
+        radial-gradient(circle at 50% 92%, rgba(14,165,233,0.14), transparent 32%),
+        linear-gradient(180deg, #020617, #0f172a 55%, #020617);
+    }
+    .auth-page {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 7rem 1rem 4rem;
+    }
+    .auth-shell {
+      display: grid;
+      width: 100%;
+      max-width: 72rem;
+      overflow: hidden;
+      border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 25px 50px -12px rgba(8,51,68,0.3);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    @media (min-width: 1024px) {
+      .auth-shell { grid-template-columns: 0.95fr 1.05fr; }
+    }
+    .auth-left {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 4rem;
+      padding: 2.5rem;
+      background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.1), rgba(2,6,23,0.95));
+    }
+    @media (min-width: 1024px) { .auth-left { display: flex; } }
+    .auth-left-label {
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--cyan-200);
+    }
+    .auth-left-title {
+      margin-top: 1.25rem;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #fff;
+    }
+    .auth-left-desc {
+      margin-top: 1.25rem;
+      line-height: 2;
+      color: var(--slate-300);
+    }
+    .auth-promise {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.5);
+      padding: 1.25rem;
+    }
+    .auth-promise-label { font-size: 0.875rem; font-weight: 700; color: var(--slate-400); }
+    .auth-promise-text { margin-top: 0.5rem; font-size: 1.25rem; font-weight: 900; color: #fff; }
+    .auth-right { padding: 1.5rem; }
+    @media (min-width: 640px) { .auth-right { padding: 2.5rem; } }
+    .auth-form-wrap { max-width: 28rem; margin-inline: auto; }
+    .auth-kicker {
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      color: var(--cyan-300);
+    }
+    .auth-title {
+      margin-top: 0.75rem;
+      font-size: 1.875rem;
+      font-weight: 900;
+      color: #fff;
+    }
+    .auth-desc { margin-top: 0.75rem; line-height: 1.75; color: var(--slate-300); }
+    .auth-form { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .form-input {
+      background: rgba(2,6,23,0.7);
+      padding: 1rem;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-input:focus {
+      background: #020617;
+      border-color: var(--cyan-300);
+      box-shadow: 0 10px 15px -3px rgba(8,51,68,0.4);
+    }
+    .form-input.violet:focus {
+      border-color: var(--violet-300);
+      box-shadow: 0 10px 15px -3px rgba(30,20,68,0.4);
+    }
+    .btn-submit {
+      width: 100%;
+      border-radius: 0.75rem;
+      background: var(--cyan-400);
+      color: #020617;
+      font-weight: 900;
+      padding: 1rem 1.5rem;
+      border: none;
+      font-size: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(34,211,238,0.2);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .btn-submit:hover { transform: translateY(-4px); background: #fff; }
+    .auth-links {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: var(--slate-400);
+    }
+    .auth-links a { color: var(--cyan-200); font-weight: 800; transition: color 0.3s ease; }
+    .auth-links a:hover { color: #fff; }
+    .auth-divider { color: rgba(148,163,184,0.55); }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div id="global-navbar"></div>
+
+  <main class="auth-page">
+    <section class="auth-shell" aria-labelledby="signin-title">
+      <div class="auth-left">
+        <div>
+          <p class="auth-left-label">Membership Portal</p>
+          <h1 class="auth-left-title">Step back into the chapter.</h1>
+          <p class="auth-left-desc">Access member updates, resources, event registrations, and opportunities through the ACM JIT student portal.</p>
+        </div>
+        <div class="auth-promise">
+          <p class="auth-promise-label">Community promise</p>
+          <p class="auth-promise-text">Come curious. Leave more capable.</p>
+        </div>
+      </div>
+
+      <div class="auth-right">
+        <div class="auth-form-wrap">
+          <p class="auth-kicker">Secure Sign In</p>
+          <h2 id="signin-title" class="auth-title">Welcome Back</h2>
+          <p class="auth-desc">Sign in to access chapter updates, resources, and member-only opportunities.</p>
+
+          <form id="login-form" class="auth-form">
+            <label>
+              <span class="form-label">Student Email / USN</span>
+              <input name="identifier" type="text" placeholder="name@jyothyit.ac.in or 1JT..." class="form-input" autocomplete="username" required>
+            </label>
+            <label>
+              <span class="form-label">Password</span>
+              <input name="password" type="password" placeholder="Enter your password" class="form-input violet" autocomplete="current-password" required>
+            </label>
+            <button type="submit" class="btn-submit">Sign In</button>
+          </form>
+
+          <div class="auth-links" aria-label="Account links">
+            <a href="forgot-password.html">Forgot Password?</a>
+            <span class="auth-divider">|</span>
+            <a href="register.html">New here? Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
