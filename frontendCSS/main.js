@@ -873,7 +873,7 @@ showPopup(
         if (knowUsLink && !document.getElementById("profile-avatar-container")) {
           knowUsLink.insertAdjacentHTML('afterend', `
             <div id="profile-avatar-container" class="profile-avatar-container" style="display:flex;align-items:center;position:relative;margin-left:0.5rem;margin-right:0.5rem;">
-              <button type="button" id="profile-avatar-btn" style="width:2.3rem;height:2.3rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));border:1px solid rgba(255,255,255,0.15);color:#0d0d0d;font-weight:900;font-size:0.85rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(34,211,238,0.25);transition:all 0.3s ease;font-family:'Inter',sans-serif;" title="View Profile">
+              <button type="button" id="profile-avatar-btn" style="width:2.3rem;height:2.3rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));border:1px solid rgba(255,255,255,0.15);color:#0d0d0d;font-weight:900;font-size:0.85rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(34,211,238,0.25);transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);font-family:'Inter',sans-serif;" onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 0 15px rgba(34,211,238,0.6)';" onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 20px rgba(34,211,238,0.25)';" title="View Profile">
                 ${initials}
               </button>
             </div>
@@ -891,7 +891,7 @@ showPopup(
                 <div id="profile-modal-body" style="background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:2rem;max-width:540px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);transform:scale(0.95);transition:transform 0.3s ease;overflow:hidden;color:#f1f5f9;">
                   <!-- Header -->
                   <div style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));padding:2rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:1.5rem;position:relative;">
-                    <button id="close-profile-modal-btn" style="position:absolute;top:1rem;right:1.25rem;background:transparent;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;transition:color 0.2s;" title="Close">×</button>
+                    <button id="close-profile-modal-btn" style="position:absolute;top:1rem;right:1.25rem;background:transparent;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.color='#fff';this.style.transform='scale(1.15)';" onmouseout="this.style.color='#94a3b8';this.style.transform='none';" title="Close">×</button>
                     
                     <div style="width:4.5rem;height:4.5rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));display:grid;place-items:center;font-size:1.75rem;font-weight:900;color:#0d0d0d;box-shadow:0 8px 24px rgba(34,211,238,0.3);">
                       ${initials}

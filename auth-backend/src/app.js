@@ -21,13 +21,15 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:5501",
-        "http://localhost:5501"
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
+        return callback(null, true);
+      }
+      const isLocalhost =
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:") ||
+        origin === "http://localhost" ||
+        origin === "http://127.0.0.1";
+      if (isLocalhost) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
