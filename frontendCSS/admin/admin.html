@@ -168,8 +168,22 @@
 
     .hidden { display: none !important; }
   </style>
+  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
 <body>
+  <script>
+    (function(){
+      try {
+        const user = localStorage.getItem('user');
+        if (!user) { window.location.href = '../join-us.html'; return; }
+        const u = JSON.parse(user);
+        const isAdmin = !!(u && (u.isAdmin || (typeof u.role === 'string' && u.role.toLowerCase() === 'admin') || (Array.isArray(u.roles) && u.roles.map(r=>String(r).toLowerCase()).includes('admin'))));
+        if (!isAdmin) { window.location.href = '../join-us.html'; }
+      } catch (e) {
+        window.location.href = '../join-us.html';
+      }
+    })();
+  </script>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Users | ACM JIT</title>
+  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <style>
+    body{font-family:Inter,system-ui,Arial;background:#020617;color:#f1f5f9}
+    .main{max-width:900px;margin:6rem auto;padding:1rem}
+    .panel{background:rgba(255,255,255,0.03);padding:1.5rem;border-radius:1rem;border:1px solid rgba(255,255,255,0.04)}
+  </style>
+</head>
+<body>
+<script>
+  (function(){
+    try {
+      const user = localStorage.getItem('user');
+      if (!user) { window.location.href = '../join-us.html'; return; }
+      const u = JSON.parse(user);
+      const isAdmin = !!(u && (u.isAdmin || (typeof u.role === 'string' && u.role.toLowerCase() === 'admin') || (Array.isArray(u.roles) && u.roles.map(r=>String(r).toLowerCase()).includes('admin'))));
+      if (!isAdmin) { window.location.href = '../join-us.html'; }
+    } catch (e) { window.location.href = '../join-us.html'; }
+  })();
+</script>
+<div class="main">
+  <h1>Users</h1>
+  <div class="panel">
+    <p>This is a placeholder admin page for user management.</p>
+    <p>Implement user listing, role assignment, and actions here.</p>
+  </div>
+</div>
+</body>
+</html>

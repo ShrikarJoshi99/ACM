@@ -127,6 +127,26 @@
       background: rgba(2,6,23,0.7);
       padding: 1.5rem;
     }
+    .pulse-banner {
+      border-radius: 1rem;
+      padding: 0.875rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(90deg, rgba(3,10,23,0.95), rgba(6,18,34,0.95));
+      border: 1px solid rgba(103,232,249,0.06);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.55);
+      margin-bottom: 1rem;
+    }
+    .pulse-banner .banner-left {
+      display: flex; flex-direction: column; gap: 0.25rem;
+    }
+    .pulse-banner .banner-kicker { font-size: 0.875rem; font-weight: 800; color: var(--cyan-300); }
+    .pulse-banner .banner-title { font-size: 1.25rem; font-weight: 900; color: #fff; }
+    .pulse-banner .banner-art { width: 88px; height: 64px; border-radius: 0.75rem; background: linear-gradient(135deg, rgba(2,6,23,0.6), rgba(15,23,42,0.6)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); display:flex;align-items:center;justify-content:center; color:var(--cyan-300); font-weight:900; }
+    .pulse-banner .banner-art svg { width: 100%; height: 100%; display: block; border-radius: 0.75rem; }
+    .pulse-banner .badge-small { border-radius:9999px; padding:0.25rem 0.6rem; font-weight:800; font-size:0.75rem; background: rgba(34,197,94,0.08); color: var(--emerald-300); }
     .pulse-header {
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1.25rem;
@@ -201,6 +221,7 @@
     .domain-name { font-size: 1.25rem; font-weight: 900; color: #fff; }
     .domain-desc { margin-top: 0.75rem; font-size: 0.875rem; line-height: 1.75; color: var(--slate-300); }
   </style>
+  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
 <body>
   <div class="bg-overlay"></div>
@@ -221,6 +242,39 @@
 
         <div class="pulse-wrap">
           <div class="pulse-inner">
+            <div class="pulse-banner">
+              <div class="banner-left">
+                <div class="banner-kicker">Chapter Pulse</div>
+                <div class="banner-title">Live Learning Orbit</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                <div class="badge-small">Active</div>
+                <div class="banner-art">
+                  <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="pulse-art">
+                    <defs>
+                      <linearGradient id="g1" x1="0" x2="1">
+                        <stop offset="0" stop-color="#07202a" stop-opacity="0.9"/>
+                        <stop offset="1" stop-color="#0b2233" stop-opacity="0.9"/>
+                      </linearGradient>
+                      <linearGradient id="accent" x1="0" x2="1">
+                        <stop offset="0" stop-color="#67e8f9"/>
+                        <stop offset="1" stop-color="#a78bfa"/>
+                      </linearGradient>
+                    </defs>
+                    <rect rx="12" ry="12" width="220" height="160" fill="url(#g1)" />
+                    <rect x="12" y="12" width="196" height="56" rx="8" fill="rgba(255,255,255,0.03)" />
+                    <rect x="12" y="12" width="196" height="8" rx="4" fill="url(#accent)" />
+                    <text x="20" y="86" font-family="Inter, system-ui, sans-serif" font-size="48" font-weight="900" fill="#ffffff">4+</text>
+                    <text x="20" y="116" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#94a3b8">Core domains</text>
+                    <g transform="translate(138,96)">
+                      <rect x="0" y="0" width="64" height="40" rx="8" fill="rgba(255,255,255,0.02)" />
+                      <text x="8" y="24" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#c4b5fd">Ideas</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
             <div class="pulse-header">
               <div>
                 <p class="pulse-label">Chapter Pulse</p>

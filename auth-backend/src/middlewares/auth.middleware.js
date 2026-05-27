@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 
 export const protect = (req, res, next) => {
-  const token = req.cookies.accessToken;
+  // Support access token from cookie or Authorization header
+  let token = req.cookies.accessToken;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!token && authHeader && typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  }
 
   if (!token) {
     return res.status(401).json({

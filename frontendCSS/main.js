@@ -235,6 +235,34 @@ document.addEventListener("DOMContentLoaded", () => {
     button.disabled = false;
     button.style.opacity = "";
   };
+const showPopup = (title, message, options = {}) => {
+  const popup = document.getElementById("popup");
+  const popupTitle = document.getElementById("popup-title");
+  const popupMessage = document.getElementById("popup-message");
+  const popupBtn = document.getElementById("popup-btn");
+
+  if (!popup || !popupTitle || !popupMessage || !popupBtn) {
+    alert(`${title}: ${message}`);
+    return;
+  }
+
+  popupTitle.textContent = title;
+  popupMessage.textContent = message;
+
+  popup.style.display = "flex";
+
+  const closePopup = () => {
+    popup.style.display = "none";
+    if (options.onClose) options.onClose();
+  };
+
+  popupBtn.onclick = closePopup;
+  
+  // Auto-close after 3 seconds for success messages
+  if (title.toLowerCase().includes("success")) {
+    setTimeout(closePopup, 3000);
+  }
+};
 
   const setupAuthForms = () => {
     const loginForm = document.getElementById("login-form");
@@ -254,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -268,27 +297,34 @@ document.addEventListener("DOMContentLoaded", () => {
       restoreButton(submitButton);
 
       if (!response.ok) {
-        alert(data.message || "Login failed");
+       showPopup(
+  "Login Failed",
+  data.message || "Invalid credentials"
+);
         return;
       }
 
       // Save token
-      localStorage.setItem("token", data.accessToken);
+    localStorage.setItem("token", data.accessToken);
 
       // Save user
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Login successful");
+      showPopup(
+  "Success",
+  "Login successful",
+  { onClose: () => window.location.href = "index.html" }
+);
 
       loginForm.reset();
-
-      // Redirect
-      window.location.href = "index.html";
 
     } catch (error) {
       console.error(error);
       restoreButton(submitButton);
-      alert("Server error");
+    showPopup(
+  "Server Error",
+  "Unable to connect to server"
+);
     }
   });
 }
@@ -305,6 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -320,20 +357,28 @@ document.addEventListener("DOMContentLoaded", () => {
       restoreButton(submitButton);
 
       if (!response.ok) {
-        alert(data.message || "Registration failed");
+       showPopup(
+  "Registration Failed",
+  data.message || "Unable to register"
+);
         return;
       }
 
-      alert("Registration successful");
+   showPopup(
+  "Success",
+  "Registration successful",
+  { onClose: () => window.location.href = "verify.html" }
+);
 
       registerForm.reset();
-
-     window.location.href = "verify.html";
 
     } catch (error) {
       console.error(error);
       restoreButton(submitButton);
-      alert("Server error");
+   showPopup(
+  "Server Error",
+  "Unable to connect to server"
+);
     }
   });
 }
@@ -349,6 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/verify-email", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -363,20 +409,27 @@ document.addEventListener("DOMContentLoaded", () => {
       restoreButton(submitButton);
 
       if (!response.ok) {
-        alert(data.message || "Verification failed");
+      showPopup(
+  "Verification Failed",
+  data.message || "Invalid code or email"
+);
         return;
       }
-
-      alert("Account verified successfully");
+showPopup(
+  "Success",
+  "Email verified successfully",
+  { onClose: () => window.location.href = "join-us.html" }
+);
 
       verifyForm.reset();
-
-      window.location.href = "join-us.html";
 
     } catch (error) {
       console.error(error);
       restoreButton(submitButton);
-      alert("Server error");
+  showPopup(
+  "Server Error",
+  "Unable to connect to server"
+);
     }
   });
 }
@@ -405,6 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "http://localhost:5000/api/auth/forgot-password",
           {
             method: "POST",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
@@ -419,7 +473,10 @@ document.addEventListener("DOMContentLoaded", () => {
         restoreButton(submitButton);
 
         if (!response.ok) {
-          alert(data.message || "Failed to send token");
+         showPopup(
+  "Error",
+  data.message || "Failed to send reset token"
+);
           return;
         }
 
@@ -446,7 +503,10 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (error) {
         console.error(error);
         restoreButton(submitButton);
-        alert("Server error");
+     showPopup(
+  "Server Error",
+  "Unable to connect to server"
+);
       }
 
       return;
@@ -465,6 +525,7 @@ try {
     `http://localhost:5000/api/auth/reset-password/${token}`,
     {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -491,11 +552,18 @@ try {
   restoreButton(submitButton);
 
   if (!response.ok) {
-    alert(data.message || "Password reset failed");
+   showPopup(
+  "Error",
+  data.message || "Failed to reset password"
+);
     return;
   }
 
-  alert("Password reset successful");
+ showPopup(
+  "Success",
+  "Password reset successful",
+  { onClose: () => window.location.href = "join-us.html" }
+);
 
   forgotPasswordForm.reset();
 
@@ -513,12 +581,13 @@ try {
 
   submitButton.textContent = "Send Reset Token";
 
-  window.location.href = "join-us.html";
-
 } catch (error) {
   console.error(error);
   restoreButton(submitButton);
-  alert("Server error");
+showPopup(
+  "Server Error",
+  "Unable to connect to server"
+);
 }
   });
 }
@@ -575,6 +644,114 @@ try {
           button.setAttribute("aria-expanded", String(!isOpen));
         });
       }
+      // CHECK LOGIN STATUS & VALIDATE WITH BACKEND
+      const token = localStorage.getItem("token");
+      const localUserStr = localStorage.getItem("user");
+
+      console.log("[nav] token present:", !!token);
+      console.log("[nav] local user:", localUserStr);
+
+      const hideAuthLinks = () => {
+        menu.querySelectorAll("a").forEach(link => {
+          const href = link.getAttribute("href");
+          if (href?.includes("register") || href?.includes("join-us")) link.style.display = "none";
+        });
+      };
+
+      if (!token) {
+        // not logged in
+        console.log("[nav] no token, skipping profile validation");
+        return;
+      }
+
+      hideAuthLinks();
+
+      const addLogoutButton = () => {
+        if (document.getElementById("logout-btn")) return;
+        menu.insertAdjacentHTML(
+          "beforeend",
+          `
+          <a href="#" id="logout-btn" class="nav-cta">
+            Logout
+          </a>
+          `
+        );
+        document.getElementById("logout-btn")?.addEventListener("click", (e) => {
+          e.preventDefault();
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.reload();
+        });
+      };
+
+      addLogoutButton();
+
+      // Validate token by fetching profile from backend
+      console.log("[nav] validating token with backend...");
+      fetch("http://localhost:5000/api/auth/profile", {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(async (res) => {
+        console.log("[nav] profile response status:", res.status);
+        if (!res.ok) {
+          // token invalid or expired
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          return null;
+        }
+        const data = await res.json();
+        console.log("[nav] profile data:", data);
+        return data;
+      })
+      .then((profile) => {
+        if (!profile) return;
+
+        // backend returns { success: true, user }
+        const profileData = profile.user || profile;
+
+        // Update local user storage with fresh profile (store only the user object)
+        try { localStorage.setItem('user', JSON.stringify(profileData)); } catch {}
+
+        const isAdmin = !!(profileData && (profileData.isAdmin || (typeof profileData.role === 'string' && profileData.role.toLowerCase() === 'admin') || (Array.isArray(profileData.roles) && profileData.roles.map(r=>String(r).toLowerCase()).includes('admin'))));
+
+        if (isAdmin) {
+          // Insert admin dropdown
+          menu.insertAdjacentHTML('beforeend', `
+            <div class="admin-dropdown" style="position:relative;">
+              <button type="button" id="admin-menu-toggle" class="nav-link" style="cursor:pointer;background:transparent;border:none;color:inherit;">Admin ▾</button>
+              <div id="admin-menu" style="position:absolute;right:0;top:calc(100% + 8px);display:none;min-width:180px;border-radius:0.75rem;padding:0.5rem;background:rgba(2,6,23,0.95);border:1px solid rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(2,6,23,0.5);">
+                <a class="nav-link" href="admin/admin.html" style="display:block;padding:0.5rem 0.75rem;">Manage Events</a>
+                <a class="nav-link" href="admin/users.html" style="display:block;padding:0.5rem 0.75rem;">User Management</a>
+                <a class="nav-link" href="admin/analytics.html" style="display:block;padding:0.5rem 0.75rem;">Analytics</a>
+              </div>
+            </div>
+          `);
+
+          const toggleBtn = document.getElementById('admin-menu-toggle');
+          const adminMenu = document.getElementById('admin-menu');
+          toggleBtn?.addEventListener('click', (e) => {
+            const open = adminMenu.style.display === 'block';
+            adminMenu.style.display = open ? 'none' : 'block';
+          });
+          // close when clicking outside
+          document.addEventListener('click', (e) => {
+            if (!e.target.closest('.admin-dropdown')) {
+              const m = document.getElementById('admin-menu');
+              if (m) m.style.display = 'none';
+            }
+          });
+        }
+
+        // Admin controls may be added after profile validation.
+        // The logout button is already rendered when a token exists.
+      })
+      .catch(() => {
+        // network error — keep showing basic UI but do not expose admin
+      });
     })
     .catch(() => {
       mount.innerHTML =

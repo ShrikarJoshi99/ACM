@@ -50,6 +50,12 @@
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
   .nav-link:hover { background: rgba(255,255,255,0.05); color: var(--cyan-300); }
+  button.nav-link {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    border: none; background: transparent; color: inherit;
+    padding: 0.5rem 1rem;
+    font: inherit; cursor: pointer;
+  }
   .nav-link.active {
     color: var(--cyan-300); background: rgba(255,255,255,0.1);
     position: relative;

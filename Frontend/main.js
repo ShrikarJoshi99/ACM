@@ -220,6 +220,80 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((html) => {
       mount.innerHTML = html;
+<div id="popup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+
+<div style="
+background:#0f172a;
+padding:30px;
+border-radius:20px;
+width:350px;
+text-align:center;
+border:1px solid rgba(34,211,238,.3);
+color:white;
+">
+
+<h2 id="popup-title">Success</h2>
+
+<p id="popup-message"></p>
+
+<button id="popup-btn"
+style="
+padding:10px 20px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+background:#22d3ee;
+cursor:pointer;
+font-weight:bold;
+">
+OK
+</button>
+
+</div>
+</div>
+      const user = localStorage.getItem("user");
+const token = localStorage.getItem("token");
+
+const signInBtn = document.querySelector('a[href="join-us.html"]');
+const signUpBtn = document.querySelector('a[href="register.html"]');
+
+if (user && token) {
+  if (signInBtn) signInBtn.style.display = "none";
+  if (signUpBtn) signUpBtn.style.display = "none";
+
+  const navLinks = document.getElementById("nav-links");
+
+  navLinks.insertAdjacentHTML(
+    "beforeend",
+    `
+    <a href="#" id="logout-btn" class="nav-cta">
+      Logout
+    </a>
+    `
+  );
+
+  document
+    .getElementById("logout-btn")
+    ?.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.href = "join-us.html";
+    });
+}
 
       const currentPage = window.location.pathname.split("/").pop() || "index.html";
       const links = mount.querySelectorAll(".nav-link");
