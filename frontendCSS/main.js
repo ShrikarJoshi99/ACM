@@ -93,6 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (events.upcoming.length) {
       upcomingList.innerHTML = events.upcoming.map((event, i) => {
         const ac = accentColors[i % accentColors.length];
+        const showRegister = event.status && event.status.toLowerCase().includes("open");
+        const registerBtn = showRegister
+          ? `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event.id)}" data-reg-event-title="${escapeHtml(event.title)}">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+               Register Now
+             </button>`
+          : "";
         return `
           <article style="
             border-radius:1.5rem;border:1px solid ${ac.border};
@@ -110,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span style="border-radius:9999px;padding:0.25rem 0.75rem;font-size:0.75rem;font-weight:900;white-space:nowrap;${statusStyle(event.status)}">${escapeHtml(event.status)}</span>
             </div>
             <p style="margin-top:1rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(event.description)}</p>
+            ${registerBtn}
           </article>`;
       }).join("");
     } else {
@@ -593,9 +601,176 @@ showPopup(
 }
   };
 
+  /* ══════════════════════════════════════════════════
+     EVENT REGISTRATION MODAL LOGIC
+  ══════════════════════════════════════════════════ */
+  const setupEventRegistration = () => {
+    const modal     = document.getElementById("event-register-modal");
+    const form      = document.getElementById("event-register-form");
+    const closeBtn  = document.getElementById("modal-close-btn");
+    const cancelBtn = document.getElementById("modal-cancel-btn");
+    const submitBtn = document.getElementById("reg-submit-btn");
+    const teamSizeSelect  = document.getElementById("reg-team-size");
+    const teamSection     = document.getElementById("team-members-section");
+    const teamFieldsWrap  = document.getElementById("team-members-fields");
+
+    if (!modal || !form) return;
+
+    /* ── Open modal ── */
+    const openModal = (eventId, eventTitle) => {
+      // Check if user is logged in
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showPopup("Login Required", "Please log in to register for events.", {
+          onClose: () => { window.location.href = "join-us.html"; }
+        });
+        return;
+      }
+
+      // Pre-fill hidden fields
+      document.getElementById("reg-event-id").value = eventId;
+      document.getElementById("reg-event-title").value = eventTitle;
+      document.getElementById("modal-event-title").textContent = eventTitle;
+
+      // Auto-fill from stored user profile
+      try {
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          if (user.name)  document.getElementById("reg-fullname").value = user.name;
+          if (user.email) document.getElementById("reg-email").value = user.email;
+        }
+      } catch {}
+
+      // Reset team fields
+      teamSizeSelect.value = "1";
+      teamSection.style.display = "none";
+      teamFieldsWrap.innerHTML = "";
+
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+    };
+
+    /* ── Close modal ── */
+    const closeModal = () => {
+      modal.classList.remove("open");
+      document.body.style.overflow = "";
+      form.reset();
+      teamSection.style.display = "none";
+      teamFieldsWrap.innerHTML = "";
+    };
+
+    closeBtn?.addEventListener("click", closeModal);
+    cancelBtn?.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    });
+
+    /* ── Dynamic team members ── */
+    const renderTeamFields = (size) => {
+      const count = size - 1; // leader is the registrant
+      if (count <= 0) {
+        teamSection.style.display = "none";
+        teamFieldsWrap.innerHTML = "";
+        return;
+      }
+      teamSection.style.display = "";
+      teamFieldsWrap.innerHTML = Array.from({ length: count }, (_, i) => `
+        <div class="team-member-row">
+          <p class="team-member-label">Member ${i + 2}</p>
+          <input type="text" name="tm-name-${i}" placeholder="Full Name" required />
+          <input type="text" name="tm-usn-${i}"  placeholder="USN" required />
+        </div>
+      `).join("");
+    };
+
+    teamSizeSelect.addEventListener("change", () => {
+      renderTeamFields(Number(teamSizeSelect.value));
+    });
+
+    /* ── Register button click delegation ── */
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-reg-event-id]");
+      if (!btn) return;
+      openModal(btn.dataset.regEventId, btn.dataset.regEventTitle);
+    });
+
+    /* ── Form submission ── */
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showPopup("Login Required", "Please log in to register for events.");
+        return;
+      }
+
+      setButtonBusy(submitBtn, "Submitting...");
+
+      const teamSize = Number(teamSizeSelect.value);
+      const teamMembers = [];
+      if (teamSize > 1) {
+        for (let i = 0; i < teamSize - 1; i++) {
+          const name = form.querySelector(`[name="tm-name-${i}"]`)?.value.trim();
+          const usn  = form.querySelector(`[name="tm-usn-${i}"]`)?.value.trim();
+          if (!name || !usn) {
+            restoreButton(submitBtn);
+            showPopup("Validation Error", `Please fill name and USN for team member ${i + 2}`);
+            return;
+          }
+          teamMembers.push({ name, usn });
+        }
+      }
+
+      const body = {
+        eventId:    document.getElementById("reg-event-id").value,
+        eventTitle: document.getElementById("reg-event-title").value,
+        fullName:   document.getElementById("reg-fullname").value.trim(),
+        email:      document.getElementById("reg-email").value.trim(),
+        phone:      document.getElementById("reg-phone").value.trim(),
+        collegeName: document.getElementById("reg-college").value.trim(),
+        usn:        document.getElementById("reg-usn").value.trim(),
+        teamSize,
+        teamMembers,
+        notes:      document.getElementById("reg-notes").value.trim()
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/api/events/register", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+        restoreButton(submitBtn);
+
+        if (!response.ok) {
+          showPopup("Registration Failed", data.message || "Something went wrong");
+          return;
+        }
+
+        closeModal();
+        showPopup("Success", "You have been successfully registered for this event!");
+      } catch (error) {
+        console.error(error);
+        restoreButton(submitBtn);
+        showPopup("Server Error", "Unable to connect to server. Please try again later.");
+      }
+    });
+  };
+
   renderPublicEvents();
   setupAdminPanel();
   setupAuthForms();
+  setupEventRegistration();
 
   /* ── Navbar injection ── */
   const mount = document.getElementById("global-navbar");
@@ -648,8 +823,6 @@ showPopup(
       const token = localStorage.getItem("token");
       const localUserStr = localStorage.getItem("user");
 
-      console.log("[nav] token present:", !!token);
-      console.log("[nav] local user:", localUserStr);
 
       const hideAuthLinks = () => {
         menu.querySelectorAll("a").forEach(link => {
@@ -660,7 +833,6 @@ showPopup(
 
       if (!token) {
         // not logged in
-        console.log("[nav] no token, skipping profile validation");
         return;
       }
 
@@ -687,7 +859,6 @@ showPopup(
       addLogoutButton();
 
       // Validate token by fetching profile from backend
-      console.log("[nav] validating token with backend...");
       fetch("http://localhost:5000/api/auth/profile", {
         credentials: "include",
         headers: {
@@ -696,7 +867,6 @@ showPopup(
         }
       })
       .then(async (res) => {
-        console.log("[nav] profile response status:", res.status);
         if (!res.ok) {
           // token invalid or expired
           localStorage.removeItem('token');
@@ -704,7 +874,6 @@ showPopup(
           return null;
         }
         const data = await res.json();
-        console.log("[nav] profile data:", data);
         return data;
       })
       .then((profile) => {

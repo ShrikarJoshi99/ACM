@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
+import eventRoutes from "./routes/event.routes.js";
 
 
 
@@ -36,6 +37,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
 
 app.use(errorMiddleware);
 

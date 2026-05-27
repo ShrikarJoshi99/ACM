@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Events | ACM JIT</title>
+  <meta name="description" content="Explore upcoming ACM JIT events — workshops, competitions, and chapter moments. Register now!">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,7 +21,7 @@
     :root {
       --cyan-300: #67e8f9; --cyan-400: #22d3ee;
       --violet-300: #c4b5fd; --emerald-300: #6ee7b7;
-      --slate-300: #cbd5e1; --slate-400: #94a3b8;
+      --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
       --max-w: 80rem; --px: 1rem; --nav-h: 74px;
     }
     @media (min-width: 640px)  { :root { --px: 1.5rem; } }
@@ -126,6 +127,26 @@
       font-size: 0.75rem; font-weight: 900; white-space: nowrap;
     }
 
+    /* ── Register button on event cards ── */
+    .btn-register-event {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-top: 1.25rem; padding: 0.625rem 1.25rem;
+      border-radius: 0.75rem; border: none; cursor: pointer;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      font-weight: 900; font-size: 0.875rem;
+      background: linear-gradient(135deg, var(--cyan-400), #06b6d4);
+      color: #020617;
+      box-shadow: 0 8px 20px -4px rgba(34,211,238,0.3);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+    .btn-register-event:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -4px rgba(34,211,238,0.45);
+      background: linear-gradient(135deg, #67e8f9, var(--cyan-400));
+    }
+    .btn-register-event:active { transform: translateY(0); }
+    .btn-register-event svg { width: 16px; height: 16px; }
+
     /* Past event dot+text */
     #past-events-list > div {
       display: flex; gap: 1rem;
@@ -143,6 +164,137 @@
       background: rgba(255,255,255,0.06); padding: 1.5rem;
       color: var(--slate-300);
     }
+
+    /* ════════════════════════════════════════════
+       REGISTRATION MODAL
+    ════════════════════════════════════════════ */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(2,6,23,0.75); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.25s ease;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1);    }
+    }
+
+    .modal-card {
+      width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(103,232,249,0.15);
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(24px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 24px 64px -12px rgba(0,0,0,0.6),
+        0 0 80px -20px rgba(34,211,238,0.12);
+      padding: 2rem;
+      animation: slideUp 0.35s ease;
+    }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h2 {
+      font-size: 1.5rem; font-weight: 900; color: #fff;
+    }
+    .modal-header .modal-event-name {
+      display: block; margin-top: 0.35rem;
+      font-size: 0.8rem; font-weight: 700; color: var(--cyan-300);
+      letter-spacing: 0.05em;
+    }
+    .modal-close {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06); color: #fff;
+      font-size: 1.25rem; cursor: pointer; display: grid; place-items: center;
+      transition: background 0.2s ease;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.12); }
+
+    .modal-form { display: flex; flex-direction: column; gap: 1rem; }
+
+    .modal-form .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .modal-form .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 480px) { .modal-form .field-row { grid-template-columns: 1fr; } }
+
+    .modal-form label {
+      font-size: 0.8rem; font-weight: 700; color: var(--slate-300);
+    }
+    .modal-form input,
+    .modal-form select,
+    .modal-form textarea {
+      width: 100%; border-radius: 0.625rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.7); color: #fff;
+      padding: 0.65rem 0.85rem; font-size: 0.9rem;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      outline: none; transition: border-color 0.25s ease;
+    }
+    .modal-form input::placeholder,
+    .modal-form textarea::placeholder { color: var(--slate-500); }
+    .modal-form input:focus,
+    .modal-form select:focus,
+    .modal-form textarea:focus { border-color: var(--cyan-300); }
+    .modal-form textarea { resize: none; }
+
+    .team-members-section {
+      border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03); padding: 1rem;
+    }
+    .team-members-section h4 {
+      font-size: 0.8rem; font-weight: 900; color: var(--violet-300);
+      text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem;
+    }
+    #team-members-fields { display: flex; flex-direction: column; gap: 0.75rem; }
+    .team-member-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+      padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .team-member-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .team-member-label {
+      grid-column: 1 / -1; font-size: 0.7rem; font-weight: 700;
+      color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em;
+    }
+
+    .modal-actions {
+      display: flex; gap: 0.75rem; margin-top: 0.5rem;
+    }
+    .btn-modal-submit {
+      flex: 1; padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+      border: none; cursor: pointer;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      font-weight: 900; font-size: 0.95rem;
+      background: linear-gradient(135deg, var(--cyan-400), #06b6d4);
+      color: #020617;
+      box-shadow: 0 12px 24px -6px rgba(34,211,238,0.25);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btn-modal-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px -6px rgba(34,211,238,0.4);
+    }
+    .btn-modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-modal-cancel {
+      padding: 0.75rem 1.25rem; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06); color: var(--slate-300);
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      font-weight: 700; font-size: 0.95rem; cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-modal-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    /* Scrollbar inside modal */
+    .modal-card::-webkit-scrollbar { width: 6px; }
+    .modal-card::-webkit-scrollbar-track { background: transparent; }
+    .modal-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
   </style>
   <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
@@ -174,6 +326,86 @@
       </aside>
     </div>
   </main>
+
+  <!-- ═══════ REGISTRATION MODAL ═══════ -->
+  <div id="event-register-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Register for Event</h2>
+          <span class="modal-event-name" id="modal-event-title"></span>
+        </div>
+        <button type="button" class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="event-register-form" class="modal-form" autocomplete="off">
+        <input type="hidden" id="reg-event-id" />
+        <input type="hidden" id="reg-event-title" />
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="reg-fullname">Full Name *</label>
+            <input type="text" id="reg-fullname" placeholder="John Doe" required />
+          </div>
+          <div class="field-group">
+            <label for="reg-email">Email *</label>
+            <input type="email" id="reg-email" placeholder="john@college.edu" required />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="reg-phone">Phone Number *</label>
+            <input type="tel" id="reg-phone" placeholder="9876543210" required />
+          </div>
+          <div class="field-group">
+            <label for="reg-usn">USN *</label>
+            <input type="text" id="reg-usn" placeholder="1JT22CS001" required />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="reg-college">College Name *</label>
+          <input type="text" id="reg-college" placeholder="Jain Institute of Technology" required />
+        </div>
+
+        <div class="field-group">
+          <label for="reg-team-size">Team Size *</label>
+          <select id="reg-team-size">
+            <option value="1">1 — Solo</option>
+            <option value="2">2 Members</option>
+            <option value="3">3 Members</option>
+            <option value="4">4 Members</option>
+            <option value="5">5 Members</option>
+          </select>
+        </div>
+
+        <div class="team-members-section" id="team-members-section" style="display:none;">
+          <h4>Team Members</h4>
+          <div id="team-members-fields"></div>
+        </div>
+
+        <div class="field-group">
+          <label for="reg-notes">Additional Notes</label>
+          <textarea id="reg-notes" rows="3" placeholder="Dietary restrictions, accessibility needs, etc."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-modal-submit" id="reg-submit-btn">Submit Registration</button>
+          <button type="button" class="btn-modal-cancel" id="modal-cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════ POPUP (for success / error) ═══════ -->
+  <div id="popup" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+    <div style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
+      <h3 id="popup-title" style="font-size:1.25rem;font-weight:900;color:#fff;margin-bottom:0.75rem;"></h3>
+      <p id="popup-message" style="color:#cbd5e1;line-height:1.6;margin-bottom:1.25rem;"></p>
+      <button id="popup-btn" type="button" style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
+    </div>
+  </div>
 
   <script src="main.js"></script>
 </body>

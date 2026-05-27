@@ -12,7 +12,6 @@ import {
   loginService
 } from "../services/auth.service.js";
 
-console.log(sendEmail);
 // REGISTER
 export const register = asyncHandler(async (req, res) => {
 
@@ -117,8 +116,6 @@ await sendEmail(
   `
 );
 
-console.log("Verification Code:");
-console.log(verificationCode);
 
   res.status(201).json({
     success: true,
@@ -236,8 +233,6 @@ export const forgotPassword = asyncHandler(async (req, res) => {
    Date.now() + 60 * 60 * 1000
 
   await user.save();
-  console.log("RESET TOKEN:", resetToken);
-console.log("USER TOKEN:", user.resetPasswordToken);
 
  await sendEmail(
   user.email,
@@ -270,30 +265,10 @@ console.log("USER TOKEN:", user.resetPasswordToken);
 
 // RESET PASSWORD
 export const resetPassword = asyncHandler(async (req, res) => {
-console.log("PARAM TOKEN:", req.params.token);
-
-console.log("TOKEN FROM PARAMS:", req.params.token);
-
-console.log("CURRENT TIME:", Date.now());
-
-console.log(
-  await User.findOne({
-    resetPasswordToken: req.params.token
-  })
-);
-
-const dbUser = await User.findOne({
-  resetPasswordToken: req.params.token
-});
-
-console.log("DB USER:", dbUser);
- console.log("TOKEN:", req.params.token);
 
 const user = await User.findOne({
   resetPasswordToken: req.params.token
 });
-
-console.log("FOUND USER:", user);
 
 if (!user) {
   return res.status(400).json({
@@ -302,15 +277,6 @@ if (!user) {
   });
 }
 
-console.log(
-  "EXPIRE TIME:",
-  user.resetPasswordExpire
-);
-
-console.log(
-  "NOW:",
-  new Date()
-);
 
 if (user.resetPasswordExpire < new Date()) {
   return res.status(400).json({

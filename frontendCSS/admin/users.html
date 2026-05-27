@@ -3,13 +3,230 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — Users | ACM JIT</title>
-  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <title>Admin — Event Registrations | ACM JIT</title>
+  <meta name="description" content="Admin panel to view and manage event registrations for ACM JIT.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Inter,system-ui,Arial;background:#020617;color:#f1f5f9}
-    .main{max-width:900px;margin:6rem auto;padding:1rem}
-    .panel{background:rgba(255,255,255,0.03);padding:1.5rem;border-radius:1rem;border:1px solid rgba(255,255,255,0.04)}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: #020617; color: #f1f5f9; min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    :root {
+      --cyan-300: #67e8f9; --cyan-400: #22d3ee;
+      --violet-300: #c4b5fd; --emerald-300: #6ee7b7;
+      --rose-200: #fecdd3; --rose-300: #fda4af;
+      --amber-300: #fcd34d;
+      --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+      --max-w: 80rem; --px: 1rem; --nav-h: 74px;
+    }
+    @media (min-width: 640px)  { :root { --px: 1.5rem; } }
+    @media (min-width: 1024px) { :root { --px: 2rem; } }
+
+    .bg-overlay {
+      pointer-events: none; position: fixed; inset: 0; z-index: -10;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(34,211,238,0.17), transparent 31%),
+        radial-gradient(circle at 82% 8%,  rgba(139,92,246,0.16), transparent 28%),
+        linear-gradient(180deg, #020617, #0f172a 52%, #020617);
+    }
+
+    .main-content {
+      max-width: var(--max-w); margin-inline: auto;
+      padding: calc(var(--nav-h) + 3.5rem) var(--px) 5rem;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex; flex-direction: column; gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (min-width: 1024px) {
+      .page-header { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    }
+    .header-text { max-width: 48rem; }
+    .label {
+      font-size: 0.75rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.3em; color: var(--cyan-300);
+    }
+    .page-title {
+      margin-top: 1rem; font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; color: #fff; line-height: 1.1;
+    }
+    .page-subtitle {
+      margin-top: 1rem; font-size: 1rem; line-height: 1.8; color: var(--slate-300);
+    }
+    .btn-back {
+      display: inline-block; border-radius: 0.75rem;
+      background: var(--cyan-400); color: #020617;
+      font-weight: 900; padding: 0.75rem 1.5rem;
+      text-align: center; white-space: nowrap;
+      box-shadow: 0 20px 25px -5px rgba(34,211,238,0.2);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .btn-back:hover { transform: translateY(-4px); background: #fff; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+      border-radius: 1rem; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+      padding: 1.25rem; text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem; font-weight: 900; color: #fff;
+      background: linear-gradient(135deg, var(--cyan-300), var(--violet-300));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      margin-top: 0.35rem; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.15em; color: var(--slate-400);
+    }
+
+    /* ── Search / filter bar ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .filter-input {
+      flex: 1; min-width: 200px; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.8); color: #fff;
+      padding: 0.75rem 1rem; font-size: 0.9rem;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      outline: none; transition: border-color 0.25s ease;
+    }
+    .filter-input::placeholder { color: var(--slate-500); }
+    .filter-input:focus { border-color: var(--cyan-300); }
+
+    .filter-select {
+      min-width: 180px; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.8); color: #fff;
+      padding: 0.75rem 1rem; font-size: 0.9rem;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      outline: none; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+    }
+    .filter-select:focus { border-color: var(--cyan-300); }
+
+    .btn-refresh {
+      border-radius: 0.75rem; border: 1px solid rgba(103,232,249,0.2);
+      background: rgba(34,211,238,0.08); color: var(--cyan-300);
+      font-weight: 900; padding: 0.75rem 1.25rem; font-size: 0.875rem;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    .btn-refresh:hover { background: rgba(34,211,238,0.15); border-color: rgba(103,232,249,0.4); }
+
+    /* ── Registration cards ── */
+    .reg-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .reg-card {
+      border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+      padding: 1.5rem;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .reg-card:hover {
+      border-color: rgba(103,232,249,0.2);
+      transform: translateY(-2px);
+    }
+
+    .reg-card-header {
+      display: flex; flex-wrap: wrap; align-items: flex-start;
+      justify-content: space-between; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .reg-card-event {
+      font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.2em; color: var(--cyan-300);
+    }
+    .reg-card-name {
+      margin-top: 0.25rem; font-size: 1.25rem; font-weight: 900; color: #fff;
+    }
+    .reg-card-date {
+      font-size: 0.75rem; color: var(--slate-400); white-space: nowrap;
+    }
+
+    .reg-details {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .reg-detail {
+      display: flex; flex-direction: column; gap: 0.15rem;
+    }
+    .reg-detail-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--slate-500);
+    }
+    .reg-detail-value {
+      font-size: 0.875rem; color: var(--slate-300); word-break: break-all;
+    }
+
+    .team-info {
+      border-radius: 0.625rem; border: 1px solid rgba(196,181,253,0.1);
+      background: rgba(196,181,253,0.04); padding: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .team-info-title {
+      font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.15em; color: var(--violet-300); margin-bottom: 0.5rem;
+    }
+    .team-member-item {
+      display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--slate-300);
+      padding: 0.25rem 0;
+    }
+    .team-member-item span:first-child { color: #fff; font-weight: 700; }
+
+    .reg-card-footer {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 0.5rem;
+    }
+    .reg-notes {
+      font-size: 0.8rem; color: var(--slate-400); font-style: italic;
+      max-width: 60%;
+    }
+
+    .btn-delete {
+      border-radius: 0.5rem; border: 1px solid rgba(253,164,175,0.3);
+      background: rgba(244,63,94,0.1); color: var(--rose-200);
+      font-weight: 900; padding: 0.5rem 0.75rem; font-size: 0.8rem;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.25s ease;
+    }
+    .btn-delete:hover { background: rgba(244,63,94,0.2); }
+
+    .empty-state {
+      border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      padding: 3rem; text-align: center; color: var(--slate-400);
+    }
+    .empty-state svg { margin-bottom: 1rem; opacity: 0.4; }
+
+    .loading-msg {
+      text-align: center; color: var(--slate-400); padding: 3rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    .reg-card { animation: slideUp 0.35s ease both; }
   </style>
+  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
 <body>
 <script>
@@ -23,12 +240,311 @@
     } catch (e) { window.location.href = '../join-us.html'; }
   })();
 </script>
-<div class="main">
-  <h1>Users</h1>
-  <div class="panel">
-    <p>This is a placeholder admin page for user management.</p>
-    <p>Implement user listing, role assignment, and actions here.</p>
+<div class="bg-overlay"></div>
+<div id="global-navbar"></div>
+
+<main class="main-content">
+  <header class="page-header">
+    <div class="header-text">
+      <p class="label">User Management</p>
+      <h1 class="page-title">Event Registrations</h1>
+      <p class="page-subtitle">View, search, and manage all event registrations submitted by participants.</p>
+    </div>
+    <a href="admin.html" class="btn-back">← Manage Events</a>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card">
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-label">Total Registrations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-events">—</div>
+      <div class="stat-label">Unique Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-colleges">—</div>
+      <div class="stat-label">Colleges</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-today">—</div>
+      <div class="stat-label">Today</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <input type="text" id="search-input" class="filter-input" placeholder="Search by name, email, college, USN…" />
+    <select id="event-filter" class="filter-select">
+      <option value="">All Events</option>
+    </select>
+    <button type="button" id="refresh-btn" class="btn-refresh">↻ Refresh</button>
+  </div>
+
+  <!-- Registration list -->
+  <div class="reg-list" id="reg-list">
+    <p class="loading-msg">Loading registrations…</p>
+  </div>
+</main>
+
+<!-- Popup -->
+<div id="popup" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
+    <h3 id="popup-title" style="font-size:1.25rem;font-weight:900;color:#fff;margin-bottom:0.75rem;"></h3>
+    <p id="popup-message" style="color:#cbd5e1;line-height:1.6;margin-bottom:1.25rem;"></p>
+    <button id="popup-btn" type="button" style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
   </div>
 </div>
+
+<script>
+(function() {
+  const API_BASE = "http://localhost:5000/api/events";
+  const token = localStorage.getItem("token");
+
+  const escapeHtml = (val) =>
+    String(val || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  const showPopup = (title, message, options = {}) => {
+    const popup = document.getElementById("popup");
+    const popupTitle = document.getElementById("popup-title");
+    const popupMessage = document.getElementById("popup-message");
+    const popupBtn = document.getElementById("popup-btn");
+    if (!popup) { alert(`${title}: ${message}`); return; }
+    popupTitle.textContent = title;
+    popupMessage.textContent = message;
+    popup.style.display = "flex";
+    const closePopup = () => {
+      popup.style.display = "none";
+      if (options.onClose) options.onClose();
+    };
+    popupBtn.onclick = closePopup;
+    if (title.toLowerCase().includes("success")) setTimeout(closePopup, 3000);
+  };
+
+  const formatDate = (iso) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-IN", {
+      day: "numeric", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+  };
+
+  const isToday = (iso) => {
+    const d = new Date(iso);
+    const now = new Date();
+    return d.getFullYear() === now.getFullYear() &&
+           d.getMonth() === now.getMonth() &&
+           d.getDate() === now.getDate();
+  };
+
+  let allRegistrations = [];
+
+  const updateStats = (data) => {
+    document.getElementById("stat-total").textContent = data.length;
+    const uniqueEvents = new Set(data.map(r => r.eventId));
+    document.getElementById("stat-events").textContent = uniqueEvents.size;
+    const uniqueColleges = new Set(data.map(r => (r.collegeName || "").toLowerCase()));
+    document.getElementById("stat-colleges").textContent = uniqueColleges.size;
+    const todayCount = data.filter(r => isToday(r.createdAt)).length;
+    document.getElementById("stat-today").textContent = todayCount;
+  };
+
+  const populateEventFilter = (data) => {
+    const select = document.getElementById("event-filter");
+    const events = [...new Map(data.map(r => [r.eventId, r.eventTitle])).entries()];
+    // Keep existing "All Events" option
+    select.innerHTML = '<option value="">All Events</option>';
+    events.forEach(([id, title]) => {
+      select.innerHTML += `<option value="${escapeHtml(id)}">${escapeHtml(title)}</option>`;
+    });
+  };
+
+  const renderRegistrations = (data) => {
+    const list = document.getElementById("reg-list");
+
+    if (!data.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <p>No registrations found.</p>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = data.map((reg, i) => {
+      const teamHtml = (reg.teamMembers && reg.teamMembers.length)
+        ? `<div class="team-info">
+             <p class="team-info-title">Team Members (${reg.teamMembers.length})</p>
+             ${reg.teamMembers.map((m, j) => `
+               <div class="team-member-item">
+                 <span>Member ${j + 2}:</span>
+                 <span>${escapeHtml(m.name)} — ${escapeHtml(m.usn)}</span>
+               </div>
+             `).join("")}
+           </div>`
+        : "";
+
+      const notesHtml = reg.notes
+        ? `<p class="reg-notes">"${escapeHtml(reg.notes)}"</p>`
+        : `<span></span>`;
+
+      return `
+        <div class="reg-card" style="animation-delay:${i * 40}ms;">
+          <div class="reg-card-header">
+            <div>
+              <p class="reg-card-event">${escapeHtml(reg.eventTitle)}</p>
+              <h3 class="reg-card-name">${escapeHtml(reg.fullName)}</h3>
+            </div>
+            <p class="reg-card-date">${formatDate(reg.createdAt)}</p>
+          </div>
+
+          <div class="reg-details">
+            <div class="reg-detail">
+              <span class="reg-detail-label">Email</span>
+              <span class="reg-detail-value">${escapeHtml(reg.email)}</span>
+            </div>
+            <div class="reg-detail">
+              <span class="reg-detail-label">Phone</span>
+              <span class="reg-detail-value">${escapeHtml(reg.phone)}</span>
+            </div>
+            <div class="reg-detail">
+              <span class="reg-detail-label">College</span>
+              <span class="reg-detail-value">${escapeHtml(reg.collegeName)}</span>
+            </div>
+            <div class="reg-detail">
+              <span class="reg-detail-label">USN</span>
+              <span class="reg-detail-value">${escapeHtml(reg.usn)}</span>
+            </div>
+            <div class="reg-detail">
+              <span class="reg-detail-label">Team Size</span>
+              <span class="reg-detail-value">${reg.teamSize}</span>
+            </div>
+          </div>
+
+          ${teamHtml}
+
+          <div class="reg-card-footer">
+            ${notesHtml}
+            <button type="button" class="btn-delete" data-delete-id="${reg._id}">Delete</button>
+          </div>
+        </div>`;
+    }).join("");
+  };
+
+  const fetchRegistrations = async () => {
+    const list = document.getElementById("reg-list");
+    list.innerHTML = '<p class="loading-msg">Loading registrations…</p>';
+
+    try {
+      const res = await fetch(`${API_BASE}/registrations`, {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        list.innerHTML = '<p class="loading-msg">Failed to load registrations. Check your admin permissions.</p>';
+        return;
+      }
+
+      const data = await res.json();
+      allRegistrations = data.registrations || [];
+      updateStats(allRegistrations);
+      populateEventFilter(allRegistrations);
+      renderRegistrations(allRegistrations);
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = '<p class="loading-msg">Unable to connect to server.</p>';
+    }
+  };
+
+  // Filtering
+  const applyFilters = () => {
+    const search = document.getElementById("search-input").value.toLowerCase().trim();
+    const eventId = document.getElementById("event-filter").value;
+
+    let filtered = allRegistrations;
+
+    if (eventId) {
+      filtered = filtered.filter(r => r.eventId === eventId);
+    }
+
+    if (search) {
+      filtered = filtered.filter(r =>
+        (r.fullName || "").toLowerCase().includes(search) ||
+        (r.email || "").toLowerCase().includes(search) ||
+        (r.collegeName || "").toLowerCase().includes(search) ||
+        (r.usn || "").toLowerCase().includes(search) ||
+        (r.eventTitle || "").toLowerCase().includes(search) ||
+        (r.phone || "").includes(search)
+      );
+    }
+
+    renderRegistrations(filtered);
+  };
+
+  document.getElementById("search-input").addEventListener("input", applyFilters);
+  document.getElementById("event-filter").addEventListener("change", applyFilters);
+  document.getElementById("refresh-btn").addEventListener("click", fetchRegistrations);
+
+  // Delete
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-delete-id]");
+    if (!btn) return;
+
+    const id = btn.dataset.deleteId;
+    btn.textContent = "Deleting…";
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_BASE}/registrations/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        showPopup("Error", data.message || "Failed to delete");
+        btn.textContent = "Delete";
+        btn.disabled = false;
+        return;
+      }
+
+      // Remove from local list and re-render
+      allRegistrations = allRegistrations.filter(r => r._id !== id);
+      updateStats(allRegistrations);
+      applyFilters();
+      showPopup("Success", "Registration deleted successfully.");
+    } catch (err) {
+      console.error(err);
+      showPopup("Error", "Unable to connect to server.");
+      btn.textContent = "Delete";
+      btn.disabled = false;
+    }
+  });
+
+  // Initial load
+  fetchRegistrations();
+})();
+</script>
+
+<script src="../main.js"></script>
 </body>
 </html>
