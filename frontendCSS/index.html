@@ -13,9 +13,9 @@
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
-    body {
+        body {
       font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-      background: #0a0f1e; color: #e2e8f0; min-height: 100vh;
+      background: #0d0d0d; color: #f1f5f9; min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -24,9 +24,9 @@
 
     /* ── Variables ── */
     :root {
-      --cyan-300: #67e8f9; --cyan-400: #22d3ee; --cyan-500: #06b6d4;
-      --violet-300: #c4b5fd; --violet-400: #a78bfa;
-      --emerald-300: #6ee7b7; --emerald-400: #34d399;
+      --cyan-200: #a5f3fc; --cyan-300: #67e8f9; --cyan-400: #22d3ee; --cyan-500: #06b6d4;
+      --violet-200: #ddd6fe; --violet-300: #c4b5fd; --violet-400: #a78bfa;
+      --emerald-200: #a7f3d0; --emerald-300: #6ee7b7; --emerald-400: #34d399;
       --amber-300: #fcd34d; --amber-400: #fbbf24;
       --rose-300: #fda4af; --rose-400: #fb7185;
       --fuchsia-300: #e879f9;
@@ -36,36 +36,13 @@
     @media (min-width: 640px)  { :root { --px: 1.5rem; } }
     @media (min-width: 1024px) { :root { --px: 2rem; } }
 
-    /* ── Animated Background ── */
-    .bg-canvas {
+    /* ── Classic Background Overlay ── */
+    .bg-overlay {
       pointer-events: none; position: fixed; inset: 0; z-index: -10;
-      background: #0a0f1e;
-    }
-    .bg-canvas::before {
-      content: ''; position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34,211,238,0.12), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139,92,246,0.08), transparent),
-        radial-gradient(ellipse 50% 30% at 10% 80%, rgba(52,211,153,0.06), transparent);
-    }
-    .bg-canvas::after {
-      content: ''; position: absolute; inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    /* ── Floating Orbs (decorative) ── */
-    .orb {
-      position: fixed; border-radius: 50%; filter: blur(80px);
-      pointer-events: none; z-index: -5;
-      animation: orbFloat 20s ease-in-out infinite alternate;
-    }
-    .orb-1 { width: 400px; height: 400px; top: -10%; left: -5%; background: rgba(34,211,238,0.07); }
-    .orb-2 { width: 350px; height: 350px; bottom: 10%; right: -8%; background: rgba(139,92,246,0.06); animation-delay: -7s; }
-    .orb-3 { width: 300px; height: 300px; top: 50%; left: 30%; background: rgba(52,211,153,0.05); animation-delay: -14s; }
-    @keyframes orbFloat {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(30px, -20px) scale(1.1); }
-      100% { transform: translate(-20px, 30px) scale(0.95); }
+        radial-gradient(ellipse 65% 45% at 15% 15%, rgba(255,255,255,0.04), transparent),
+        radial-gradient(ellipse 50% 35% at 90% 5%,  rgba(255,255,255,0.03), transparent),
+        linear-gradient(180deg, #0d0d0d, #111111 55%, #0a0a0a);
     }
 
     /* ── Layout ── */
@@ -478,10 +455,7 @@
   </style>
 </head>
 <body>
-  <div class="bg-canvas"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
 
   <main>

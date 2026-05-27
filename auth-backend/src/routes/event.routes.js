@@ -3,7 +3,8 @@ import express from "express";
 import {
   registerForEvent,
   getRegistrations,
-  deleteRegistration
+  deleteRegistration,
+  getMyRegistrations
 } from "../controllers/event.controller.js";
 
 import {
@@ -18,6 +19,13 @@ router.post(
   "/register",
   protect,
   registerForEvent
+);
+
+// User gets their own registrations
+router.get(
+  "/my-registrations",
+  protect,
+  getMyRegistrations
 );
 
 // Admin gets all registrations (with optional filters)

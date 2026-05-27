@@ -1,4 +1,5 @@
 import EventRegistration from "../models/eventRegistration.model.js";
+import User from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 // POST /api/events/register — authenticated user registers for an event
@@ -126,5 +127,32 @@ export const deleteRegistration = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Registration deleted"
+  });
+});
+
+// GET /api/events/my-registrations — logged in user gets their own registrations
+export const getMyRegistrations = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found"
+    });
+  }
+
+  const email = user.email.toLowerCase();
+
+  // Find registrations matching this user's email or userId
+  const registrations = await EventRegistration.find({
+    $or: [
+      { userId: req.user.id },
+      { email: email }
+    ]
+  }).sort({ createdAt: -1 }).lean();
+
+  res.status(200).json({
+    success: true,
+    count: registrations.length,
+    registrations
   });
 });
