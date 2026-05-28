@@ -314,42 +314,50 @@
       z-index: 3;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 2rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
       background:
         linear-gradient(to top, rgba(10, 15, 30, 0.95) 0%, rgba(10, 15, 30, 0.4) 50%, rgba(10, 15, 30, 0.1) 100%),
         linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(139, 92, 246, 0.1));
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
-    .hero-card-main .card-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 1rem;
-      background: linear-gradient(135deg, var(--cyan-400), var(--violet-400));
-      display: grid;
-      place-items: center;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 8px 24px rgba(34, 211, 238, 0.3);
+    .hero-card-main:active {
+      cursor: grabbing;
     }
 
-    .hero-card-main .card-icon svg {
-      width: 32px;
-      height: 32px;
-      color: #fff;
+    .hero-card-main canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    .hero-card-main h3 {
+    .hero-3d-label {
+      position: absolute;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .hero-3d-label h3 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: #fff;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.6);
     }
 
-    .hero-card-main p {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
+    .hero-3d-label p {
+      margin-top: 0.2rem;
+      font-size: 0.75rem;
       color: var(--slate-400);
-      line-height: 1.6;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.5);
     }
 
     .hero-card-float-1 {
@@ -892,17 +900,13 @@
 
           <div class="hero-visual">
             <div class="hero-card-stack">
-              <!-- Main Card -->
-              <div class="hero-card hero-card-main">
-                <div class="card-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <polygon
-                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
+              <!-- Interactive 3D Model -->
+              <div class="hero-card hero-card-main" id="hero-3d-container">
+                <canvas id="hero-3d-canvas"></canvas>
+                <div class="hero-3d-label">
+                  <h3>Where Ideas Take Shape</h3>
+                  <p>Drag to explore · Built by builders</p>
                 </div>
-                <h3>Where Ideas Take Shape</h3>
-                <p>Workshops, hackathons, study groups — real learning happens here.</p>
               </div>
 
               <!-- Float Card 1 — Next Event -->
@@ -1161,6 +1165,173 @@
       });
     }, { threshold: 0.15 });
     revealElements.forEach(el => revealObserver.observe(el));
+  </script>
+
+  <script>
+  (function() {
+    const canvas = document.getElementById('hero-3d-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('hero-3d-container');
+
+    let W, H, dpr;
+    function resize() {
+      dpr = window.devicePixelRatio || 1;
+      const rect = container.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // --- Low-poly gem: subdivided octahedron ---
+    const baseVerts = [
+      [0,1,0],[0,-1,0],
+      [1,0,0],[-1,0,0],
+      [0,0,1],[0,0,-1]
+    ];
+    const baseFaces = [
+      [0,2,4],[0,4,3],[0,3,5],[0,5,2],
+      [1,4,2],[1,3,4],[1,5,3],[1,2,5]
+    ];
+
+    function norm(v, r=1) {
+      const l = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])||1;
+      return [v[0]/l*r, v[1]/l*r, v[2]/l*r];
+    }
+    function mid(a, b) {
+      return [(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2];
+    }
+
+    let verts = baseVerts.map(v => norm(v));
+    let faces = baseFaces;
+
+    // Subdivide twice
+    for (let pass = 0; pass < 2; pass++) {
+      const nf = [], cache = {};
+      const get = (a, b) => {
+        const k = Math.min(a,b)+','+Math.max(a,b);
+        if (cache[k]!=null) return cache[k];
+        cache[k] = verts.length;
+        verts.push(norm(mid(verts[a], verts[b])));
+        return verts.length-1;
+      };
+      faces.forEach(([a,b,c]) => {
+        const ab=get(a,b),bc=get(b,c),ca=get(c,a);
+        nf.push([a,ab,ca],[b,bc,ab],[c,ca,bc],[ab,bc,ca]);
+      });
+      faces = nf;
+    }
+
+    // Gem distortion: tall crown, flat pavilion
+    verts = verts.map(v => [v[0]*0.78, v[1]*(v[1]>0?1.18:0.52), v[2]*0.78]);
+
+    // Rotation state
+    let rotX=0.35, rotY=0, autoRotY=0;
+    let isDragging=false, lastMX, lastMY;
+    let velX=0, velY=0, lastInteraction=0;
+
+    container.addEventListener('pointerdown', e => {
+      isDragging=true; lastMX=e.clientX; lastMY=e.clientY;
+      velX=0; velY=0;
+      container.setPointerCapture(e.pointerId);
+    });
+    container.addEventListener('pointermove', e => {
+      if (!isDragging) return;
+      velY=(e.clientX-lastMX)*0.007; velX=(e.clientY-lastMY)*0.007;
+      rotY+=velY; rotX+=velX;
+      lastMX=e.clientX; lastMY=e.clientY;
+      lastInteraction=performance.now();
+    });
+    container.addEventListener('pointerup', ()=>isDragging=false);
+    container.addEventListener('pointercancel', ()=>isDragging=false);
+
+    function Rx(v,a){const c=Math.cos(a),s=Math.sin(a);return[v[0],v[1]*c-v[2]*s,v[1]*s+v[2]*c];}
+    function Ry(v,a){const c=Math.cos(a),s=Math.sin(a);return[v[0]*c+v[2]*s,v[1],-v[0]*s+v[2]*c];}
+    function proj(v){
+      const fov=4.5, sc=Math.min(W,H)*0.33, z=v[2]+fov, f=fov/z;
+      return {x:W/2+v[0]*sc*f, y:H/2+v[1]*sc*f, z:v[2]};
+    }
+    function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+
+    // Soft key light + fill light
+    const KEY  = norm([0.5, 1.0, 0.8]);
+    const FILL = norm([-0.8, 0.3, 0.5]);
+
+    let time=0;
+    function draw() {
+      time+=0.012;
+      ctx.clearRect(0,0,W,H);
+
+      const elapsed=performance.now()-lastInteraction;
+      if (!isDragging) {
+        if (elapsed>1200){ autoRotY+=0.004; velX*=0.93; velY*=0.93; rotY+=velY; rotX+=velX; }
+        else { rotY+=velY; rotX+=velX; velX*=0.94; velY*=0.94; }
+      }
+
+      const tRY=rotY+autoRotY;
+      const tv=verts.map(v=>Ry(Rx(v,rotX),tRY));
+      const pv=tv.map(proj);
+
+      // Face shading
+      const fd=faces.map(f=>{
+        const avgZ=(tv[f[0]][2]+tv[f[1]][2]+tv[f[2]][2])/3;
+        const cn=norm([(tv[f[0]][0]+tv[f[1]][0]+tv[f[2]][0])/3,
+                       (tv[f[0]][1]+tv[f[1]][1]+tv[f[2]][1])/3,
+                       (tv[f[0]][2]+tv[f[1]][2]+tv[f[2]][2])/3]);
+        const diff=Math.max(0,dot(cn,KEY));
+        const fill=Math.max(0,dot(cn,FILL))*0.25;
+        const light=diff+fill;
+        const p0=pv[f[0]],p1=pv[f[1]],p2=pv[f[2]];
+        const cross=(p1.x-p0.x)*(p2.y-p0.y)-(p1.y-p0.y)*(p2.x-p0.x);
+        return {f,avgZ,light,visible:cross<0};
+      }).sort((a,b)=>a.avgZ-b.avgZ);
+
+      fd.forEach(({f,light,visible})=>{
+        if(!visible) return;
+        const p0=pv[f[0]],p1=pv[f[1]],p2=pv[f[2]];
+
+        // Very subtle blue-white tint on lit faces
+        const l=Math.round((0.05+light*0.9)*255);
+        const b=Math.round(Math.min(255,l+light*18));
+
+        ctx.beginPath();
+        ctx.moveTo(p0.x,p0.y); ctx.lineTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
+        ctx.closePath();
+
+        // Face fill — near transparent
+        ctx.fillStyle=`rgba(${l},${l},${b},${0.05+light*0.13})`;
+        ctx.fill();
+
+        // Edges — only visible on lit faces
+        ctx.strokeStyle=`rgba(${l},${l},${b},${0.03+light*0.20})`;
+        ctx.lineWidth=0.5;
+        ctx.stroke();
+      });
+
+      // Pulsing glint spot
+      const pulse=0.75+0.25*Math.sin(time*1.9);
+      const gx=W/2+Math.min(W,H)*0.07, gy=H/2-Math.min(W,H)*0.12;
+      const gg=ctx.createRadialGradient(gx,gy,0,gx,gy,24*pulse);
+      gg.addColorStop(0,`rgba(255,255,255,${0.22*pulse})`);
+      gg.addColorStop(0.5,`rgba(210,228,255,${0.06*pulse})`);
+      gg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(gx,gy,24*pulse,0,Math.PI*2);
+      ctx.fillStyle=gg; ctx.fill();
+
+      // Faint silhouette ellipse
+      ctx.save(); ctx.globalAlpha=0.06;
+      const sc=Math.min(W,H)*0.26;
+      ctx.beginPath();
+      ctx.ellipse(W/2,H/2,sc*0.8,sc*0.56,tRY*0.12,0,Math.PI*2);
+      ctx.strokeStyle='#e8eeff'; ctx.lineWidth=0.7; ctx.stroke();
+      ctx.restore();
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
   </script>
 </body>
 

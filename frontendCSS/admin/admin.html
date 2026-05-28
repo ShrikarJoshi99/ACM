@@ -248,6 +248,48 @@
         <div id="admin-events-list"></div>
       </section>
     </div>
+    <div class="admin-grid" style="margin-top: 3rem;">
+      <!-- Add announcement form -->
+      <form id="announcement-admin-form" class="panel">
+        <h2 class="panel-title">Add Announcement</h2>
+        <div class="form-fields">
+          <label>
+            <span class="form-label">Category / Badge</span>
+            <select id="announcement-category" class="form-select cyan">
+              <option value="cyan">Hackathon Alerts (Cyan)</option>
+              <option value="violet">Core Update (Violet)</option>
+              <option value="emerald">Workshop (Emerald)</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="form-label">Title</span>
+            <input id="announcement-title" required type="text" placeholder="Internal hack sprint registration opens soon" class="form-input"/>
+          </label>
+
+          <label>
+            <span class="form-label">Time / Date string</span>
+            <input id="announcement-time" required type="text" placeholder="Today, 10:30 AM" class="form-input"/>
+          </label>
+
+          <label>
+            <span class="form-label">Body Text</span>
+            <textarea id="announcement-body" required rows="4" placeholder="Teams can start preparing project ideas..." class="form-textarea"></textarea>
+          </label>
+
+          <button type="submit" class="btn-save" style="margin-top: 0.5rem;">Save Announcement</button>
+        </div>
+      </form>
+
+      <!-- Saved announcements list -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title" style="margin-bottom:0;">Saved Announcements</h2>
+          <button id="reset-announcements" type="button" class="btn-reset">Reset Demo Data</button>
+        </div>
+        <div id="admin-announcements-list" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+      </section>
+    </div>
   </main>
 
   <script src="../main.js"></script>

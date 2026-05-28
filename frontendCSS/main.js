@@ -680,6 +680,154 @@ document.addEventListener("DOMContentLoaded", () => {
     renderAdminEvents();
   };
 
+  const defaultAnnouncements = [
+    {
+      id: "ann-1",
+      category: "cyan",
+      badge: "Hackathon Alerts",
+      time: "Today, 10:30 AM",
+      title: "Internal hack sprint registration opens soon",
+      body: "Teams can start preparing project ideas for a focused build weekend around web, AI, and campus-life problem statements."
+    },
+    {
+      id: "ann-2",
+      category: "violet",
+      badge: "Core Update",
+      time: "May 18, 2026",
+      title: "Domain orientation schedule released",
+      body: "New members can meet domain leads, understand chapter tracks, and choose where they want to contribute first."
+    },
+    {
+      id: "ann-3",
+      category: "emerald",
+      badge: "Workshop",
+      time: "May 15, 2026",
+      title: "Git and GitHub hands-on lab completed",
+      body: "Thanks to everyone who joined the collaborative workflow session. Resource links will be added to the hub shortly."
+    }
+  ];
+
+  const announcementStoreKey = "acm-jit-announcements";
+
+  const readAnnouncements = () => {
+    const saved = localStorage.getItem(announcementStoreKey);
+    if (!saved) return structuredClone(defaultAnnouncements);
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return structuredClone(defaultAnnouncements);
+    }
+  };
+
+  const saveAnnouncements = (announcements) => {
+    localStorage.setItem(announcementStoreKey, JSON.stringify(announcements));
+  };
+
+  const renderPublicAnnouncements = () => {
+    const list = document.getElementById("announcements-list");
+    if (!list) return;
+
+    const announcements = readAnnouncements();
+
+    if (announcements.length) {
+      list.innerHTML = announcements.map((ann) => {
+        return `
+      <article class="timeline-item ${escapeHtml(ann.category)}">
+        <span class="timeline-dot ${escapeHtml(ann.category)}"></span>
+        <div class="item-meta">
+          <span class="item-badge ${escapeHtml(ann.category)}">${escapeHtml(ann.badge)}</span>
+          <time class="item-time">${escapeHtml(ann.time)}</time>
+        </div>
+        <h2 class="item-title">${escapeHtml(ann.title)}</h2>
+        <p class="item-body">${escapeHtml(ann.body)}</p>
+      </article>`;
+      }).join("");
+    } else {
+      list.innerHTML = '<p style="color:#cbd5e1;">No announcements yet.</p>';
+    }
+  };
+
+  const renderAdminAnnouncements = () => {
+    const adminList = document.getElementById("admin-announcements-list");
+    if (!adminList) return;
+
+    const announcements = readAnnouncements();
+
+    if (announcements.length) {
+      adminList.innerHTML = announcements.map((ann) => {
+        let badgeColor = "#67e8f9"; // cyan default
+        if (ann.category === "violet") badgeColor = "#c4b5fd";
+        if (ann.category === "emerald") badgeColor = "#6ee7b7";
+        return `
+        <article style="border-radius:1rem;border:1px solid rgba(255,255,255,0.1);background:rgba(2,6,23,0.6);padding:1.25rem;">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1rem;">
+            <div>
+              <p style="font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:${badgeColor};">${escapeHtml(ann.badge)}</p>
+              <h3 style="margin-top:0.5rem;font-size:1.25rem;font-weight:900;color:#fff;">${escapeHtml(ann.title)}</h3>
+              <p style="margin-top:0.25rem;font-size:0.875rem;color:#94a3b8;">${escapeHtml(ann.time)}</p>
+              <p style="margin-top:0.75rem;font-size:0.875rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(ann.body)}</p>
+            </div>
+            <button type="button"
+              data-delete-ann="${escapeHtml(ann.id)}"
+              style="flex-shrink:0;border-radius:0.5rem;border:1px solid rgba(253,164,175,0.3);background:rgba(244,63,94,0.1);color:#fecdd3;font-weight:900;padding:0.5rem 0.75rem;font-size:0.875rem;cursor:pointer;font-family:inherit;"
+              onmouseenter="this.style.background='rgba(244,63,94,0.2)'"
+              onmouseleave="this.style.background='rgba(244,63,94,0.1)'">Delete</button>
+          </div>
+        </article>`;
+      }).join("");
+    } else {
+      adminList.innerHTML =
+        '<p style="border-radius:1rem;border:1px solid rgba(255,255,255,0.1);background:rgba(2,6,23,0.6);padding:1.25rem;color:#cbd5e1;">No announcements saved yet.</p>';
+    }
+  };
+
+  const setupAdminAnnouncements = () => {
+    const form = document.getElementById("announcement-admin-form");
+    if (!form) return;
+
+    const resetBtn = document.getElementById("reset-announcements");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const categorySelect = document.getElementById("announcement-category");
+      const category = categorySelect.value;
+      const badge = categorySelect.options[categorySelect.selectedIndex].text.split(" (")[0];
+
+      const newAnn = {
+        id: `ann-${Date.now()}`,
+        category: category,
+        badge: badge,
+        time: document.getElementById("announcement-time").value.trim(),
+        title: document.getElementById("announcement-title").value.trim(),
+        body: document.getElementById("announcement-body").value.trim()
+      };
+      
+      const announcements = readAnnouncements();
+      announcements.unshift(newAnn);
+      saveAnnouncements(announcements);
+      form.reset();
+      renderAdminAnnouncements();
+    });
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-delete-ann]");
+      if (!btn) return;
+      let announcements = readAnnouncements();
+      announcements = announcements.filter((item) => item.id !== btn.dataset.deleteAnn);
+      saveAnnouncements(announcements);
+      renderAdminAnnouncements();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      localStorage.removeItem(announcementStoreKey);
+      renderAdminAnnouncements();
+    });
+
+    renderAdminAnnouncements();
+  };
+
   const setButtonBusy = (button, label) => {
     if (!button) return;
     button.dataset.originalText = button.textContent;
@@ -1219,7 +1367,9 @@ showPopup(
   };
 
   renderPublicEvents();
+  renderPublicAnnouncements();
   setupAdminPanel();
+  setupAdminAnnouncements();
   setupAuthForms();
   setupEventRegistration();
 
