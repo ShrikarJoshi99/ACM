@@ -1,4 +1,455 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Dark/Light Theme Custom Design System Overrides ---
+  const injectThemeStyles = () => {
+    const styleId = "acm-theme-style-overrides";
+    if (document.getElementById(styleId)) return;
+
+    const styles = `
+      /* Theme smooth transition */
+      body, .bg-overlay, .nav, .nav-logo-text, .nav-logo-mark, .nav-link, 
+      h1, h2, h3, h4, h5, h6, .section-title, .hero-heading, .cta-title, .page-title,
+      p, .hero-desc, .section-subtitle, .domain-desc, .feature-text, .cta-desc, .page-subtitle,
+      .domain-card, .feature-card, .stat-item, .card, .auth-promise, .event-card, .announcement-card,
+      .timeline-item, .member-card, .hub-card, .form-input, .form-select, .form-textarea,
+      #profile-modal-body, .modal-card, .btn-secondary, .btn-ghost, .btn-modal-cancel,
+      .site-footer, .footer-brand, .footer-link, .footer-copy {
+        transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      /* Light Theme Base Colors */
+      body.light-theme {
+        background: #f8fafc !important;
+        color: #1e293b !important;
+      }
+      body.light-theme .bg-overlay {
+        background:
+          radial-gradient(ellipse 65% 45% at 15% 15%, rgba(6,182,212,0.06), transparent),
+          radial-gradient(ellipse 50% 35% at 90% 5%,  rgba(139,92,246,0.04), transparent),
+          linear-gradient(180deg, #f8fafc, #f1f5f9 55%, #e2e8f0) !important;
+      }
+
+      /* Premium Glassmorphic Navbar Override */
+      body.light-theme .nav {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+      }
+      body.light-theme .nav-logo-text {
+        color: #0f172a !important;
+      }
+      body.light-theme .nav-logo-mark {
+        background: rgba(6, 182, 212, 0.08) !important;
+        border-color: rgba(6, 182, 212, 0.2) !important;
+        color: #0891b2 !important;
+      }
+      body.light-theme .nav-link {
+        color: #334155 !important;
+      }
+      body.light-theme .nav-link:hover {
+        background: rgba(15, 23, 42, 0.04) !important;
+        color: #0891b2 !important;
+      }
+      body.light-theme .nav-link.active {
+        color: #0891b2 !important;
+        background: rgba(15, 23, 42, 0.06) !important;
+      }
+      body.light-theme .nav-link.active::after {
+        background: rgba(6, 182, 212, 0.8) !important;
+      }
+      body.light-theme .nav-toggle {
+        background: rgba(15, 23, 42, 0.04) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        color: #334155 !important;
+      }
+      body.light-theme .nav-toggle:hover {
+        border-color: rgba(6, 182, 212, 0.4) !important;
+        color: #0891b2 !important;
+      }
+      @media (max-width: 767px) {
+        body.light-theme .nav-links {
+          background: rgba(255, 255, 255, 0.98) !important;
+          border: 1px solid rgba(15, 23, 42, 0.08) !important;
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1) !important;
+        }
+      }
+
+      /* Typography Contrast Fixes */
+      body.light-theme h1,
+      body.light-theme h2,
+      body.light-theme h3,
+      body.light-theme h4,
+      body.light-theme h5,
+      body.light-theme h6,
+      body.light-theme .section-title,
+      body.light-theme .hero-heading,
+      body.light-theme .cta-title,
+      body.light-theme .auth-title,
+      body.light-theme .page-title,
+      body.light-theme .auth-left-title,
+      body.light-theme .hub-title,
+      body.light-theme .event-title,
+      body.light-theme .item-title,
+      body.light-theme .member-name {
+        color: #0f172a !important;
+      }
+
+      body.light-theme p,
+      body.light-theme .hero-desc,
+      body.light-theme .section-subtitle,
+      body.light-theme .domain-desc,
+      body.light-theme .feature-text,
+      body.light-theme .cta-desc,
+      body.light-theme .page-subtitle,
+      body.light-theme .auth-desc,
+      body.light-theme .auth-left-desc,
+      body.light-theme .float-card-sub,
+      body.light-theme .stat-text,
+      body.light-theme .hub-desc,
+      body.light-theme .event-desc,
+      body.light-theme .item-body,
+      body.light-theme .member-bio,
+      body.light-theme .empty-msg {
+        color: #475569 !important;
+      }
+
+      body.light-theme .float-card-label {
+        color: #64748b !important;
+      }
+      body.light-theme .float-card-value {
+        color: #0f172a !important;
+      }
+
+      /* Buttons & Controls */
+      body.light-theme .btn-secondary,
+      body.light-theme .btn-ghost,
+      body.light-theme .btn-modal-cancel {
+        background: rgba(15, 23, 42, 0.04) !important;
+        color: #334155 !important;
+        border: 1px solid rgba(15, 23, 42, 0.1) !important;
+      }
+      body.light-theme .btn-secondary:hover,
+      body.light-theme .btn-ghost:hover,
+      body.light-theme .btn-modal-cancel:hover {
+        background: rgba(15, 23, 42, 0.08) !important;
+        color: #0f172a !important;
+        border-color: rgba(139,92,246,0.3) !important;
+      }
+
+      /* Glassmorphic Cards & Grid Layouts */
+      body.light-theme .domain-card,
+      body.light-theme .feature-card,
+      body.light-theme .stat-item,
+      body.light-theme .card,
+      body.light-theme .auth-promise,
+      body.light-theme .event-card,
+      body.light-theme .announcement-card,
+      body.light-theme .hero-card-float-1,
+      body.light-theme .hero-card-float-2,
+      body.light-theme .past-wrap,
+      body.light-theme #upcoming-events-list article {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.02) !important;
+        color: #334155 !important;
+      }
+
+      body.light-theme .domain-card:hover,
+      body.light-theme .feature-card:hover,
+      body.light-theme .stat-item:hover,
+      body.light-theme .card:hover,
+      body.light-theme .event-card:hover,
+      body.light-theme .announcement-card:hover,
+      body.light-theme #upcoming-events-list article:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-color: rgba(15, 23, 42, 0.12) !important;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06) !important;
+      }
+
+      /* Feature SVG Icons inside What We Do section */
+      body.light-theme .feature-emoji {
+        background: rgba(15, 23, 42, 0.04) !important;
+      }
+      body.light-theme .feature-emoji.cyan { background: rgba(6, 182, 212, 0.08) !important; color: #0891b2 !important; }
+      body.light-theme .feature-emoji.amber { background: rgba(217, 119, 6, 0.08) !important; color: #b45309 !important; }
+      body.light-theme .feature-emoji.emerald { background: rgba(16, 185, 129, 0.08) !important; color: #047857 !important; }
+      body.light-theme .feature-emoji.rose { background: rgba(225, 29, 72, 0.08) !important; color: #be123c !important; }
+      body.light-theme .feature-emoji.violet { background: rgba(124, 58, 237, 0.08) !important; color: #6d28d9 !important; }
+      body.light-theme .feature-emoji.fuchsia { background: rgba(192, 38, 211, 0.08) !important; color: #a21caf !important; }
+
+      /* Bulletins & Timelines */
+      body.light-theme .timeline-item {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.02) !important;
+        color: #334155 !important;
+      }
+      body.light-theme .timeline-item:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+      }
+      body.light-theme .timeline-item.cyan:hover { border-color: rgba(6, 182, 212, 0.5) !important; }
+      body.light-theme .timeline-item.violet:hover { border-color: rgba(139, 92, 246, 0.5) !important; }
+      body.light-theme .timeline-item.emerald:hover { border-color: rgba(16, 185, 129, 0.5) !important; }
+
+      body.light-theme .item-time {
+        color: #64748b !important;
+      }
+
+      /* About Chapter Members */
+      body.light-theme .member-card {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.02) !important;
+        color: #334155 !important;
+      }
+      body.light-theme .member-card:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+      }
+      body.light-theme .member-card.cyan:hover { border-color: rgba(6, 182, 212, 0.5) !important; }
+      body.light-theme .member-card.violet:hover { border-color: rgba(139, 92, 246, 0.5) !important; }
+      body.light-theme .member-card.emerald:hover { border-color: rgba(16, 185, 129, 0.5) !important; }
+      
+      body.light-theme .social-btn {
+        border-color: rgba(15, 23, 42, 0.1) !important;
+        color: #475569 !important;
+      }
+      body.light-theme .social-btn:hover {
+        background: rgba(15, 23, 42, 0.04) !important;
+      }
+
+      /* Hub cards in Community Page */
+      body.light-theme .hub-card.cyan {
+        background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(255,255,255,0.75), #ffffff) !important;
+        border-color: rgba(6, 182, 212, 0.15) !important;
+      }
+      body.light-theme .hub-card.violet {
+        background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(255,255,255,0.75), #ffffff) !important;
+        border-color: rgba(139, 92, 246, 0.15) !important;
+      }
+      body.light-theme .hub-card.emerald {
+        background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(255,255,255,0.75), #ffffff) !important;
+        border-color: rgba(16, 185, 129, 0.15) !important;
+      }
+      body.light-theme .hub-card.cyan:hover { border-color: rgba(6, 182, 212, 0.4) !important; box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.15) !important; }
+      body.light-theme .hub-card.violet:hover { border-color: rgba(139, 92, 246, 0.4) !important; box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.15) !important; }
+      body.light-theme .hub-card.emerald:hover { border-color: rgba(16, 185, 129, 0.4) !important; box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.15) !important; }
+
+      /* Stats grid */
+      body.light-theme .stats-grid {
+        background: rgba(15, 23, 42, 0.08) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+
+      /* Call to Action Box */
+      body.light-theme .cta-box {
+        background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(139,92,246,0.06)) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme .cta-box::before {
+        background:
+          radial-gradient(circle at 30% 50%, rgba(6,182,212,0.08), transparent 60%),
+          radial-gradient(circle at 70% 50%, rgba(139,92,246,0.06), transparent 60%) !important;
+      }
+
+      /* Login & Sign Up shells */
+      body.light-theme .auth-shell {
+        background: rgba(255, 255, 255, 0.65) !important;
+        border: 1px solid rgba(15, 23, 42, 0.15) !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.1) !important;
+      }
+      body.light-theme .auth-left {
+        background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.1), rgba(248,250,252,0.95)) !important;
+      }
+      body.light-theme .auth-left-label {
+        color: #0891b2 !important;
+      }
+      body.light-theme .auth-kicker {
+        color: #0891b2 !important;
+      }
+      body.light-theme .auth-links {
+        color: #64748b !important;
+      }
+      body.light-theme .auth-links a {
+        color: #0891b2 !important;
+      }
+      body.light-theme .auth-links a:hover {
+        color: #0f172a !important;
+      }
+
+      /* Form control overrides */
+      body.light-theme .form-input,
+      body.light-theme .form-select,
+      body.light-theme .form-textarea {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid rgba(15, 23, 42, 0.12) !important;
+        color: #0f172a !important;
+      }
+      body.light-theme .form-input::placeholder,
+      body.light-theme .form-textarea::placeholder {
+        color: #94a3b8 !important;
+      }
+      body.light-theme .form-input:focus,
+      body.light-theme .form-select:focus,
+      body.light-theme .form-textarea:focus {
+        background: #fff !important;
+        border-color: #06b6d4 !important;
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.05) !important;
+      }
+      body.light-theme .form-label {
+        color: #475569 !important;
+      }
+
+      /* Notification popups */
+      body.light-theme #popup-content {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)) !important;
+        border: 1px solid rgba(6, 182, 212, 0.2) !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+      }
+      body.light-theme #popup-title {
+        color: #0f172a !important;
+      }
+      body.light-theme #popup-message {
+        color: #475569 !important;
+      }
+
+      /* Footer */
+      body.light-theme .site-footer {
+        border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme .footer-brand {
+        color: #475569 !important;
+      }
+      body.light-theme .footer-brand .mark {
+        background: rgba(6, 182, 212, 0.08) !important;
+        color: #0891b2 !important;
+      }
+      body.light-theme .footer-link {
+        color: #64748b !important;
+      }
+      body.light-theme .footer-link:hover {
+        color: #0891b2 !important;
+      }
+      body.light-theme .footer-copy {
+        border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+        color: #64748b !important;
+      }
+
+      /* Dynamic Profile Modal */
+      body.light-theme #profile-modal-body {
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid rgba(15, 23, 42, 0.1) !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2) !important;
+        color: #1e293b !important;
+      }
+      body.light-theme #profile-modal-body h3,
+      body.light-theme #profile-modal-body h4,
+      body.light-theme #profile-modal-body h5 {
+        color: #0f172a !important;
+      }
+      body.light-theme #profile-modal-body p {
+        color: #475569 !important;
+      }
+      body.light-theme #close-profile-modal-btn:hover {
+        color: #000 !important;
+      }
+      body.light-theme #profile-modal-body div[style*="background:linear-gradient"] {
+        background: linear-gradient(135deg, rgba(15,23,42,0.03), rgba(15,23,42,0.01)) !important;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme #profile-modal-body div[style*="background:rgba(10,10,10,0.5)"] {
+        background: rgba(248, 250, 252, 0.8) !important;
+        border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme #profile-modal-body #my-events-loader {
+        color: #64748b !important;
+      }
+      body.light-theme #profile-modal-body #my-events-list div[style*="background"] {
+        background: rgba(15, 23, 42, 0.02) !important;
+        border-color: rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme #profile-modal-body #my-events-list div[style*="background"]:hover {
+        border-color: rgba(6, 182, 212, 0.3) !important;
+      }
+      body.light-theme #profile-modal-body #my-events-list h5 {
+        color: #0f172a !important;
+      }
+      body.light-theme #profile-modal-body #my-events-list div[style*="color:#cbd5e1"] {
+        color: #334155 !important;
+      }
+      body.light-theme #profile-modal-body #my-events-list span[style*="background:rgba(255,255,255,0.05)"] {
+        background: rgba(15, 23, 42, 0.05) !important;
+        color: #475569 !important;
+      }
+
+      /* Event Registration Modal */
+      body.light-theme .modal-card {
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid rgba(15, 23, 42, 0.1) !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2) !important;
+        color: #1e293b !important;
+      }
+      body.light-theme .modal-header h2 {
+        color: #0f172a !important;
+      }
+      body.light-theme .modal-form label {
+        color: #475569 !important;
+      }
+      body.light-theme .modal-form input,
+      body.light-theme .modal-form select,
+      body.light-theme .modal-form textarea {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid rgba(15, 23, 42, 0.12) !important;
+        color: #0f172a !important;
+      }
+      body.light-theme .modal-form input:focus,
+      body.light-theme .modal-form select:focus,
+      body.light-theme .modal-form textarea:focus {
+        background: #fff !important;
+        border-color: #06b6d4 !important;
+      }
+      body.light-theme .team-members-section {
+        background: rgba(15, 23, 42, 0.02) !important;
+        border-color: rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme .team-member-row {
+        border-color: rgba(15, 23, 42, 0.04) !important;
+      }
+      body.light-theme .btn-modal-cancel {
+        border: 1px solid rgba(15, 23, 42, 0.1) !important;
+        background: rgba(15, 23, 42, 0.04) !important;
+        color: #334155 !important;
+      }
+      body.light-theme .btn-modal-cancel:hover {
+        background: rgba(15, 23, 42, 0.08) !important;
+      }
+      body.light-theme .modal-close {
+        border-color: rgba(15, 23, 42, 0.1) !important;
+        background: rgba(15, 23, 42, 0.04) !important;
+        color: #334155 !important;
+      }
+      body.light-theme .modal-close:hover {
+        background: rgba(15, 23, 42, 0.08) !important;
+        color: #0f172a !important;
+      }
+    `;
+
+    const styleEl = document.createElement("style");
+    styleEl.id = styleId;
+    styleEl.innerHTML = styles;
+    document.head.appendChild(styleEl);
+  };
+
+  injectThemeStyles();
+
+  // Apply saved theme immediately
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  if (savedTheme === "light") {
+    document.body.classList.add("light-theme");
+    document.documentElement.classList.add("light-theme");
+  } else {
+    document.body.classList.remove("light-theme");
+    document.documentElement.classList.remove("light-theme");
+  }
+
   const defaultEvents = {
     upcoming: [
       {
@@ -919,8 +1370,28 @@ showPopup(
                   </div>
 
                   <!-- Footer -->
-                  <div style="padding:1.5rem 2rem;background:rgba(10,10,10,0.5);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:0.8rem;color:#64748b;">ACM Student Chapter</span>
+                  <div style="padding:1.5rem 2rem;background:rgba(10,10,10,0.5);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                    <!-- Theme Mode Toggle -->
+                    <div class="theme-switch-container" style="display:flex;align-items:center;gap:0.75rem;">
+                      <button id="theme-toggle-btn" type="button" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:2.5rem;height:2.5rem;border-radius:0.75rem;cursor:pointer;display:grid;place-items:center;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);outline:none;position:relative;" title="Toggle Light/Dark Theme">
+                        <svg id="theme-toggle-sun" style="width:1.25rem;height:1.25rem;color:var(--amber-300);transition:transform 0.5s ease;display:none;" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                          <circle cx="12" cy="12" r="5"></circle>
+                          <line x1="12" y1="1" x2="12" y2="3"></line>
+                          <line x1="12" y1="21" x2="12" y2="23"></line>
+                          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                          <line x1="1" y1="12" x2="3" y2="12"></line>
+                          <line x1="21" y1="12" x2="23" y2="12"></line>
+                          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg id="theme-toggle-moon" style="width:1.25rem;height:1.25rem;color:var(--violet-300);transition:transform 0.5s ease;display:none;" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                      </button>
+                      <span id="theme-toggle-label" style="font-size:0.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;font-family:'Inter',sans-serif;">Dark Mode</span>
+                    </div>
+
                     <button id="profile-logout-btn" style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.2);color:var(--rose-300);font-weight:700;padding:0.5rem 1rem;border-radius:0.75rem;font-size:0.875rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(244,63,94,0.2)'" onmouseout="this.style.background='rgba(244,63,94,0.1)'">
                       Logout
                     </button>
@@ -940,6 +1411,53 @@ showPopup(
 
             const modal = document.getElementById("profile-info-modal");
             const modalBody = document.getElementById("profile-modal-body");
+
+            // Setup Theme Switcher Controls
+            const toggleBtn = document.getElementById("theme-toggle-btn");
+            const sunIcon = document.getElementById("theme-toggle-sun");
+            const moonIcon = document.getElementById("theme-toggle-moon");
+            const toggleLabel = document.getElementById("theme-toggle-label");
+
+            const updateToggleUI = (theme) => {
+              if (theme === "light") {
+                if (sunIcon) sunIcon.style.display = "block";
+                if (moonIcon) moonIcon.style.display = "none";
+                if (toggleLabel) toggleLabel.textContent = "Light Mode";
+                if (toggleBtn) {
+                  toggleBtn.style.background = "rgba(15,23,42,0.05)";
+                  toggleBtn.style.borderColor = "rgba(15,23,42,0.1)";
+                  toggleBtn.style.color = "#0f172a";
+                }
+              } else {
+                if (sunIcon) sunIcon.style.display = "none";
+                if (moonIcon) moonIcon.style.display = "block";
+                if (toggleLabel) toggleLabel.textContent = "Dark Mode";
+                if (toggleBtn) {
+                  toggleBtn.style.background = "rgba(255,255,255,0.06)";
+                  toggleBtn.style.borderColor = "rgba(255,255,255,0.1)";
+                  toggleBtn.style.color = "#fff";
+                }
+              }
+            };
+
+            const activeTheme = localStorage.getItem("theme") || "dark";
+            updateToggleUI(activeTheme);
+
+            toggleBtn?.addEventListener("click", () => {
+              const isLight = document.body.classList.contains("light-theme");
+              const nextTheme = isLight ? "dark" : "light";
+
+              if (nextTheme === "light") {
+                document.body.classList.add("light-theme");
+                document.documentElement.classList.add("light-theme");
+              } else {
+                document.body.classList.remove("light-theme");
+                document.documentElement.classList.remove("light-theme");
+              }
+
+              localStorage.setItem("theme", nextTheme);
+              updateToggleUI(nextTheme);
+            });
 
             // Animate in
             setTimeout(() => {
