@@ -447,8 +447,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   injectThemeStyles();
 
+  // Force migration to light mode for existing users (run once)
+  if (!localStorage.getItem("migrated_to_light_default")) {
+    localStorage.setItem("theme", "light");
+    localStorage.setItem("migrated_to_light_default", "true");
+  }
+
   // Apply saved theme immediately
-  const savedTheme = localStorage.getItem("theme") || "dark";
+  const savedTheme = localStorage.getItem("theme") || "light";
   if (savedTheme === "light") {
     document.body.classList.add("light-theme");
     document.documentElement.classList.add("light-theme");
@@ -1586,25 +1592,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (theme === "light") {
                   if (sunIcon) sunIcon.style.display = "block";
                   if (moonIcon) moonIcon.style.display = "none";
-                  if (toggleLabel) toggleLabel.textContent = "Light Mode";
+                  if (toggleLabel) {
+                    toggleLabel.textContent = "Light Mode";
+                    toggleLabel.style.color = "#0f172a";
+                  }
                   if (toggleBtn) {
-                    toggleBtn.style.background = "rgba(15,23,42,0.05)";
+                    toggleBtn.style.background = "rgba(15, 83, 240, 0.05)";
                     toggleBtn.style.borderColor = "rgba(15,23,42,0.1)";
                     toggleBtn.style.color = "#0f172a";
                   }
                 } else {
                   if (sunIcon) sunIcon.style.display = "none";
                   if (moonIcon) moonIcon.style.display = "block";
-                  if (toggleLabel) toggleLabel.textContent = "Dark Mode";
+                  if (toggleLabel) {
+                    toggleLabel.textContent = "Dark Mode";
+                    toggleLabel.style.color = "#f1f5f9";
+                  }
                   if (toggleBtn) {
                     toggleBtn.style.background = "rgba(255,255,255,0.06)";
                     toggleBtn.style.borderColor = "rgba(255,255,255,0.1)";
-                    toggleBtn.style.color = "#fff";
+                    toggleBtn.style.color = "#f1f5f9";
                   }
                 }
               };
 
-              const activeTheme = localStorage.getItem("theme") || "dark";
+              const activeTheme = localStorage.getItem("theme") || "light";
               updateToggleUI(activeTheme);
 
               toggleBtn?.addEventListener("click", () => {
