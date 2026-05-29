@@ -8,11 +8,23 @@ import {
 } from "../controllers/event.controller.js";
 
 import {
+  getEvents,
+  createEvent,
+  deleteEvent
+} from "../controllers/eventCrud.controller.js";
+
+import {
   protect,
   authorize
 } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+// Event CRUD
+router.get("/", getEvents);
+router.post("/", protect, authorize("admin"), createEvent);
+router.delete("/:id", protect, authorize("admin"), deleteEvent);
+
 
 // User registers for an event (must be logged in)
 router.post(

@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- CONFIGURATION ---
+  // When deployed, change the fallback URL to your production backend URL
+  const PROD_BACKEND_URL = "https://your-production-backend.com/api";
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const API_BASE_URL = isLocal ? "http://localhost:5000/api" : PROD_BACKEND_URL;
+  // ---------------------
+
   // --- Dark/Light Theme Custom Design System Overrides ---
   const injectThemeStyles = () => {
     const styleId = "acm-theme-style-overrides";
@@ -450,63 +457,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.documentElement.classList.remove("light-theme");
   }
 
-  const defaultEvents = {
-    upcoming: [
-      {
-        id: "frontend-craft-lab",
-        title: "Frontend Craft Lab",
-        date: "June 2026",
-        status: "Registration Open",
-        description: "A hands-on build session focused on responsive layouts, interaction polish, and deployable portfolio projects."
-      },
-      {
-        id: "ai-mini-project-night",
-        title: "AI Mini Project Night",
-        date: "July 2026",
-        status: "Opening Soon",
-        description: "Small teams turn datasets and APIs into working demos with guidance from AI/ML domain mentors."
-      }
-    ],
-    past: [
-      {
-        id: "git-github-workshop",
-        title: "Git and GitHub Workshop",
-        date: "Completed",
-        description: "Completed with hands-on branching, pull requests, and team collaboration practice."
-      },
-      {
-        id: "code-sprint-warmup",
-        title: "Code Sprint Warmup",
-        date: "Completed",
-        description: "A friendly competitive programming session for first-time and returning coders."
-      },
-      {
-        id: "design-systems-primer",
-        title: "Design Systems Primer",
-        date: "Completed",
-        description: "A compact introduction to visual consistency, interface rhythm, and product polish."
-      }
-    ]
-  };
-
-  const eventStoreKey = "acm-jit-events";
-
-  const readEvents = () => {
-    const savedEvents = localStorage.getItem(eventStoreKey);
-    if (!savedEvents) return structuredClone(defaultEvents);
+  const fetchEvents = async () => {
     try {
-      const parsedEvents = JSON.parse(savedEvents);
-      return {
-        upcoming: Array.isArray(parsedEvents.upcoming) ? parsedEvents.upcoming : [],
-        past: Array.isArray(parsedEvents.past) ? parsedEvents.past : []
-      };
-    } catch {
-      return structuredClone(defaultEvents);
+      const res = await fetch(`${API_BASE_URL}/events`);
+      const data = await res.json();
+      if (data.success) {
+        return { upcoming: data.upcoming || [], past: data.past || [] };
+      }
+    } catch (err) {
+      console.error("Error fetching events from backend:", err);
     }
-  };
-
-  const saveEvents = (events) => {
-    localStorage.setItem(eventStoreKey, JSON.stringify(events));
+    return { upcoming: [], past: [] };
   };
 
   const escapeHtml = (value) =>
@@ -520,9 +481,9 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Status badge: returns inline style string */
   const statusStyle = (status) => {
     const s = status.toLowerCase();
-    if (s.includes("open"))  return "background:rgba(52,211,153,0.1);color:#6ee7b7;";
-    if (s.includes("soon"))  return "background:rgba(251,191,36,0.1);color:#fcd34d;";
-    if (s.includes("fast"))  return "background:rgba(34,211,238,0.1);color:#67e8f9;";
+    if (s.includes("open")) return "background:rgba(52,211,153,0.1);color:#6ee7b7;";
+    if (s.includes("soon")) return "background:rgba(251,191,36,0.1);color:#fcd34d;";
+    if (s.includes("fast")) return "background:rgba(34,211,238,0.1);color:#67e8f9;";
     return "background:rgba(244,63,94,0.1);color:#fda4af;";
   };
 
@@ -533,12 +494,12 @@ document.addEventListener("DOMContentLoaded", () => {
     { border: "rgba(110,231,183,0.2)", hoverBorder: "rgba(110,231,183,0.6)", date: "#6ee7b7", dot: "#6ee7b7" }
   ];
 
-  const renderPublicEvents = () => {
+  const renderPublicEvents = async () => {
     const upcomingList = document.getElementById("upcoming-events-list");
-    const pastList     = document.getElementById("past-events-list");
+    const pastList = document.getElementById("past-events-list");
     if (!upcomingList || !pastList) return;
 
-    const events = readEvents();
+    const events = await fetchEvents();
 
     /* ── Upcoming ── */
     if (events.upcoming.length) {
@@ -546,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ac = accentColors[i % accentColors.length];
         const showRegister = event.status && event.status.toLowerCase().includes("open");
         const registerBtn = showRegister
-          ? `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event.id)}" data-reg-event-title="${escapeHtml(event.title)}">
+          ? `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event._id)}" data-reg-event-title="${escapeHtml(event.title)}" data-reg-event-team-size="${escapeHtml(event.teamSize || 1)}">
                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
                Register Now
              </button>`
@@ -594,14 +555,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const renderAdminEvents = () => {
+  const renderAdminEvents = async () => {
     const adminList = document.getElementById("admin-events-list");
     if (!adminList) return;
 
-    const events = readEvents();
+    const events = await fetchEvents();
     const combined = [
       ...events.upcoming.map((e) => ({ ...e, type: "upcoming" })),
-      ...events.past.map((e)     => ({ ...e, type: "past" }))
+      ...events.past.map((e) => ({ ...e, type: "past" }))
     ];
 
     if (combined.length) {
@@ -615,7 +576,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <p style="margin-top:0.75rem;font-size:0.875rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(event.description)}</p>
             </div>
             <button type="button"
-              data-delete-event="${escapeHtml(event.id)}"
+              data-delete-event="${escapeHtml(event._id)}"
               data-delete-type="${escapeHtml(event.type)}"
               style="flex-shrink:0;border-radius:0.5rem;border:1px solid rgba(253,164,175,0.3);background:rgba(244,63,94,0.1);color:#fecdd3;font-weight:900;padding:0.5rem 0.75rem;font-size:0.875rem;cursor:pointer;font-family:inherit;"
               onmouseenter="this.style.background='rgba(244,63,94,0.2)'"
@@ -629,52 +590,94 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const setupAdminPanel = () => {
-    const form       = document.getElementById("event-admin-form");
+    const form = document.getElementById("event-admin-form");
     if (!form) return;
 
-    const typeInput  = document.getElementById("event-type");
+    const typeInput = document.getElementById("event-type");
     const statusWrap = document.getElementById("event-status-wrap");
-    const resetBtn   = document.getElementById("reset-events");
+    const teamSizeWrap = document.getElementById("event-team-size-wrap");
+    const resetBtn = document.getElementById("reset-events");
 
     const toggleStatus = () => {
-      statusWrap.style.display = typeInput.value === "past" ? "none" : "";
+      const isPast = typeInput.value === "past";
+      statusWrap.style.display = isPast ? "none" : "";
+      if (teamSizeWrap) teamSizeWrap.style.display = isPast ? "none" : "";
     };
     typeInput.addEventListener("change", toggleStatus);
     toggleStatus();
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const origText = submitBtn ? submitBtn.textContent : "";
+      if (submitBtn) submitBtn.textContent = "Saving...";
+
       const type = typeInput.value;
       const newEvent = {
-        id: `${Date.now()}`,
         title: document.getElementById("event-title").value.trim(),
-        date:  document.getElementById("event-date").value.trim(),
-        description: document.getElementById("event-description").value.trim()
+        date: document.getElementById("event-date").value.trim(),
+        description: document.getElementById("event-description").value.trim(),
+        type: type
       };
       if (type === "upcoming") {
         newEvent.status = document.getElementById("event-status").value;
+        const tsInput = document.getElementById("event-team-size");
+        if (tsInput) {
+          newEvent.teamSize = parseInt(tsInput.value) || 1;
+        }
       }
-      const events = readEvents();
-      events[type].unshift(newEvent);
-      saveEvents(events);
-      form.reset();
-      toggleStatus();
-      renderAdminEvents();
+
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_BASE_URL}/events`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(newEvent)
+        });
+        if (res.ok) {
+          form.reset();
+          toggleStatus();
+          await renderAdminEvents();
+        } else {
+          alert("Failed to save event");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Server error while saving event");
+      }
+      if (submitBtn) submitBtn.textContent = origText;
     });
 
-    document.addEventListener("click", (e) => {
+    document.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-delete-event]");
       if (!btn) return;
-      const events = readEvents();
-      const type = btn.dataset.deleteType;
-      events[type] = events[type].filter((item) => item.id !== btn.dataset.deleteEvent);
-      saveEvents(events);
-      renderAdminEvents();
+
+      if (!confirm("Are you sure you want to delete this event?")) return;
+
+      const eventId = btn.dataset.deleteEvent;
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_BASE_URL}/events/${eventId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          await renderAdminEvents();
+        } else {
+          alert("Failed to delete event");
+        }
+      } catch (err) {
+        console.error(err);
+      }
     });
 
     resetBtn.addEventListener("click", () => {
-      localStorage.removeItem(eventStoreKey);
-      renderAdminEvents();
+      alert("Reset is disabled. Events are managed in the database now.");
     });
 
     renderAdminEvents();
@@ -790,7 +793,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      
+
       const categorySelect = document.getElementById("announcement-category");
       const category = categorySelect.value;
       const badge = categorySelect.options[categorySelect.selectedIndex].text.split(" (")[0];
@@ -803,7 +806,7 @@ document.addEventListener("DOMContentLoaded", () => {
         title: document.getElementById("announcement-title").value.trim(),
         body: document.getElementById("announcement-body").value.trim()
       };
-      
+
       const announcements = readAnnouncements();
       announcements.unshift(newAnn);
       saveAnnouncements(announcements);
@@ -842,34 +845,34 @@ document.addEventListener("DOMContentLoaded", () => {
     button.disabled = false;
     button.style.opacity = "";
   };
-const showPopup = (title, message, options = {}) => {
-  const popup = document.getElementById("popup");
-  const popupTitle = document.getElementById("popup-title");
-  const popupMessage = document.getElementById("popup-message");
-  const popupBtn = document.getElementById("popup-btn");
+  const showPopup = (title, message, options = {}) => {
+    const popup = document.getElementById("popup");
+    const popupTitle = document.getElementById("popup-title");
+    const popupMessage = document.getElementById("popup-message");
+    const popupBtn = document.getElementById("popup-btn");
 
-  if (!popup || !popupTitle || !popupMessage || !popupBtn) {
-    alert(`${title}: ${message}`);
-    return;
-  }
+    if (!popup || !popupTitle || !popupMessage || !popupBtn) {
+      alert(`${title}: ${message}`);
+      return;
+    }
 
-  popupTitle.textContent = title;
-  popupMessage.textContent = message;
+    popupTitle.textContent = title;
+    popupMessage.textContent = message;
 
-  popup.style.display = "flex";
+    popup.style.display = "flex";
 
-  const closePopup = () => {
-    popup.style.display = "none";
-    if (options.onClose) options.onClose();
+    const closePopup = () => {
+      popup.style.display = "none";
+      if (options.onClose) options.onClose();
+    };
+
+    popupBtn.onclick = closePopup;
+
+    // Auto-close after 3 seconds for success messages
+    if (title.toLowerCase().includes("success")) {
+      setTimeout(closePopup, 3000);
+    }
   };
-
-  popupBtn.onclick = closePopup;
-  
-  // Auto-close after 3 seconds for success messages
-  if (title.toLowerCase().includes("success")) {
-    setTimeout(closePopup, 3000);
-  }
-};
 
   const setupAuthForms = () => {
     const loginForm = document.getElementById("login-form");
@@ -877,346 +880,346 @@ const showPopup = (title, message, options = {}) => {
     const verifyForm = document.getElementById("verify-form");
     const forgotPasswordForm = document.getElementById("forgot-password-form");
 
- if (loginForm) {
-  loginForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    const submitButton = loginForm.querySelector("button[type='submit']");
-    const formData = new FormData(loginForm);
+        const submitButton = loginForm.querySelector("button[type='submit']");
+        const formData = new FormData(loginForm);
 
-    setButtonBusy(submitButton, "Signing In...");
+        setButtonBusy(submitButton, "Signing In...");
 
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-       body: JSON.stringify({
-  email: formData.get("identifier"),
-  password: formData.get("password"),
-}),
-      });
-
-      const data = await response.json();
-
-      restoreButton(submitButton);
-
-      if (!response.ok) {
-       showPopup(
-  "Login Failed",
-  data.message || "Invalid credentials"
-);
-        return;
-      }
-
-      // Save token
-    localStorage.setItem("token", data.accessToken);
-
-      // Save user
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      showPopup(
-  "Success",
-  "Login successful",
-  { onClose: () => window.location.href = "index.html" }
-);
-
-      loginForm.reset();
-
-    } catch (error) {
-      console.error(error);
-      restoreButton(submitButton);
-    showPopup(
-  "Server Error",
-  "Unable to connect to server"
-);
-    }
-  });
-}
-
-    if (registerForm) {
-  registerForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const submitButton = registerForm.querySelector("button[type='submit']");
-    const formData = new FormData(registerForm);
-
-    setButtonBusy(submitButton, "Creating Account...");
-
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      body: JSON.stringify({
-  name: formData.get("fullName"),
-  email: formData.get("email"),
-  password: formData.get("password"),
-}),
-      });
-
-      const data = await response.json();
-
-      restoreButton(submitButton);
-
-      if (!response.ok) {
-       showPopup(
-  "Registration Failed",
-  data.message || "Unable to register"
-);
-        return;
-      }
-
-   showPopup(
-  "Success",
-  "Registration successful",
-  { onClose: () => window.location.href = "verify.html" }
-);
-
-      registerForm.reset();
-
-    } catch (error) {
-      console.error(error);
-      restoreButton(submitButton);
-   showPopup(
-  "Server Error",
-  "Unable to connect to server"
-);
-    }
-  });
-}
-    if (verifyForm) {
-  verifyForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const submitButton = verifyForm.querySelector("button[type='submit']");
-    const formData = new FormData(verifyForm);
-
-    setButtonBusy(submitButton, "Confirming...");
-
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/verify-email", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.get("email"),
-          code: formData.get("verificationCode"),
-        }),
-      });
-
-      const data = await response.json();
-
-      restoreButton(submitButton);
-
-      if (!response.ok) {
-      showPopup(
-  "Verification Failed",
-  data.message || "Invalid code or email"
-);
-        return;
-      }
-showPopup(
-  "Success",
-  "Email verified successfully",
-  { onClose: () => window.location.href = "join-us.html" }
-);
-
-      verifyForm.reset();
-
-    } catch (error) {
-      console.error(error);
-      restoreButton(submitButton);
-  showPopup(
-  "Server Error",
-  "Unable to connect to server"
-);
-    }
-  });
-}
-
-    if (forgotPasswordForm) {
-  const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
-  const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
-  const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
-  const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
-  const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
-
-  let resetTokenSent = false;
-
-  forgotPasswordForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const submitButton = forgotPasswordForm.querySelector("button[type='submit']");
-    const formData = new FormData(forgotPasswordForm);
-
-    // STEP 1 — SEND RESET TOKEN
-    if (!resetTokenSent) {
-      setButtonBusy(submitButton, "Sending Token...");
-
-      try {
-        const response = await fetch(
-          "http://localhost:5000/api/auth/forgot-password",
-          {
+        try {
+          const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: "POST",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
-  body: JSON.stringify({
-  email: formData.get("identifier"),
-}),
+            body: JSON.stringify({
+              email: formData.get("identifier"),
+              password: formData.get("password"),
+            }),
+          });
+
+          const data = await response.json();
+
+          restoreButton(submitButton);
+
+          if (!response.ok) {
+            showPopup(
+              "Login Failed",
+              data.message || "Invalid credentials"
+            );
+            return;
           }
-        );
 
-        const data = await response.json();
+          // Save token
+          localStorage.setItem("token", data.accessToken);
 
-        restoreButton(submitButton);
+          // Save user
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-        if (!response.ok) {
-         showPopup(
-  "Error",
-  data.message || "Failed to send reset token"
-);
+          showPopup(
+            "Success",
+            "Login successful",
+            { onClose: () => window.location.href = "index.html" }
+          );
+
+          loginForm.reset();
+
+        } catch (error) {
+          console.error(error);
+          restoreButton(submitButton);
+          showPopup(
+            "Server Error",
+            "Unable to connect to server"
+          );
+        }
+      });
+    }
+
+    if (registerForm) {
+      registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = registerForm.querySelector("button[type='submit']");
+        const formData = new FormData(registerForm);
+
+        setButtonBusy(submitButton, "Creating Account...");
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/auth/register`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.get("fullName"),
+              email: formData.get("email"),
+              password: formData.get("password"),
+            }),
+          });
+
+          const data = await response.json();
+
+          restoreButton(submitButton);
+
+          if (!response.ok) {
+            showPopup(
+              "Registration Failed",
+              data.message || "Unable to register"
+            );
+            return;
+          }
+
+          showPopup(
+            "Success",
+            "Registration successful",
+            { onClose: () => window.location.href = "verify.html" }
+          );
+
+          registerForm.reset();
+
+        } catch (error) {
+          console.error(error);
+          restoreButton(submitButton);
+          showPopup(
+            "Server Error",
+            "Unable to connect to server"
+          );
+        }
+      });
+    }
+    if (verifyForm) {
+      verifyForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = verifyForm.querySelector("button[type='submit']");
+        const formData = new FormData(verifyForm);
+
+        setButtonBusy(submitButton, "Confirming...");
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: formData.get("email"),
+              code: formData.get("verificationCode"),
+            }),
+          });
+
+          const data = await response.json();
+
+          restoreButton(submitButton);
+
+          if (!response.ok) {
+            showPopup(
+              "Verification Failed",
+              data.message || "Invalid code or email"
+            );
+            return;
+          }
+          showPopup(
+            "Success",
+            "Email verified successfully",
+            { onClose: () => window.location.href = "join-us.html" }
+          );
+
+          verifyForm.reset();
+
+        } catch (error) {
+          console.error(error);
+          restoreButton(submitButton);
+          showPopup(
+            "Server Error",
+            "Unable to connect to server"
+          );
+        }
+      });
+    }
+
+    if (forgotPasswordForm) {
+      const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
+      const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
+      const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
+      const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
+      const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
+
+      let resetTokenSent = false;
+
+      forgotPasswordForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = forgotPasswordForm.querySelector("button[type='submit']");
+        const formData = new FormData(forgotPasswordForm);
+
+
+        if (!resetTokenSent) {
+          setButtonBusy(submitButton, "Sending Token...");
+
+          try {
+            const response = await fetch(
+              `${API_BASE_URL}/auth/forgot-password`,
+              {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: formData.get("identifier"),
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            restoreButton(submitButton);
+
+            if (!response.ok) {
+              showPopup(
+                "Error",
+                data.message || "Failed to send reset token"
+              );
+              return;
+            }
+
+            resetTokenSent = true;
+
+            if (requestField) requestField.style.display = "none";
+
+            if (identifierInput) identifierInput.disabled = true;
+
+            if (resetTokenInput) resetTokenInput.disabled = false;
+
+            if (newPasswordInput) newPasswordInput.disabled = false;
+
+            if (tokenNote) {
+              tokenNote.style.display = "";
+              tokenNote.textContent =
+                "Reset token sent successfully.";
+            }
+
+            submitButton.textContent = "Reset Password";
+
+            resetTokenInput?.focus();
+
+          } catch (error) {
+            console.error(error);
+            restoreButton(submitButton);
+            showPopup(
+              "Server Error",
+              "Unable to connect to server"
+            );
+          }
+
           return;
         }
 
-        resetTokenSent = true;
 
-        if (requestField) requestField.style.display = "none";
+        setButtonBusy(submitButton, "Resetting...");
 
-        if (identifierInput) identifierInput.disabled = true;
+        try {
 
-        if (resetTokenInput) resetTokenInput.disabled = false;
+          const token = formData.get("resetToken");
 
-        if (newPasswordInput) newPasswordInput.disabled = false;
 
-        if (tokenNote) {
-          tokenNote.style.display = "";
-          tokenNote.textContent =
-            "Reset token sent successfully.";
+
+          const response = await fetch(
+            `${API_BASE_URL}/auth/reset-password/${token}`,
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                password: formData.get("newPassword"),
+              }),
+            }
+          );
+
+          const text = await response.text();
+
+
+
+          let data;
+
+          try {
+            data = JSON.parse(text);
+          } catch {
+
+            return;
+          }
+
+
+          restoreButton(submitButton);
+
+          if (!response.ok) {
+            showPopup(
+              "Error",
+              data.message || "Failed to reset password"
+            );
+            return;
+          }
+
+          showPopup(
+            "Success",
+            "Password reset successful",
+            { onClose: () => window.location.href = "join-us.html" }
+          );
+
+          forgotPasswordForm.reset();
+
+          resetTokenSent = false;
+
+          if (requestField) requestField.style.display = "";
+
+          if (identifierInput) identifierInput.disabled = false;
+
+          if (resetTokenInput) resetTokenInput.disabled = true;
+
+          if (newPasswordInput) newPasswordInput.disabled = true;
+
+          if (tokenNote) tokenNote.style.display = "none";
+
+          submitButton.textContent = "Send Reset Token";
+
+        } catch (error) {
+          console.error(error);
+          restoreButton(submitButton);
+          showPopup(
+            "Server Error",
+            "Unable to connect to server"
+          );
         }
-
-        submitButton.textContent = "Reset Password";
-
-        resetTokenInput?.focus();
-
-      } catch (error) {
-        console.error(error);
-        restoreButton(submitButton);
-     showPopup(
-  "Server Error",
-  "Unable to connect to server"
-);
-      }
-
-      return;
+      });
     }
-
-    // STEP 2 — RESET PASSWORD
-    setButtonBusy(submitButton, "Resetting...");
-
-try {
-
-  const token = formData.get("resetToken");
-
-
-
-  const response = await fetch(
-    `http://localhost:5000/api/auth/reset-password/${token}`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: formData.get("newPassword"),
-      }),
-    }
-  );
-
- const text = await response.text();
-
-
-
-let data;
-
-try {
-  data = JSON.parse(text);
-} catch {
- 
-  return;
-}
-
-
-  restoreButton(submitButton);
-
-  if (!response.ok) {
-   showPopup(
-  "Error",
-  data.message || "Failed to reset password"
-);
-    return;
-  }
-
- showPopup(
-  "Success",
-  "Password reset successful",
-  { onClose: () => window.location.href = "join-us.html" }
-);
-
-  forgotPasswordForm.reset();
-
-  resetTokenSent = false;
-
-  if (requestField) requestField.style.display = "";
-
-  if (identifierInput) identifierInput.disabled = false;
-
-  if (resetTokenInput) resetTokenInput.disabled = true;
-
-  if (newPasswordInput) newPasswordInput.disabled = true;
-
-  if (tokenNote) tokenNote.style.display = "none";
-
-  submitButton.textContent = "Send Reset Token";
-
-} catch (error) {
-  console.error(error);
-  restoreButton(submitButton);
-showPopup(
-  "Server Error",
-  "Unable to connect to server"
-);
-}
-  });
-}
   };
 
   /* ══════════════════════════════════════════════════
      EVENT REGISTRATION MODAL LOGIC
   ══════════════════════════════════════════════════ */
   const setupEventRegistration = () => {
-    const modal     = document.getElementById("event-register-modal");
-    const form      = document.getElementById("event-register-form");
-    const closeBtn  = document.getElementById("modal-close-btn");
+    const modal = document.getElementById("event-register-modal");
+    const form = document.getElementById("event-register-form");
+    const closeBtn = document.getElementById("modal-close-btn");
     const cancelBtn = document.getElementById("modal-cancel-btn");
     const submitBtn = document.getElementById("reg-submit-btn");
-    const teamSizeSelect  = document.getElementById("reg-team-size");
-    const teamSection     = document.getElementById("team-members-section");
-    const teamFieldsWrap  = document.getElementById("team-members-fields");
+    const teamSizeSelect = document.getElementById("reg-team-size");
+    const teamSection = document.getElementById("team-members-section");
+    const teamFieldsWrap = document.getElementById("team-members-fields");
 
     if (!modal || !form) return;
 
     /* ── Open modal ── */
-    const openModal = (eventId, eventTitle) => {
+    const openModal = (eventId, eventTitle, maxTeamSize = 1) => {
       // Check if user is logged in
       const token = localStorage.getItem("token");
       if (!token) {
@@ -1236,10 +1239,21 @@ showPopup(
         const userStr = localStorage.getItem("user");
         if (userStr) {
           const user = JSON.parse(userStr);
-          if (user.name)  document.getElementById("reg-fullname").value = user.name;
+          if (user.name) document.getElementById("reg-fullname").value = user.name;
           if (user.email) document.getElementById("reg-email").value = user.email;
         }
-      } catch {}
+      } catch { }
+
+      // Populate team size options based on maxTeamSize
+      if (teamSizeSelect) {
+        teamSizeSelect.innerHTML = "";
+        for (let i = 1; i <= maxTeamSize; i++) {
+          const opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = i === 1 ? "1 (Solo)" : i;
+          teamSizeSelect.appendChild(opt);
+        }
+      }
 
       // Reset team fields
       teamSizeSelect.value = "1";
@@ -1268,9 +1282,9 @@ showPopup(
       if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
     });
 
-    /* ── Dynamic team members ── */
+
     const renderTeamFields = (size) => {
-      const count = size - 1; // leader is the registrant
+      const count = size - 1;
       if (count <= 0) {
         teamSection.style.display = "none";
         teamFieldsWrap.innerHTML = "";
@@ -1290,11 +1304,11 @@ showPopup(
       renderTeamFields(Number(teamSizeSelect.value));
     });
 
-    /* ── Register button click delegation ── */
+
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-reg-event-id]");
       if (!btn) return;
-      openModal(btn.dataset.regEventId, btn.dataset.regEventTitle);
+      openModal(btn.dataset.regEventId, btn.dataset.regEventTitle, parseInt(btn.dataset.regEventTeamSize) || 1);
     });
 
     /* ── Form submission ── */
@@ -1314,7 +1328,7 @@ showPopup(
       if (teamSize > 1) {
         for (let i = 0; i < teamSize - 1; i++) {
           const name = form.querySelector(`[name="tm-name-${i}"]`)?.value.trim();
-          const usn  = form.querySelector(`[name="tm-usn-${i}"]`)?.value.trim();
+          const usn = form.querySelector(`[name="tm-usn-${i}"]`)?.value.trim();
           if (!name || !usn) {
             restoreButton(submitBtn);
             showPopup("Validation Error", `Please fill name and USN for team member ${i + 2}`);
@@ -1325,20 +1339,20 @@ showPopup(
       }
 
       const body = {
-        eventId:    document.getElementById("reg-event-id").value,
+        eventId: document.getElementById("reg-event-id").value,
         eventTitle: document.getElementById("reg-event-title").value,
-        fullName:   document.getElementById("reg-fullname").value.trim(),
-        email:      document.getElementById("reg-email").value.trim(),
-        phone:      document.getElementById("reg-phone").value.trim(),
+        fullName: document.getElementById("reg-fullname").value.trim(),
+        email: document.getElementById("reg-email").value.trim(),
+        phone: document.getElementById("reg-phone").value.trim(),
         collegeName: document.getElementById("reg-college").value.trim(),
-        usn:        document.getElementById("reg-usn").value.trim(),
+        usn: document.getElementById("reg-usn").value.trim(),
         teamSize,
         teamMembers,
-        notes:      document.getElementById("reg-notes").value.trim()
+        notes: document.getElementById("reg-notes").value.trim()
       };
 
       try {
-        const response = await fetch("http://localhost:5000/api/events/register", {
+        const response = await fetch(`${API_BASE_URL}/events/register`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -1412,7 +1426,7 @@ showPopup(
       });
 
       const button = document.getElementById("nav-menu-button");
-      const menu   = document.getElementById("nav-links");
+      const menu = document.getElementById("nav-links");
       if (button && menu) {
         button.addEventListener("click", () => {
           const isOpen = menu.classList.contains("open");
@@ -1440,39 +1454,39 @@ showPopup(
       hideAuthLinks();
 
       // Validate token by fetching profile from backend
-      fetch("http://localhost:5000/api/auth/profile", {
+      fetch(`${API_BASE_URL}/auth/profile`, {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       })
-      .then(async (res) => {
-        if (!res.ok) {
-          // token invalid or expired
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          return null;
-        }
-        const data = await res.json();
-        return data;
-      })
-      .then((profile) => {
-        if (!profile) return;
+        .then(async (res) => {
+          if (!res.ok) {
+            // token invalid or expired
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            return null;
+          }
+          const data = await res.json();
+          return data;
+        })
+        .then((profile) => {
+          if (!profile) return;
 
-        // backend returns { success: true, user }
-        const profileData = profile.user || profile;
+          // backend returns { success: true, user }
+          const profileData = profile.user || profile;
 
-        // Update local user storage with fresh profile (store only the user object)
-        try { localStorage.setItem('user', JSON.stringify(profileData)); } catch {}
+          // Update local user storage with fresh profile (store only the user object)
+          try { localStorage.setItem('user', JSON.stringify(profileData)); } catch { }
 
-        // Add profile avatar exactly after 'Know Us' button
-        const nameParts = (profileData.fullName || profileData.name || "User").split(" ");
-        const initials = nameParts.length > 1 ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase() : nameParts[0].substr(0, 2).toUpperCase();
+          // Add profile avatar exactly after 'Know Us' button
+          const nameParts = (profileData.fullName || profileData.name || "User").split(" ");
+          const initials = nameParts.length > 1 ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase() : nameParts[0].substr(0, 2).toUpperCase();
 
-        const knowUsLink = menu.querySelector('a[href*="know-us.html"]');
-        if (knowUsLink && !document.getElementById("profile-avatar-container")) {
-          knowUsLink.insertAdjacentHTML('afterend', `
+          const knowUsLink = menu.querySelector('a[href*="know-us.html"]');
+          if (knowUsLink && !document.getElementById("profile-avatar-container")) {
+            knowUsLink.insertAdjacentHTML('afterend', `
             <div id="profile-avatar-container" class="profile-avatar-container" style="display:flex;align-items:center;position:relative;margin-left:0.5rem;margin-right:0.5rem;">
               <button type="button" id="profile-avatar-btn" style="width:2.3rem;height:2.3rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));border:1px solid rgba(255,255,255,0.15);color:#0d0d0d;font-weight:900;font-size:0.85rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(34,211,238,0.25);transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);font-family:'Inter',sans-serif;" onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 0 15px rgba(34,211,238,0.6)';" onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 20px rgba(34,211,238,0.25)';" title="View Profile">
                 ${initials}
@@ -1480,14 +1494,14 @@ showPopup(
             </div>
           `);
 
-          // Hook up avatar button click event to display profile modal
-          document.getElementById("profile-avatar-btn")?.addEventListener("click", () => {
-            // Check if modal already exists in DOM, if so remove it
-            const existingModal = document.getElementById("profile-info-modal");
-            if (existingModal) existingModal.remove();
+            // Hook up avatar button click event to display profile modal
+            document.getElementById("profile-avatar-btn")?.addEventListener("click", () => {
+              // Check if modal already exists in DOM, if so remove it
+              const existingModal = document.getElementById("profile-info-modal");
+              if (existingModal) existingModal.remove();
 
-            // Inject modal markup
-            const modalHTML = `
+              // Inject modal markup
+              const modalHTML = `
               <div id="profile-info-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;transition:opacity 0.3s ease;font-family:'Inter',sans-serif;padding:1rem;">
                 <div id="profile-modal-body" style="background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:2rem;max-width:540px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);transform:scale(0.95);transition:transform 0.3s ease;overflow:hidden;color:#f1f5f9;">
                   <!-- Header -->
@@ -1509,7 +1523,7 @@ showPopup(
                   <!-- Body / Registered Events -->
                   <div style="padding:2rem;max-height:360px;overflow-y:auto;" id="profile-registered-events-section">
                     <h4 style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;font-family:'Inter',sans-serif;">
-                      <span>🎟️</span> Registered Events
+                      <span>🪽</span> Registered Events
                     </h4>
                     
                     <div id="my-events-loader" style="text-align:center;padding:2rem 0;color:#94a3b8;">
@@ -1557,112 +1571,112 @@ showPopup(
               </style>
             `;
 
-            document.body.insertAdjacentHTML("beforeend", modalHTML);
+              document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-            const modal = document.getElementById("profile-info-modal");
-            const modalBody = document.getElementById("profile-modal-body");
+              const modal = document.getElementById("profile-info-modal");
+              const modalBody = document.getElementById("profile-modal-body");
 
-            // Setup Theme Switcher Controls
-            const toggleBtn = document.getElementById("theme-toggle-btn");
-            const sunIcon = document.getElementById("theme-toggle-sun");
-            const moonIcon = document.getElementById("theme-toggle-moon");
-            const toggleLabel = document.getElementById("theme-toggle-label");
+              // Setup Theme Switcher Controls
+              const toggleBtn = document.getElementById("theme-toggle-btn");
+              const sunIcon = document.getElementById("theme-toggle-sun");
+              const moonIcon = document.getElementById("theme-toggle-moon");
+              const toggleLabel = document.getElementById("theme-toggle-label");
 
-            const updateToggleUI = (theme) => {
-              if (theme === "light") {
-                if (sunIcon) sunIcon.style.display = "block";
-                if (moonIcon) moonIcon.style.display = "none";
-                if (toggleLabel) toggleLabel.textContent = "Light Mode";
-                if (toggleBtn) {
-                  toggleBtn.style.background = "rgba(15,23,42,0.05)";
-                  toggleBtn.style.borderColor = "rgba(15,23,42,0.1)";
-                  toggleBtn.style.color = "#0f172a";
+              const updateToggleUI = (theme) => {
+                if (theme === "light") {
+                  if (sunIcon) sunIcon.style.display = "block";
+                  if (moonIcon) moonIcon.style.display = "none";
+                  if (toggleLabel) toggleLabel.textContent = "Light Mode";
+                  if (toggleBtn) {
+                    toggleBtn.style.background = "rgba(15,23,42,0.05)";
+                    toggleBtn.style.borderColor = "rgba(15,23,42,0.1)";
+                    toggleBtn.style.color = "#0f172a";
+                  }
+                } else {
+                  if (sunIcon) sunIcon.style.display = "none";
+                  if (moonIcon) moonIcon.style.display = "block";
+                  if (toggleLabel) toggleLabel.textContent = "Dark Mode";
+                  if (toggleBtn) {
+                    toggleBtn.style.background = "rgba(255,255,255,0.06)";
+                    toggleBtn.style.borderColor = "rgba(255,255,255,0.1)";
+                    toggleBtn.style.color = "#fff";
+                  }
                 }
-              } else {
-                if (sunIcon) sunIcon.style.display = "none";
-                if (moonIcon) moonIcon.style.display = "block";
-                if (toggleLabel) toggleLabel.textContent = "Dark Mode";
-                if (toggleBtn) {
-                  toggleBtn.style.background = "rgba(255,255,255,0.06)";
-                  toggleBtn.style.borderColor = "rgba(255,255,255,0.1)";
-                  toggleBtn.style.color = "#fff";
+              };
+
+              const activeTheme = localStorage.getItem("theme") || "dark";
+              updateToggleUI(activeTheme);
+
+              toggleBtn?.addEventListener("click", () => {
+                const isLight = document.body.classList.contains("light-theme");
+                const nextTheme = isLight ? "dark" : "light";
+
+                if (nextTheme === "light") {
+                  document.body.classList.add("light-theme");
+                  document.documentElement.classList.add("light-theme");
+                } else {
+                  document.body.classList.remove("light-theme");
+                  document.documentElement.classList.remove("light-theme");
                 }
-              }
-            };
 
-            const activeTheme = localStorage.getItem("theme") || "dark";
-            updateToggleUI(activeTheme);
+                localStorage.setItem("theme", nextTheme);
+                updateToggleUI(nextTheme);
+              });
 
-            toggleBtn?.addEventListener("click", () => {
-              const isLight = document.body.classList.contains("light-theme");
-              const nextTheme = isLight ? "dark" : "light";
-
-              if (nextTheme === "light") {
-                document.body.classList.add("light-theme");
-                document.documentElement.classList.add("light-theme");
-              } else {
-                document.body.classList.remove("light-theme");
-                document.documentElement.classList.remove("light-theme");
-              }
-
-              localStorage.setItem("theme", nextTheme);
-              updateToggleUI(nextTheme);
-            });
-
-            // Animate in
-            setTimeout(() => {
-              if (modal) modal.style.opacity = "1";
-              if (modalBody) modalBody.style.transform = "scale(1)";
-            }, 10);
-
-            // Close handlers
-            const closeModal = () => {
-              if (modal) modal.style.opacity = "0";
-              if (modalBody) modalBody.style.transform = "scale(0.95)";
+              // Animate in
               setTimeout(() => {
-                modal?.remove();
-              }, 300);
-            };
+                if (modal) modal.style.opacity = "1";
+                if (modalBody) modalBody.style.transform = "scale(1)";
+              }, 10);
 
-            document.getElementById("close-profile-modal-btn")?.addEventListener("click", closeModal);
-            modal?.addEventListener("click", (e) => {
-              if (e.target === modal) closeModal();
-            });
+              // Close handlers
+              const closeModal = () => {
+                if (modal) modal.style.opacity = "0";
+                if (modalBody) modalBody.style.transform = "scale(0.95)";
+                setTimeout(() => {
+                  modal?.remove();
+                }, 300);
+              };
 
-            // Logout handler
-            document.getElementById("profile-logout-btn")?.addEventListener("click", () => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              window.location.reload();
-            });
+              document.getElementById("close-profile-modal-btn")?.addEventListener("click", closeModal);
+              modal?.addEventListener("click", (e) => {
+                if (e.target === modal) closeModal();
+              });
 
-            // Fetch registrations from new endpoint!
-            fetch("http://localhost:5000/api/events/my-registrations", {
-              headers: {
-                "Authorization": `Bearer ${token}`
-              }
-            })
-            .then(res => res.json())
-            .then(data => {
-              const loader = document.getElementById("my-events-loader");
-              const container = document.getElementById("my-events-list");
-              if (loader) loader.style.display = "none";
-              if (container) container.style.display = "flex";
+              // Logout handler
+              document.getElementById("profile-logout-btn")?.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.reload();
+              });
 
-              if (!data.success || !data.registrations || data.registrations.length === 0) {
-                if (container) {
-                  container.innerHTML = `
+              // Fetch registrations from new endpoint!
+              fetch(`${API_BASE_URL}/events/my-registrations`, {
+                headers: {
+                  "Authorization": `Bearer ${token}`
+                }
+              })
+                .then(res => res.json())
+                .then(data => {
+                  const loader = document.getElementById("my-events-loader");
+                  const container = document.getElementById("my-events-list");
+                  if (loader) loader.style.display = "none";
+                  if (container) container.style.display = "flex";
+
+                  if (!data.success || !data.registrations || data.registrations.length === 0) {
+                    if (container) {
+                      container.innerHTML = `
                     <div style="text-align:center;padding:2rem 0;color:#94a3b8;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);border-radius:1rem;">
                       <p style="margin:0 0 1rem 0;font-size:0.95rem;">You haven't registered for any events yet.</p>
                       <a href="events.html" style="display:inline-block;padding:0.5rem 1rem;background:var(--cyan-400);color:#0d0d0d;border-radius:0.5rem;font-size:0.85rem;font-weight:800;text-decoration:none;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Browse Events</a>
                     </div>
                   `;
-                }
-                return;
-              }
+                    }
+                    return;
+                  }
 
-              if (container) {
-                container.innerHTML = data.registrations.map(reg => `
+                  if (container) {
+                    container.innerHTML = data.registrations.map(reg => `
                   <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:1rem;padding:1.25rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(34,211,238,0.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
                     <div style="display:flex;justify-content:space-between;align-items:start;gap:1rem;">
                       <div style="flex:1;text-align:left;">
@@ -1686,28 +1700,28 @@ showPopup(
                     </div>
                   </div>
                 `).join("");
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              const loader = document.getElementById("my-events-loader");
-              if (loader) {
-                loader.innerHTML = `<span style="color:var(--rose-300);font-family:'Inter',sans-serif;">⚠️ Error loading your events. Please try again.</span>`;
-              }
+                  }
+                })
+                .catch(err => {
+                  console.error(err);
+                  const loader = document.getElementById("my-events-loader");
+                  if (loader) {
+                    loader.innerHTML = `<span style="color:var(--rose-300);font-family:'Inter',sans-serif;">⚠️ Error loading your events. Please try again.</span>`;
+                  }
+                });
             });
-          });
-        }
+          }
 
-        const isAdmin = !!(profileData && (profileData.isAdmin || (typeof profileData.role === 'string' && profileData.role.toLowerCase() === 'admin') || (Array.isArray(profileData.roles) && profileData.roles.map(r=>String(r).toLowerCase()).includes('admin'))));
+          const isAdmin = !!(profileData && (profileData.isAdmin || (typeof profileData.role === 'string' && profileData.role.toLowerCase() === 'admin') || (Array.isArray(profileData.roles) && profileData.roles.map(r => String(r).toLowerCase()).includes('admin'))));
 
-        if (isAdmin) {
-          // Resolve relative paths using navbarUrl so they don't break inside the nested admin/ folder!
-          const adminHtmlUrl = new URL("admin/admin.html", navbarUrl).href;
-          const adminUsersUrl = new URL("admin/users.html", navbarUrl).href;
-          const adminAnalyticsUrl = new URL("admin/analytics.html", navbarUrl).href;
+          if (isAdmin) {
+            // Resolve relative paths using navbarUrl so they don't break inside the nested admin/ folder!
+            const adminHtmlUrl = new URL("admin/admin.html", navbarUrl).href;
+            const adminUsersUrl = new URL("admin/users.html", navbarUrl).href;
+            const adminAnalyticsUrl = new URL("admin/analytics.html", navbarUrl).href;
 
-          // Insert admin dropdown
-          menu.insertAdjacentHTML('beforeend', `
+            // Insert admin dropdown
+            menu.insertAdjacentHTML('beforeend', `
             <div class="admin-dropdown" style="position:relative;">
               <button type="button" id="admin-menu-toggle" class="nav-link" style="cursor:pointer;background:transparent;border:none;color:inherit;">Admin ▾</button>
               <div id="admin-menu" style="position:absolute;right:0;top:calc(100% + 8px);display:none;min-width:180px;border-radius:0.75rem;padding:0.5rem;background:rgba(2,6,23,0.95);border:1px solid rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(2,6,23,0.5);">
@@ -1718,30 +1732,31 @@ showPopup(
             </div>
           `);
 
-          const toggleBtn = document.getElementById('admin-menu-toggle');
-          const adminMenu = document.getElementById('admin-menu');
-          toggleBtn?.addEventListener('click', (e) => {
-            const open = adminMenu.style.display === 'block';
-            adminMenu.style.display = open ? 'none' : 'block';
-          });
-          // close when clicking outside
-          document.addEventListener('click', (e) => {
-            if (!e.target.closest('.admin-dropdown')) {
-              const m = document.getElementById('admin-menu');
-              if (m) m.style.display = 'none';
-            }
-          });
-        }
+            const toggleBtn = document.getElementById('admin-menu-toggle');
+            const adminMenu = document.getElementById('admin-menu');
+            toggleBtn?.addEventListener('click', (e) => {
+              const open = adminMenu.style.display === 'block';
+              adminMenu.style.display = open ? 'none' : 'block';
+            });
+            // close when clicking outside
+            document.addEventListener('click', (e) => {
+              if (!e.target.closest('.admin-dropdown')) {
+                const m = document.getElementById('admin-menu');
+                if (m) m.style.display = 'none';
+              }
+            });
+          }
 
-        // Admin controls may be added after profile validation.
-        // The logout button is already rendered when a token exists.
-      })
-      .catch(() => {
-        // network error — keep showing basic UI but do not expose admin
-      });
+          // Admin controls may be added after profile validation.
+          // The logout button is already rendered when a token exists.
+        })
+        .catch(() => {
+          // network error — keep showing basic UI but do not expose admin
+        });
     })
     .catch(() => {
       mount.innerHTML =
         '<div style="position:fixed;inset:0 0 auto;z-index:50;background:#020617;padding:1rem;text-align:center;font-size:0.875rem;color:#a5f3fc;">ACM JIT</div>';
     });
 });
+

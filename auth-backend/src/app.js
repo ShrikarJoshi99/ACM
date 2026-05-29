@@ -29,7 +29,10 @@ app.use(
         origin.startsWith("http://127.0.0.1:") ||
         origin === "http://localhost" ||
         origin === "http://127.0.0.1";
-      if (isLocalhost) {
+        
+      const isProductionClient = origin === process.env.CLIENT_URL;
+
+      if (isLocalhost || isProductionClient) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
