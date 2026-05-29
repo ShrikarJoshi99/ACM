@@ -68,7 +68,7 @@
                 </svg>
                 Explore Community
               </a>
-              <a href="join-us.html" class="btn btn-secondary">
+              <a href="join-us.html" class="btn btn-secondary" id="hero-join-btn">
                 Join Our Chapter
               </a>
             </div>
@@ -297,7 +297,7 @@
             here.
           </p>
           <div class="cta-actions">
-            <a href="join-us.html" class="btn btn-primary">
+            <a href="join-us.html" class="btn btn-primary" id="cta-join-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -389,6 +389,18 @@
     })();
   </script>
 
+  <script>
+    // Hide join/login buttons when user is already logged in
+    (function () {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const heroJoin = document.getElementById("hero-join-btn");
+        const ctaJoin = document.getElementById("cta-join-btn");
+        if (heroJoin) heroJoin.style.display = "none";
+        if (ctaJoin) ctaJoin.style.display = "none";
+      }
+    })();
+  </script>
   <script src="main.js"></script>
   <script>
     // Scroll Reveal Animation

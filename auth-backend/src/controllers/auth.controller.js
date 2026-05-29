@@ -12,40 +12,13 @@ import {
   loginService
 } from "../services/auth.service.js";
 
-// REGISTER
-export const register = asyncHandler(async (req, res) => {
-
-  const existingUser = await User.findOne({
-    email: req.body.email
-  });
-
-  if (existingUser) {
-    return res.status(400).json({
-      success: false,
-      message: "User already exists"
-    });
-  }
-
-const verificationCode =
-  Math.floor(1000 + Math.random() * 9000).toString();
-
-const user = await registerService({
-  ...req.body,
-  verificationCode,
-  verificationCodeExpire:
-    Date.now() + 10 * 60 * 1000
-});
-
-await sendEmail(
-  user.email,
-  "Verify Your Email",
-  `
+// Helper to build the verification email HTML
+const buildVerificationEmail = (verificationCode) => `
   <div style="
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     padding: 40px;
   ">
-
     <div style="
       max-width: 500px;
       background: white;
@@ -54,36 +27,28 @@ await sendEmail(
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     ">
-
       <div style="
         background: #111827;
         padding: 20px;
         text-align: center;
       ">
-
         <img 
           src="https://your-logo-url.com/logo.png"
           alt="Logo"
           width="80"
         />
-
         <h1 style="
           color: white;
           margin-top: 10px;
         ">
           ACM Portal
         </h1>
-
       </div>
-
       <div style="padding: 30px; text-align:center;">
-
         <h2>Email Verification</h2>
-
         <p>
           Use the verification code below to verify your account.
         </p>
-
         <div style="
           font-size: 40px;
           font-weight: bold;
@@ -93,13 +58,10 @@ await sendEmail(
         ">
           ${verificationCode}
         </div>
-
         <p style="color: gray;">
           This code expires in 10 minutes.
         </p>
-
       </div>
-
       <div style="
         background: #f9fafb;
         padding: 15px;
@@ -109,17 +71,44 @@ await sendEmail(
       ">
         © 2026 ACM Portal. All rights reserved.
       </div>
-
     </div>
-
   </div>
-  `
-);
+`;
 
+// REGISTER
+export const register = asyncHandler(async (req, res) => {
+
+  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: "User with this email already exists"
+    });
+  }
+
+  const verificationCode =
+    Math.floor(1000 + Math.random() * 9000).toString();
+
+  const user = await registerService({
+    ...req.body,
+    email,
+    verificationCode,
+    verificationCodeExpire:
+      Date.now() + 10 * 60 * 1000
+  });
+
+  await sendEmail(
+    user.email,
+    "Verify Your Email",
+    buildVerificationEmail(verificationCode)
+  );
 
   res.status(201).json({
     success: true,
-    message: "Registration successful"
+    message: "Registration successful. Please verify your email."
   });
 
 });
@@ -128,9 +117,11 @@ await sendEmail(
 // LOGIN
 export const login = asyncHandler(async (req, res) => {
 
+  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+
   const { user, accessToken, refreshToken } =
     await loginService(
-      req.body.email,
+      email,
       req.body.password
     );
 
@@ -211,9 +202,9 @@ export const refreshToken = asyncHandler(async (req, res) => {
 // FORGOT PASSWORD
 export const forgotPassword = asyncHandler(async (req, res) => {
 
-  const user = await User.findOne({
-    email: req.body.email
-  });
+  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+
+  const user = await User.findOne({ email });
 
   if (!user) {
     return res.status(404).json({
@@ -306,13 +297,14 @@ res.status(200).json({
 export const verifyEmail = asyncHandler(async (req, res) => {
 
   const { email, code } = req.body;
+  const normalizedEmail = email ? email.trim().toLowerCase() : "";
 
   const user = await User.findOne({
-    email,
+    email: normalizedEmail,
     verificationCode: code,
-   verificationCodeExpire: {
-  $gt: new Date()
-}
+    verificationCodeExpire: {
+      $gt: new Date()
+    }
   });
 
   if (!user) {
