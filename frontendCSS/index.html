@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/image.png" type="image/png">
   <link rel="stylesheet" href="./global.css">
   <script>
     if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
@@ -142,8 +142,11 @@
             <div class="domain-icon cyan">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6" />
-                <polyline points="8 6 2 12 8 18" />
+                <path d="M10 17l-5-5 5-5M14 7l5 5-5 5" />
+                <circle cx="12" cy="12" r="1" />
+              </svg>
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
               </svg>
             </div>
             <h3 class="domain-name">Coding &amp; DSA</h3>
@@ -152,11 +155,14 @@
           </article>
           <article class="domain-card">
             <div class="domain-icon violet">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
                 stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <path d="M3 9h18M9 20v-4" />
+              </svg>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
             </div>
             <h3 class="domain-name">Web Development</h3>
@@ -167,9 +173,13 @@
             <div class="domain-icon emerald">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
+                <path
+                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
             <h3 class="domain-name">AI &amp; Machine Learning</h3>
@@ -180,10 +190,13 @@
             <div class="domain-icon rose">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
-                <path d="M12 19l7-7 3 3-7 7-3-3z" />
-                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-                <path d="M2 2l7.586 7.586" />
-                <circle cx="11" cy="11" r="2" />
+                <path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" />
+                <path d="M7 10h2M7 14h6" />
+              </svg>
+              <path d="M12 19l7-7 3 3-7 7-3-3z" />
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+              <path d="M2 2l7.586 7.586" />
+              <circle cx="11" cy="11" r="2" />
               </svg>
             </div>
             <h3 class="domain-name">Design &amp; UI/UX</h3>
@@ -319,7 +332,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <span class="mark">ACM</span>
+          <img src="assets/image.png" alt="ACM Logo" style="width: 2rem; height: 2rem; object-fit: contain;" />
           ACM JIT · ISE Student Chapter
         </div>
         <div class="footer-links">
