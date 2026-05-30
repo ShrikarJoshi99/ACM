@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -185,7 +185,7 @@ a {
   padding: 0.75rem 1rem;
   outline: none;
   font-size: 1rem;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: border-color 0.3s ease;
   appearance: none;
   -webkit-appearance: none;
@@ -227,7 +227,7 @@ a {
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   box-shadow: 0 20px 25px -5px rgba(34, 211, 238, 0.2);
   transition: transform 0.3s ease, background 0.3s ease;
 }
@@ -256,7 +256,7 @@ a {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   cursor: pointer;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
@@ -326,7 +326,7 @@ a {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   cursor: pointer;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: background 0.3s ease;
 }
 
@@ -342,7 +342,7 @@ a {
    Styles from admin\analytics.html
 ══════════════════════════════════════ */
 body {
-  font-family: Inter, system-ui, Arial;
+  font-family: 'Poppins', sans-serif;
   background: #020617;
   color: #f1f5f9
 }
@@ -376,7 +376,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -578,7 +578,7 @@ a {
   color: #fff;
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border-color 0.25s ease;
 }
@@ -599,7 +599,7 @@ a {
   color: #fff;
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   cursor: pointer;
   appearance: none;
@@ -831,7 +831,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -1067,7 +1067,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -1273,7 +1273,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -1493,7 +1493,7 @@ a {
   border-radius: 0.75rem;
   border: none;
   cursor: pointer;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 900;
   font-size: 0.875rem;
   background: linear-gradient(135deg, var(--cyan-400), #06b6d4);
@@ -1693,7 +1693,7 @@ a {
   color: #fff;
   padding: 0.65rem 0.85rem;
   font-size: 0.9rem;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   outline: none;
   transition: border-color 0.25s ease;
 }
@@ -1769,7 +1769,7 @@ a {
   border-radius: 0.75rem;
   border: none;
   cursor: pointer;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 900;
   font-size: 0.95rem;
   background: linear-gradient(135deg, var(--cyan-400), #06b6d4);
@@ -1794,7 +1794,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
   color: var(--slate-300);
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
@@ -1841,7 +1841,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #020617;
   color: #f1f5f9;
   min-height: 100vh;
@@ -2293,7 +2293,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -2391,7 +2391,7 @@ img {
 }
 
 .section-title {
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 800;
   color: #fff;
@@ -2470,7 +2470,7 @@ img {
 }
 
 .hero-heading {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(2.5rem, 5.5vw, 4rem);
   font-weight: 500;
   color: #fff;
@@ -2610,7 +2610,7 @@ img {
 }
 
 .hero-3d-label h3 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.1rem;
   font-weight: 800;
   color: #fff;
@@ -2682,7 +2682,7 @@ img {
 }
 
 .float-card-value {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 800;
   color: #fff;
@@ -2747,7 +2747,7 @@ img {
 }
 
 .stat-number {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 52px;
   font-weight: 700;
   line-height: 1;
@@ -3005,7 +3005,7 @@ img {
 }
 
 .domain-name {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
   font-weight: 800;
   color: #fff;
@@ -3073,7 +3073,7 @@ img {
 }
 
 .feature-title {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: #ffffff;
@@ -3165,7 +3165,7 @@ img {
 }
 
 .cta-title {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 900;
   color: #fff;
@@ -3270,7 +3270,7 @@ img {
 
 .footer-acm-cta h2 {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.25rem, 2.5vw, 1.6rem);
   font-weight: 800;
   line-height: 1.4;
@@ -3325,13 +3325,15 @@ img {
 /* ── Scroll reveal ── */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(40px) scale(0.95);
+  filter: blur(10px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  filter: blur(0);
 }
 
 /* ── Responsive tweaks ── */
@@ -3367,7 +3369,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -3817,7 +3819,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #0d0d0d;
   color: #f1f5f9;
   min-height: 100vh;
@@ -4187,7 +4189,7 @@ a {
   color: var(--slate-300);
   text-decoration: none;
   transition: background 0.3s ease, color 0.3s ease;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .nav-link:hover {
@@ -4236,7 +4238,7 @@ button.nav-link {
   text-decoration: none;
   box-shadow: 0 10px 15px -3px rgba(34, 211, 238, 0.2);
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .nav-cta:hover {
@@ -4307,7 +4309,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #020617;
   color: #f1f5f9;
   min-height: 100vh;
@@ -4763,7 +4765,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #020617;
   color: #f1f5f9;
   min-height: 100vh;

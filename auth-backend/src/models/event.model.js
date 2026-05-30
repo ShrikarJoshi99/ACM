@@ -32,6 +32,14 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["upcoming", "past"]
+    },
+    registrationOpenDate: {
+      type: Date,
+      default: null
+    },
+    registrationCloseDate: {
+      type: Date,
+      default: null
     }
   },
   {

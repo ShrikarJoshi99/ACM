@@ -486,7 +486,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Status badge: returns inline style string */
   const statusStyle = (status) => {
-    const s = status.toLowerCase();
+    const s = (status || "").toLowerCase();
+    if (s.includes("closed")) return "background:rgba(244,63,94,0.1);color:#fda4af;";
     if (s.includes("open")) return "background:rgba(52,211,153,0.1);color:#6ee7b7;";
     if (s.includes("soon")) return "background:rgba(251,191,36,0.1);color:#fcd34d;";
     if (s.includes("fast")) return "background:rgba(34,211,238,0.1);color:#67e8f9;";
@@ -511,13 +512,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (events.upcoming.length) {
       upcomingList.innerHTML = events.upcoming.map((event, i) => {
         const ac = accentColors[i % accentColors.length];
-        const showRegister = event.status && event.status.toLowerCase().includes("open");
-        const registerBtn = showRegister
-          ? `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event._id)}" data-reg-event-title="${escapeHtml(event.title)}" data-reg-event-team-size="${escapeHtml(event.teamSize || 1)}">
+        const st = (event.status || "").toLowerCase();
+        const isOpen = st.includes("open") && !st.includes("closed");
+        const isClosed = st.includes("closed");
+
+        let actionHtml = "";
+        if (isOpen) {
+          actionHtml = `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event._id)}" data-reg-event-title="${escapeHtml(event.title)}" data-reg-event-team-size="${escapeHtml(event.teamSize || 1)}">
                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
                Register Now
-             </button>`
-          : "";
+             </button>`;
+        } else if (isClosed) {
+          actionHtml = `<div style="margin-top:1rem;padding:0.6rem 1.2rem;border-radius:0.75rem;background:rgba(244,63,94,0.08);border:1px solid rgba(253,164,175,0.2);text-align:center;">
+            <span style="font-size:0.85rem;font-weight:800;color:#fda4af;">🔒 Registration Closed</span>
+          </div>`;
+        }
+
         return `
           <article style="
             border-radius:1.5rem;border:1px solid ${ac.border};
@@ -535,7 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span style="border-radius:9999px;padding:0.25rem 0.75rem;font-size:0.75rem;font-weight:900;white-space:nowrap;${statusStyle(event.status)}">${escapeHtml(event.status)}</span>
             </div>
             <p style="margin-top:1rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(event.description)}</p>
-            ${registerBtn}
+            ${actionHtml}
           </article>`;
       }).join("");
     } else {
@@ -571,14 +581,34 @@ document.addEventListener("DOMContentLoaded", () => {
       ...events.past.map((e) => ({ ...e, type: "past" }))
     ];
 
+    const formatDate = (d) => {
+      if (!d) return "";
+      try {
+        return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+      } catch { return ""; }
+    };
+
     if (combined.length) {
-      adminList.innerHTML = combined.map((event) => `
+      adminList.innerHTML = combined.map((event) => {
+        let regInfo = "";
+        if (event.registrationOpenDate || event.registrationCloseDate) {
+          const openStr = formatDate(event.registrationOpenDate);
+          const closeStr = formatDate(event.registrationCloseDate);
+          regInfo = `<p style="margin-top:0.5rem;font-size:0.8rem;color:#6ee7b7;">
+            📅 Registration: ${openStr || "—"} → ${closeStr || "—"}
+            <span style="margin-left:0.5rem;padding:0.15rem 0.5rem;border-radius:9999px;font-size:0.7rem;font-weight:900;${statusStyle(event.status)}">${escapeHtml(event.status)}</span>
+          </p>`;
+        } else if (event.status) {
+          regInfo = `<p style="margin-top:0.5rem;font-size:0.8rem;color:#94a3b8;">${escapeHtml(event.status)}</p>`;
+        }
+        return `
         <article style="border-radius:1rem;border:1px solid rgba(255,255,255,0.1);background:rgba(2,6,23,0.6);padding:1.25rem;">
           <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1rem;">
             <div>
               <p style="font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:#67e8f9;">${escapeHtml(event.type)}</p>
               <h3 style="margin-top:0.5rem;font-size:1.25rem;font-weight:900;color:#fff;">${escapeHtml(event.title)}</h3>
-              <p style="margin-top:0.25rem;font-size:0.875rem;color:#94a3b8;">${escapeHtml(event.date || "")}${event.status ? ` · ${escapeHtml(event.status)}` : ""}</p>
+              <p style="margin-top:0.25rem;font-size:0.875rem;color:#94a3b8;">${escapeHtml(event.date || "")}</p>
+              ${regInfo}
               <p style="margin-top:0.75rem;font-size:0.875rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(event.description)}</p>
             </div>
             <button type="button"
@@ -586,9 +616,11 @@ document.addEventListener("DOMContentLoaded", () => {
               data-delete-type="${escapeHtml(event.type)}"
               style="flex-shrink:0;border-radius:0.5rem;border:1px solid rgba(253,164,175,0.3);background:rgba(244,63,94,0.1);color:#fecdd3;font-weight:900;padding:0.5rem 0.75rem;font-size:0.875rem;cursor:pointer;font-family:inherit;"
               onmouseenter="this.style.background='rgba(244,63,94,0.2)'"
-              onmouseleave="this.style.background='rgba(244,63,94,0.1)'">Delete</button>
+              onmouseleave="this.style.background='rgba(244,63,94,0.1)'"
+            >Delete</button>
           </div>
-        </article>`).join("");
+        </article>`;
+      }).join("");
     } else {
       adminList.innerHTML =
         '<p style="border-radius:1rem;border:1px solid rgba(255,255,255,0.1);background:rgba(2,6,23,0.6);padding:1.25rem;color:#cbd5e1;">No events saved yet.</p>';
@@ -600,17 +632,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!form) return;
 
     const typeInput = document.getElementById("event-type");
-    const statusWrap = document.getElementById("event-status-wrap");
+    const regOpenWrap = document.getElementById("event-reg-open-wrap");
+    const regCloseWrap = document.getElementById("event-reg-close-wrap");
     const teamSizeWrap = document.getElementById("event-team-size-wrap");
     const resetBtn = document.getElementById("reset-events");
 
-    const toggleStatus = () => {
+    const toggleUpcomingFields = () => {
       const isPast = typeInput.value === "past";
-      statusWrap.style.display = isPast ? "none" : "";
+      if (regOpenWrap) regOpenWrap.style.display = isPast ? "none" : "";
+      if (regCloseWrap) regCloseWrap.style.display = isPast ? "none" : "";
       if (teamSizeWrap) teamSizeWrap.style.display = isPast ? "none" : "";
     };
-    typeInput.addEventListener("change", toggleStatus);
-    toggleStatus();
+    typeInput.addEventListener("change", toggleUpcomingFields);
+    toggleUpcomingFields();
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -619,17 +653,34 @@ document.addEventListener("DOMContentLoaded", () => {
       if (submitBtn) submitBtn.textContent = "Saving...";
 
       const type = typeInput.value;
+      const rawDate = document.getElementById("event-date").value;
+      // Format the date for display (e.g., "June 15, 2026")
+      let displayDate = rawDate;
+      if (rawDate) {
+        try {
+          const d = new Date(rawDate + "T00:00:00");
+          displayDate = d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        } catch { /* keep raw value */ }
+      }
+
       const newEvent = {
         title: document.getElementById("event-title").value.trim(),
-        date: document.getElementById("event-date").value.trim(),
+        date: displayDate,
         description: document.getElementById("event-description").value.trim(),
         type: type
       };
+
       if (type === "upcoming") {
-        newEvent.status = document.getElementById("event-status").value;
         const tsInput = document.getElementById("event-team-size");
         if (tsInput) {
           newEvent.teamSize = parseInt(tsInput.value) || 1;
+        }
+        const regOpen = document.getElementById("event-reg-open").value;
+        const regClose = document.getElementById("event-reg-close").value;
+        if (regOpen) newEvent.registrationOpenDate = new Date(regOpen + "T00:00:00").toISOString();
+        if (regClose) {
+          // Set close date to end of that day (23:59:59)
+          newEvent.registrationCloseDate = new Date(regClose + "T23:59:59").toISOString();
         }
       }
 
@@ -645,7 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         if (res.ok) {
           form.reset();
-          toggleStatus();
+          toggleUpcomingFields();
           await renderAdminEvents();
         } else {
           alert("Failed to save event");

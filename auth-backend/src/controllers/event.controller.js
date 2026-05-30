@@ -1,4 +1,5 @@
 import EventRegistration from "../models/eventRegistration.model.js";
+import Event from "../models/event.model.js";
 import User from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -22,6 +23,29 @@ export const registerForEvent = asyncHandler(async (req, res) => {
     return res.status(400).json({
       success: false,
       message: "All required fields must be provided"
+    });
+  }
+
+  // Check if the registration window is still open
+  const event = await Event.findById(eventId);
+  if (!event) {
+    return res.status(404).json({
+      success: false,
+      message: "Event not found"
+    });
+  }
+
+  const now = new Date();
+  if (event.registrationOpenDate && now < new Date(event.registrationOpenDate)) {
+    return res.status(400).json({
+      success: false,
+      message: "Registration for this event has not opened yet"
+    });
+  }
+  if (event.registrationCloseDate && now > new Date(event.registrationCloseDate)) {
+    return res.status(400).json({
+      success: false,
+      message: "Registration for this event has closed"
     });
   }
 
