@@ -6,7 +6,7 @@ export const registerValidator = [
   body("email").isEmail(),
 
   body("password")
-    .isLength({ min: 6 })
+    .isLength({ min: 8 })
 ];
 
 export const loginValidator = [

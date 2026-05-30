@@ -33,7 +33,7 @@ const buildVerificationEmail = (verificationCode) => `
         text-align: center;
       ">
         <img 
-          src="https://your-logo-url.com/logo.png"
+          src="https://via.placeholder.com/150/111827/FFFFFF?text=ACM+JIT"
           alt="Logo"
           width="80"
         />
