@@ -1,158 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — Event Registrations | ACM JIT</title>
   <meta name="description" content="Admin panel to view and manage event registrations for ACM JIT.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../global.css">
-  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/Logo.png" type="image/png">
 </head>
+
 <body>
-<script>
-  (function(){
-    try {
-      const user = localStorage.getItem('user');
-      if (!user) { window.location.href = '../join-us.html'; return; }
-      const u = JSON.parse(user);
-      const isAdmin = !!(u && (u.isAdmin || (typeof u.role === 'string' && u.role.toLowerCase() === 'admin') || (Array.isArray(u.roles) && u.roles.map(r=>String(r).toLowerCase()).includes('admin'))));
-      if (!isAdmin) { window.location.href = '../join-us.html'; }
-    } catch (e) { window.location.href = '../join-us.html'; }
-  })();
-</script>
-<div class="bg-overlay"></div>
-<div id="global-navbar"></div>
+  <script>
+    (function () {
+      try {
+        const user = localStorage.getItem('user');
+        if (!user) { window.location.href = '../join-us.html'; return; }
+        const u = JSON.parse(user);
+        const isAdmin = !!(u && (u.isAdmin || (typeof u.role === 'string' && u.role.toLowerCase() === 'admin') || (Array.isArray(u.roles) && u.roles.map(r => String(r).toLowerCase()).includes('admin'))));
+        if (!isAdmin) { window.location.href = '../join-us.html'; }
+      } catch (e) { window.location.href = '../join-us.html'; }
+    })();
+  </script>
+  <div class="bg-overlay"></div>
+  <div id="global-navbar"></div>
 
-<main class="main-content">
-  <header class="admin-page-header">
-    <div class="header-text">
-      <p class="label">User Management</p>
-      <h1 class="page-title">Event Registrations</h1>
-      <p class="page-subtitle">View, search, and manage all event registrations submitted by participants.</p>
-    </div>
-    <a href="admin.html" class="btn-back">← Manage Events</a>
-  </header>
+  <main class="main-content">
+    <header class="admin-page-header">
+      <div class="header-text">
+        <p class="label">User Management</p>
+        <h1 class="page-title">Event Registrations</h1>
+        <p class="page-subtitle">View, search, and manage all event registrations submitted by participants.</p>
+      </div>
+      <a href="admin.html" class="btn-back">← Manage Events</a>
+    </header>
 
-  <!-- Stats -->
-  <div class="stats-bar" id="stats-bar">
-    <div class="stat-card">
-      <div class="stat-value" id="stat-total">—</div>
-      <div class="stat-label">Total Registrations</div>
+    <!-- Stats -->
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Registrations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-events">—</div>
+        <div class="stat-label">Unique Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-colleges">—</div>
+        <div class="stat-label">Colleges</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-today">—</div>
+        <div class="stat-label">Today</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-value" id="stat-events">—</div>
-      <div class="stat-label">Unique Events</div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <input type="text" id="search-input" class="filter-input" placeholder="Search by name, email, college, USN…" />
+      <select id="event-filter" class="filter-select">
+        <option value="">All Events</option>
+      </select>
+      <button type="button" id="refresh-btn" class="btn-refresh">↻ Refresh</button>
     </div>
-    <div class="stat-card">
-      <div class="stat-value" id="stat-colleges">—</div>
-      <div class="stat-label">Colleges</div>
+
+    <!-- Registration list -->
+    <div class="reg-list" id="reg-list">
+      <p class="loading-msg">Loading registrations…</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-value" id="stat-today">—</div>
-      <div class="stat-label">Today</div>
+  </main>
+
+  <!-- Popup -->
+  <div id="popup"
+    style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+    <div
+      style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
+      <h3 id="popup-title" style="font-size:1.25rem;font-weight:900;color:#fff;margin-bottom:0.75rem;"></h3>
+      <p id="popup-message" style="color:#cbd5e1;line-height:1.6;margin-bottom:1.25rem;"></p>
+      <button id="popup-btn" type="button"
+        style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="filter-bar">
-    <input type="text" id="search-input" class="filter-input" placeholder="Search by name, email, college, USN…" />
-    <select id="event-filter" class="filter-select">
-      <option value="">All Events</option>
-    </select>
-    <button type="button" id="refresh-btn" class="btn-refresh">↻ Refresh</button>
-  </div>
+  <script>
+    (function () {
+      const API_BASE = "http://localhost:5000/api/events";
+      const token = localStorage.getItem("token");
 
-  <!-- Registration list -->
-  <div class="reg-list" id="reg-list">
-    <p class="loading-msg">Loading registrations…</p>
-  </div>
-</main>
+      const escapeHtml = (val) =>
+        String(val || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
 
-<!-- Popup -->
-<div id="popup" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
-    <h3 id="popup-title" style="font-size:1.25rem;font-weight:900;color:#fff;margin-bottom:0.75rem;"></h3>
-    <p id="popup-message" style="color:#cbd5e1;line-height:1.6;margin-bottom:1.25rem;"></p>
-    <button id="popup-btn" type="button" style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
-  </div>
-</div>
+      const showPopup = (title, message, options = {}) => {
+        const popup = document.getElementById("popup");
+        const popupTitle = document.getElementById("popup-title");
+        const popupMessage = document.getElementById("popup-message");
+        const popupBtn = document.getElementById("popup-btn");
+        if (!popup) { alert(`${title}: ${message}`); return; }
+        popupTitle.textContent = title;
+        popupMessage.textContent = message;
+        popup.style.display = "flex";
+        const closePopup = () => {
+          popup.style.display = "none";
+          if (options.onClose) options.onClose();
+        };
+        popupBtn.onclick = closePopup;
+        if (title.toLowerCase().includes("success")) setTimeout(closePopup, 3000);
+      };
 
-<script>
-(function() {
-  const API_BASE = "http://localhost:5000/api/events";
-  const token = localStorage.getItem("token");
+      const formatDate = (iso) => {
+        const d = new Date(iso);
+        return d.toLocaleDateString("en-IN", {
+          day: "numeric", month: "short", year: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        });
+      };
 
-  const escapeHtml = (val) =>
-    String(val || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+      const isToday = (iso) => {
+        const d = new Date(iso);
+        const now = new Date();
+        return d.getFullYear() === now.getFullYear() &&
+          d.getMonth() === now.getMonth() &&
+          d.getDate() === now.getDate();
+      };
 
-  const showPopup = (title, message, options = {}) => {
-    const popup = document.getElementById("popup");
-    const popupTitle = document.getElementById("popup-title");
-    const popupMessage = document.getElementById("popup-message");
-    const popupBtn = document.getElementById("popup-btn");
-    if (!popup) { alert(`${title}: ${message}`); return; }
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
-    popup.style.display = "flex";
-    const closePopup = () => {
-      popup.style.display = "none";
-      if (options.onClose) options.onClose();
-    };
-    popupBtn.onclick = closePopup;
-    if (title.toLowerCase().includes("success")) setTimeout(closePopup, 3000);
-  };
+      let allRegistrations = [];
 
-  const formatDate = (iso) => {
-    const d = new Date(iso);
-    return d.toLocaleDateString("en-IN", {
-      day: "numeric", month: "short", year: "numeric",
-      hour: "2-digit", minute: "2-digit"
-    });
-  };
+      const updateStats = (data) => {
+        document.getElementById("stat-total").textContent = data.length;
+        const uniqueEvents = new Set(data.map(r => r.eventId));
+        document.getElementById("stat-events").textContent = uniqueEvents.size;
+        const uniqueColleges = new Set(data.map(r => (r.collegeName || "").toLowerCase()));
+        document.getElementById("stat-colleges").textContent = uniqueColleges.size;
+        const todayCount = data.filter(r => isToday(r.createdAt)).length;
+        document.getElementById("stat-today").textContent = todayCount;
+      };
 
-  const isToday = (iso) => {
-    const d = new Date(iso);
-    const now = new Date();
-    return d.getFullYear() === now.getFullYear() &&
-           d.getMonth() === now.getMonth() &&
-           d.getDate() === now.getDate();
-  };
+      const populateEventFilter = (data) => {
+        const select = document.getElementById("event-filter");
+        const events = [...new Map(data.map(r => [r.eventId, r.eventTitle])).entries()];
+        // Keep existing "All Events" option
+        select.innerHTML = '<option value="">All Events</option>';
+        events.forEach(([id, title]) => {
+          select.innerHTML += `<option value="${escapeHtml(id)}">${escapeHtml(title)}</option>`;
+        });
+      };
 
-  let allRegistrations = [];
+      const renderRegistrations = (data) => {
+        const list = document.getElementById("reg-list");
 
-  const updateStats = (data) => {
-    document.getElementById("stat-total").textContent = data.length;
-    const uniqueEvents = new Set(data.map(r => r.eventId));
-    document.getElementById("stat-events").textContent = uniqueEvents.size;
-    const uniqueColleges = new Set(data.map(r => (r.collegeName || "").toLowerCase()));
-    document.getElementById("stat-colleges").textContent = uniqueColleges.size;
-    const todayCount = data.filter(r => isToday(r.createdAt)).length;
-    document.getElementById("stat-today").textContent = todayCount;
-  };
-
-  const populateEventFilter = (data) => {
-    const select = document.getElementById("event-filter");
-    const events = [...new Map(data.map(r => [r.eventId, r.eventTitle])).entries()];
-    // Keep existing "All Events" option
-    select.innerHTML = '<option value="">All Events</option>';
-    events.forEach(([id, title]) => {
-      select.innerHTML += `<option value="${escapeHtml(id)}">${escapeHtml(title)}</option>`;
-    });
-  };
-
-  const renderRegistrations = (data) => {
-    const list = document.getElementById("reg-list");
-
-    if (!data.length) {
-      list.innerHTML = `
+        if (!data.length) {
+          list.innerHTML = `
         <div class="empty-state">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -162,12 +168,12 @@
           </svg>
           <p>No registrations found.</p>
         </div>`;
-      return;
-    }
+          return;
+        }
 
-    list.innerHTML = data.map((reg, i) => {
-      const teamHtml = (reg.teamMembers && reg.teamMembers.length)
-        ? `<div class="team-info">
+        list.innerHTML = data.map((reg, i) => {
+          const teamHtml = (reg.teamMembers && reg.teamMembers.length)
+            ? `<div class="team-info">
              <p class="team-info-title">Team Members (${reg.teamMembers.length})</p>
              ${reg.teamMembers.map((m, j) => `
                <div class="team-member-item">
@@ -176,13 +182,13 @@
                </div>
              `).join("")}
            </div>`
-        : "";
+            : "";
 
-      const notesHtml = reg.notes
-        ? `<p class="reg-notes">"${escapeHtml(reg.notes)}"</p>`
-        : `<span></span>`;
+          const notesHtml = reg.notes
+            ? `<p class="reg-notes">"${escapeHtml(reg.notes)}"</p>`
+            : `<span></span>`;
 
-      return `
+          return `
         <div class="reg-card" style="animation-delay:${i * 40}ms;">
           <div class="reg-card-header">
             <div>
@@ -222,112 +228,113 @@
             <button type="button" class="btn-delete" data-delete-id="${reg._id}">Delete</button>
           </div>
         </div>`;
-    }).join("");
-  };
+        }).join("");
+      };
 
-  const fetchRegistrations = async () => {
-    const list = document.getElementById("reg-list");
-    list.innerHTML = '<p class="loading-msg">Loading registrations…</p>';
+      const fetchRegistrations = async () => {
+        const list = document.getElementById("reg-list");
+        list.innerHTML = '<p class="loading-msg">Loading registrations…</p>';
 
-    try {
-      const res = await fetch(`${API_BASE}/registrations`, {
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+        try {
+          const res = await fetch(`${API_BASE}/registrations`, {
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
+          if (!res.ok) {
+            list.innerHTML = '<p class="loading-msg">Failed to load registrations. Check your admin permissions.</p>';
+            return;
+          }
+
+          const data = await res.json();
+          allRegistrations = data.registrations || [];
+          updateStats(allRegistrations);
+          populateEventFilter(allRegistrations);
+          renderRegistrations(allRegistrations);
+        } catch (err) {
+          console.error(err);
+          list.innerHTML = '<p class="loading-msg">Unable to connect to server.</p>';
+        }
+      };
+
+      // Filtering
+      const applyFilters = () => {
+        const search = document.getElementById("search-input").value.toLowerCase().trim();
+        const eventId = document.getElementById("event-filter").value;
+
+        let filtered = allRegistrations;
+
+        if (eventId) {
+          filtered = filtered.filter(r => r.eventId === eventId);
+        }
+
+        if (search) {
+          filtered = filtered.filter(r =>
+            (r.fullName || "").toLowerCase().includes(search) ||
+            (r.email || "").toLowerCase().includes(search) ||
+            (r.collegeName || "").toLowerCase().includes(search) ||
+            (r.usn || "").toLowerCase().includes(search) ||
+            (r.eventTitle || "").toLowerCase().includes(search) ||
+            (r.phone || "").includes(search)
+          );
+        }
+
+        renderRegistrations(filtered);
+      };
+
+      document.getElementById("search-input").addEventListener("input", applyFilters);
+      document.getElementById("event-filter").addEventListener("change", applyFilters);
+      document.getElementById("refresh-btn").addEventListener("click", fetchRegistrations);
+
+      // Delete
+      document.addEventListener("click", async (e) => {
+        const btn = e.target.closest("[data-delete-id]");
+        if (!btn) return;
+
+        const id = btn.dataset.deleteId;
+        btn.textContent = "Deleting…";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_BASE}/registrations/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
+          if (!res.ok) {
+            const data = await res.json();
+            showPopup("Error", data.message || "Failed to delete");
+            btn.textContent = "Delete";
+            btn.disabled = false;
+            return;
+          }
+
+          // Remove from local list and re-render
+          allRegistrations = allRegistrations.filter(r => r._id !== id);
+          updateStats(allRegistrations);
+          applyFilters();
+          showPopup("Success", "Registration deleted successfully.");
+        } catch (err) {
+          console.error(err);
+          showPopup("Error", "Unable to connect to server.");
+          btn.textContent = "Delete";
+          btn.disabled = false;
         }
       });
 
-      if (!res.ok) {
-        list.innerHTML = '<p class="loading-msg">Failed to load registrations. Check your admin permissions.</p>';
-        return;
-      }
+      // Initial load
+      fetchRegistrations();
+    })();
+  </script>
 
-      const data = await res.json();
-      allRegistrations = data.registrations || [];
-      updateStats(allRegistrations);
-      populateEventFilter(allRegistrations);
-      renderRegistrations(allRegistrations);
-    } catch (err) {
-      console.error(err);
-      list.innerHTML = '<p class="loading-msg">Unable to connect to server.</p>';
-    }
-  };
-
-  // Filtering
-  const applyFilters = () => {
-    const search = document.getElementById("search-input").value.toLowerCase().trim();
-    const eventId = document.getElementById("event-filter").value;
-
-    let filtered = allRegistrations;
-
-    if (eventId) {
-      filtered = filtered.filter(r => r.eventId === eventId);
-    }
-
-    if (search) {
-      filtered = filtered.filter(r =>
-        (r.fullName || "").toLowerCase().includes(search) ||
-        (r.email || "").toLowerCase().includes(search) ||
-        (r.collegeName || "").toLowerCase().includes(search) ||
-        (r.usn || "").toLowerCase().includes(search) ||
-        (r.eventTitle || "").toLowerCase().includes(search) ||
-        (r.phone || "").includes(search)
-      );
-    }
-
-    renderRegistrations(filtered);
-  };
-
-  document.getElementById("search-input").addEventListener("input", applyFilters);
-  document.getElementById("event-filter").addEventListener("change", applyFilters);
-  document.getElementById("refresh-btn").addEventListener("click", fetchRegistrations);
-
-  // Delete
-  document.addEventListener("click", async (e) => {
-    const btn = e.target.closest("[data-delete-id]");
-    if (!btn) return;
-
-    const id = btn.dataset.deleteId;
-    btn.textContent = "Deleting…";
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(`${API_BASE}/registrations/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        showPopup("Error", data.message || "Failed to delete");
-        btn.textContent = "Delete";
-        btn.disabled = false;
-        return;
-      }
-
-      // Remove from local list and re-render
-      allRegistrations = allRegistrations.filter(r => r._id !== id);
-      updateStats(allRegistrations);
-      applyFilters();
-      showPopup("Success", "Registration deleted successfully.");
-    } catch (err) {
-      console.error(err);
-      showPopup("Error", "Unable to connect to server.");
-      btn.textContent = "Delete";
-      btn.disabled = false;
-    }
-  });
-
-  // Initial load
-  fetchRegistrations();
-})();
-</script>
-
-<script src="../main.js"></script>
+  <script src="../main.js"></script>
 </body>
+
 </html>

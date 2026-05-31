@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Events | ACM JIT</title>
-  <meta name="description" content="Explore upcoming ACM JIT events — workshops, competitions, and chapter moments. Register now!">
+  <meta name="description"
+    content="Explore upcoming ACM JIT events — workshops, competitions, and chapter moments. Register now!">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./global.css">
   <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
+
 <body>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
@@ -19,7 +23,8 @@
     <header class="page-header">
       <p class="label">Events</p>
       <h1 class="page-title">Workshops, competitions, and chapter moments.</h1>
-      <p class="page-subtitle">Explore all our upcoming events, competitions, and workshops. Keep checking back as we add more exciting opportunities!</p>
+      <p class="page-subtitle">Explore all our upcoming events, competitions, and workshops. Keep checking back as we
+        add more exciting opportunities!</p>
     </header>
 
     <div class="events-grid">
@@ -62,18 +67,22 @@
           </div>
           <div class="field-group">
             <label for="reg-email">Email *</label>
-            <input type="email" id="reg-email" placeholder="john@college.edu" required />
+            <input type="email" id="reg-email" placeholder="john@college.edu"
+              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address"
+              required />
           </div>
         </div>
 
         <div class="field-row">
           <div class="field-group">
             <label for="reg-phone">Phone Number *</label>
-            <input type="tel" id="reg-phone" placeholder="9876543210" required />
+            <input type="tel" id="reg-phone" placeholder="9876543210" pattern="[0-9]{10}"
+              title="Please enter a valid 10-digit phone number" required />
           </div>
           <div class="field-group">
             <label for="reg-usn">USN *</label>
-            <input type="text" id="reg-usn" placeholder="1JT22CS001" required />
+            <input type="text" id="reg-usn" placeholder="1JT24IS060" pattern="\d[a-zA-Z]{2}\d{2}[a-zA-Z]{2}\d{3}"
+              title="Please enter a valid USN in the format 1JT24IS052" required />
           </div>
         </div>
 
@@ -112,14 +121,18 @@
   </div>
 
   <!-- ═══════ POPUP (for success / error) ═══════ -->
-  <div id="popup" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-    <div style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
+  <div id="popup"
+    style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(2,6,23,0.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+    <div
+      style="background:rgba(15,23,42,0.97);border:1px solid rgba(103,232,249,0.15);border-radius:1.25rem;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px -12px rgba(0,0,0,0.5);animation:slideUp 0.3s ease;">
       <h3 id="popup-title" style="font-size:1.25rem;font-weight:900;color:#fff;margin-bottom:0.75rem;"></h3>
       <p id="popup-message" style="color:#cbd5e1;line-height:1.6;margin-bottom:1.25rem;"></p>
-      <button id="popup-btn" type="button" style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
+      <button id="popup-btn" type="button"
+        style="padding:0.6rem 1.5rem;border-radius:0.625rem;border:none;background:var(--cyan-400);color:#020617;font-weight:900;font-family:inherit;cursor:pointer;font-size:0.9rem;">OK</button>
     </div>
   </div>
 
   <script src="main.js"></script>
 </body>
+
 </html>

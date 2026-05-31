@@ -1352,7 +1352,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="team-member-row">
           <p class="team-member-label">Member ${i + 2}</p>
           <input type="text" name="tm-name-${i}" placeholder="Full Name" required />
-          <input type="text" name="tm-usn-${i}"  placeholder="USN" required />
+          <input type="text" name="tm-usn-${i}"  placeholder="1JT24IS060" pattern="\\d[a-zA-Z]{2}\\d{2}[a-zA-Z]{2}\\d{3}" title="Please enter a valid USN in the format 1JT24IS052" required />
         </div>
       `).join("");
     };

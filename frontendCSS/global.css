@@ -2801,18 +2801,28 @@ img {
 /* ==========================================================================
    2. FEATURES SECTION (MATCHED TO SMOKY BACKDROP)
    ========================================================================== */
-
 .feature-card {
   position: relative;
   overflow: hidden;
 
-  background: rgba(255, 255, 255, 0.03);
+  /* Pill shape requires significant left/right padding, reduced vertical padding for shorter height */
+  padding: 1.5rem 4rem;
+
+  background: #000000; /* Pitch black */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
 
-  padding: 2rem;
+  /* Elegant Pill / Stadium Shape */
+  border-radius: 9999px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 
-  transition: all .35s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, border-radius 0.4s ease;
 }
 
 .feature-card::before {
@@ -2822,41 +2832,59 @@ img {
   left: 20%;
   width: 60%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
 }
 
 .feature-card:hover {
   transform: translateY(-8px);
-
-  background: rgba(255, 255, 255, 0.05);
-
-  border-color: rgba(255, 255, 255, 0.15);
-
+  /* Slightly morph the pill on hover */
+  border-radius: 120px;
+  border-color: rgba(6, 182, 212, 0.4);
+  background: #000000;
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, .25);
+    0 24px 48px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px -10px rgba(6, 182, 212, 0.15);
 }
 
+.feature-card:hover::before {
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.5), transparent);
+}
+
+/* Circular Icon Container */
 .feature-emoji {
-  width: 68px;
-  height: 68px;
+  width: 80px;
+  height: 80px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 18px;
+  border-radius: 50%;
+
+  background: radial-gradient(circle,
+      rgba(0, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.04));
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
   margin-bottom: 1.5rem;
+
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.12);
 }
 
 .feature-emoji svg {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
 }
 
 .feature-title {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: .75rem;
+  margin-bottom: 0.75rem;
 }
 
 .feature-text {
@@ -3040,51 +3068,15 @@ img {
   }
 }
 
-.feature-card {
-  border-radius: 1.25rem;
-  padding: 2rem;
-  background: #000000;
-  /* Pure deep pitch-black */
-  border: 1px solid #16181d;
-  /* Slightly enhanced border for sharp contrast on pure black */
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-/* Crisp vertical hover lift with deeper shadow depth for pure black surfaces */
-.feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
-}
-
-.feature-emoji {
-  font-size: 2rem;
-  margin-bottom: 1.25rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 1.15rem;
-  display: grid;
-  place-items: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.feature-emoji svg {
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
-.feature-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.feature-text {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.8;
-  color: #717b91;
-  /* Boosted slightly to stay crisp against the absolute black backdrop */
+/* Mobile Responsiveness for Feature Cards */
+@media (max-width: 639px) {
+  .feature-card {
+    padding: 2.5rem 1.5rem;
+    border-radius: 40px; /* Softer pill for narrow screens */
+  }
+  .feature-card:hover {
+    border-radius: 40px;
+  }
 }
 
 /* --- Cohesive Human-Curated Style Cycles --- */
