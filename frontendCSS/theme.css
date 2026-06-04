@@ -1,0 +1,387 @@
+/* 
+   Vibrant & Block-Based Global Theme for ACM JIT 
+*/
+
+:root {
+  /* DARK THEME (Default) */
+  --v-primary: #8B5CF6; /* Lighter Violet for dark bg */
+  --v-secondary: #6D28D9;
+  --v-cta: #F97316;
+  --v-bg: #0B0B0F; /* Pitch black with slight violet tint */
+  --v-text: #E2D5F8; /* Very light violet */
+  --v-white: #ffffff;
+  --v-black: #0B0B0F;
+  --v-card-bg: #15151A;
+  
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  
+  --block-border: 2px solid var(--v-text);
+  --block-shadow: 6px 6px 0px var(--v-text);
+  --block-shadow-hover: 2px 2px 0px var(--v-text);
+  --block-radius: 12px;
+  
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.light-theme, .light-theme:root {
+  /* LIGHT THEME */
+  --v-primary: #7C3AED;
+  --v-secondary: #A78BFA;
+  --v-cta: #F97316;
+  --v-bg: #FAF5FF;
+  --v-text: #4C1D95;
+  --v-white: #ffffff;
+  --v-black: #0f172a;
+  --v-card-bg: #ffffff;
+  
+  --block-border: 2px solid var(--v-text);
+  --block-shadow: 6px 6px 0px var(--v-text);
+  --block-shadow-hover: 2px 2px 0px var(--v-text);
+}
+
+body {
+  background-color: var(--v-bg) !important;
+  color: var(--v-text) !important;
+  font-family: var(--font-body) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  /* Starry Background for Dark Mode */
+  background-image: 
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 30% 40%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 70% 30%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(2px 2px at 90% 50%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 20% 70%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 40% 90%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 60% 60%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 80% 80%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(2px 2px at 95% 15%, rgba(255, 255, 255, 0.8), transparent) !important;
+  background-size: 250px 250px !important;
+  background-attachment: fixed !important;
+}
+
+html {
+  background-color: var(--v-bg) !important;
+}
+
+body.light-theme {
+  /* Prominent dark purple and orange 'stars' for light mode */
+  background-image: 
+    radial-gradient(2.5px 2.5px at 10% 20%, #4C1D95, transparent),
+    radial-gradient(3.5px 3.5px at 30% 40%, #7C3AED, transparent),
+    radial-gradient(2px 2px at 50% 10%, #4C1D95, transparent),
+    radial-gradient(3px 3px at 70% 30%, #F97316, transparent),
+    radial-gradient(3.5px 3.5px at 90% 50%, #7C3AED, transparent),
+    radial-gradient(2.5px 2.5px at 20% 70%, #4C1D95, transparent),
+    radial-gradient(3px 3px at 40% 90%, #7C3AED, transparent),
+    radial-gradient(2.5px 2.5px at 60% 60%, #F97316, transparent),
+    radial-gradient(2px 2px at 80% 80%, #4C1D95, transparent),
+    radial-gradient(3.5px 3.5px at 95% 15%, #7C3AED, transparent) !important;
+}
+
+h1, h2, h3, h4, h5, h6, .hero-eyebrow, .section-label, .btn {
+  font-family: var(--font-heading) !important;
+}
+
+/* Base resets overriding global.css */
+.bg-overlay { display: none !important; }
+
+/* NAVBAR OVERRIDES */
+.nav {
+  background: var(--v-bg) !important;
+  border-bottom: var(--block-border) !important;
+  box-shadow: 0 4px 0px var(--v-text) !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.nav-logo-text {
+  color: var(--v-text) !important;
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+}
+.nav-link {
+  color: var(--v-text) !important;
+  font-weight: 600 !important;
+  font-family: var(--font-body) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem !important;
+  border: 2px solid transparent !important;
+  border-radius: var(--block-radius) !important;
+}
+.nav-link:hover {
+  background: var(--v-secondary) !important;
+  color: var(--v-white) !important;
+  border: 2px solid var(--v-text) !important;
+}
+.nav-cta {
+  background: var(--v-primary) !important;
+  color: var(--v-white) !important;
+  border: 2px solid var(--v-text) !important;
+  box-shadow: 2px 2px 0px var(--v-text) !important;
+}
+.nav-cta:hover {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0px 0px 0px var(--v-text) !important;
+}
+
+/* Buttons */
+.btn {
+  border: var(--block-border) !important;
+  border-radius: var(--block-radius) !important;
+  box-shadow: var(--block-shadow) !important;
+  transition: var(--transition) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.5rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn:hover {
+  transform: translate(4px, 4px) !important;
+  box-shadow: var(--block-shadow-hover) !important;
+}
+
+.btn-primary {
+  background-color: var(--v-primary) !important;
+  color: var(--v-white) !important;
+}
+
+.btn-secondary {
+  background-color: var(--v-card-bg) !important;
+  color: var(--v-text) !important;
+}
+
+/* CARDS & GENERAL LAYOUTS */
+.domain-card, .feature-card, .stat-item, .card, .auth-promise, .event-card, .announcement-card,
+.timeline-item, .member-card, .hub-card, .form-input, .form-select, .form-textarea,
+#profile-modal-body, .modal-card, .auth-shell {
+  background: var(--v-card-bg) !important;
+  border: var(--block-border) !important;
+  border-radius: var(--block-radius) !important;
+  box-shadow: var(--block-shadow) !important;
+  color: var(--v-text) !important;
+  transition: var(--transition) !important;
+}
+
+.domain-card:hover, .feature-card:hover, .stat-item:hover, .card:hover, .event-card:hover, .announcement-card:hover,
+.timeline-item:hover, .member-card:hover, .hub-card:hover {
+  transform: translate(4px, 4px) !important;
+  box-shadow: var(--block-shadow-hover) !important;
+  background: var(--v-secondary) !important;
+}
+
+/* Form Inputs */
+.form-input, .form-select, .form-textarea {
+  box-shadow: 3px 3px 0px var(--v-text) !important;
+  background: var(--v-bg) !important;
+  border-radius: 8px !important;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none !important;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 1px 1px 0px var(--v-text) !important;
+  border-color: var(--v-primary) !important;
+}
+.form-label {
+  color: var(--v-text) !important;
+  font-family: var(--font-heading) !important;
+  font-weight: 600 !important;
+}
+
+/* Typography fix for cards on hover */
+.domain-card:hover *, .feature-card:hover *, .card:hover * {
+  color: var(--v-white) !important;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6, .section-title, .hero-heading, .cta-title, .page-title,
+.auth-title, .auth-left-title, .hub-title, .event-title, .item-title, .member-name {
+  color: var(--v-text) !important;
+}
+
+p, .hero-desc, .section-subtitle, .domain-desc, .feature-text, .cta-desc, .page-subtitle,
+.auth-desc, .auth-left-desc, .float-card-sub, .stat-text, .hub-desc, .event-desc, .item-body,
+.member-bio, .empty-msg {
+  color: var(--v-text) !important;
+  opacity: 0.9;
+}
+
+/* HERO SECTION */
+.hero {
+  padding-top: calc(var(--nav-h) + 4rem) !important;
+  padding-bottom: 6rem !important;
+  background-color: transparent !important;
+}
+
+.hero-heading {
+  font-size: clamp(3rem, 6vw, 4.5rem) !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.hero-heading .highlight {
+  color: var(--v-white) !important;
+  position: relative;
+  display: inline-block;
+  padding: 0 10px;
+  background: var(--v-primary);
+  border: var(--block-border);
+  transform: rotate(-2deg);
+  border-radius: 8px;
+}
+
+/* Code Snippet Block */
+.block-code-card {
+  background: var(--v-black) !important;
+  border: var(--block-border) !important;
+  border-radius: var(--block-radius) !important;
+  box-shadow: var(--block-shadow) !important;
+  color: var(--v-white) !important;
+  padding: 1.5rem !important;
+  transform: rotate(2deg);
+  transition: var(--transition);
+  position: relative;
+  z-index: 10;
+}
+
+.block-code-card:hover {
+  transform: rotate(0deg) translate(-4px, -4px);
+  box-shadow: 10px 10px 0px var(--v-text) !important;
+}
+
+.mac-window-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.mac-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--v-black);
+}
+
+.mac-dot.red { background: #FF5F56; }
+.mac-dot.yellow { background: #FFBD2E; }
+.mac-dot.green { background: #27C93F; }
+
+.code-snippet {
+  font-family: 'Fira Code', 'Courier New', Courier, monospace !important;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: left;
+  overflow-x: auto;
+}
+
+.token-keyword { color: #FF7B72; }
+.token-class { color: #D2A8FF; }
+.token-string { color: #A5D6FF; }
+.token-number { color: #79C0FF; }
+.token-function { color: #D2A8FF; }
+.token-operator { color: #FF7B72; }
+
+/* Float Cards */
+.hero-card-float-1, .hero-card-float-2 {
+  background: var(--v-card-bg) !important;
+  border: var(--block-border) !important;
+  border-radius: var(--block-radius) !important;
+  box-shadow: var(--block-shadow) !important;
+  color: var(--v-text) !important;
+}
+
+.hero-card-float-1 {
+  transform: rotate(-3deg) translate(-20px, 30px) !important;
+  z-index: 11;
+  background: var(--v-cta) !important;
+  color: var(--v-white) !important;
+}
+
+.hero-card-float-1:hover, .hero-card-float-2:hover {
+  transform: rotate(0deg) !important;
+}
+
+.float-card-label {
+  color: inherit !important;
+  opacity: 0.8;
+  font-family: var(--font-heading) !important;
+}
+
+/* STATS SECTION */
+.stats-bar {
+  background: var(--v-primary) !important;
+  padding: 3rem 0 !important;
+  border-top: var(--block-border);
+  border-bottom: var(--block-border);
+}
+
+.stat-number {
+  font-family: var(--font-heading) !important;
+}
+
+/* DOMAINS SECTION */
+.domains-section, .features-section {
+  background: transparent !important;
+}
+
+.section-label {
+  color: var(--v-cta) !important;
+  background: var(--v-card-bg);
+  padding: 4px 12px;
+  border: 2px solid var(--v-text);
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.domain-icon {
+  background: var(--v-bg) !important;
+  border: 2px solid var(--v-text) !important;
+  border-radius: var(--block-radius) !important;
+  color: var(--v-text) !important;
+}
+
+/* FEATURES SECTION */
+.feature-emoji {
+  background: var(--v-bg) !important;
+  border: 2px solid var(--v-text) !important;
+  color: var(--v-text) !important;
+}
+
+.feature-card:hover .feature-emoji {
+  background: var(--v-white) !important;
+  color: var(--v-primary) !important;
+}
+
+/* CTA SECTION */
+.cta-box {
+  background: var(--v-primary) !important;
+  border: var(--block-border) !important;
+  border-radius: var(--block-radius) !important;
+  box-shadow: 12px 12px 0px var(--v-text) !important;
+}
+
+.cta-title, .cta-desc {
+  color: var(--v-white) !important;
+}
+
+/* FOOTER */
+.site-footer {
+  background: var(--v-black) !important;
+  color: #E2D5F8 !important; /* Force light text on black footer even in light mode */
+  border-top: var(--block-border);
+}
+
+.footer-link, .footer-acm-cta a {
+  color: #E2D5F8 !important;
+}
+
+.footer-acm-cta a:hover {
+  color: var(--v-cta) !important;
+}
