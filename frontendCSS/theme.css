@@ -4,14 +4,14 @@
 
 :root {
   /* DARK THEME (Default) */
-  --v-primary: #8B5CF6; /* Lighter Violet for dark bg */
-  --v-secondary: #6D28D9;
-  --v-cta: #F97316;
-  --v-bg: #0B0B0F; /* Pitch black with slight violet tint */
-  --v-text: #E2D5F8; /* Very light violet */
+  --v-primary: #10B981; /* Emerald green for dark bg */
+  --v-secondary: #059669;
+  --v-cta: #F59E0B;
+  --v-bg: #0B0F0D; /* Pitch black with slight teal tint */
+  --v-text: #D1FAE5; /* Very light mint */
   --v-white: #ffffff;
-  --v-black: #0B0B0F;
-  --v-card-bg: #15151A;
+  --v-black: #0B0F0D;
+  --v-card-bg: #111A16;
   
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'DM Sans', sans-serif;
@@ -26,11 +26,11 @@
 
 body.light-theme, .light-theme:root {
   /* LIGHT THEME */
-  --v-primary: #7C3AED;
-  --v-secondary: #A78BFA;
-  --v-cta: #F97316;
-  --v-bg: #FAF5FF;
-  --v-text: #4C1D95;
+  --v-primary: #047857;
+  --v-secondary: #34D399;
+  --v-cta: #F59E0B;
+  --v-bg: #ECFDF5;
+  --v-text: #064E3B;
   --v-white: #ffffff;
   --v-black: #0f172a;
   --v-card-bg: #ffffff;
@@ -67,18 +67,18 @@ html {
 }
 
 body.light-theme {
-  /* Prominent dark purple and orange 'stars' for light mode */
+  /* Prominent dark teal and amber 'stars' for light mode */
   background-image: 
-    radial-gradient(2.5px 2.5px at 10% 20%, #4C1D95, transparent),
-    radial-gradient(3.5px 3.5px at 30% 40%, #7C3AED, transparent),
-    radial-gradient(2px 2px at 50% 10%, #4C1D95, transparent),
-    radial-gradient(3px 3px at 70% 30%, #F97316, transparent),
-    radial-gradient(3.5px 3.5px at 90% 50%, #7C3AED, transparent),
-    radial-gradient(2.5px 2.5px at 20% 70%, #4C1D95, transparent),
-    radial-gradient(3px 3px at 40% 90%, #7C3AED, transparent),
-    radial-gradient(2.5px 2.5px at 60% 60%, #F97316, transparent),
-    radial-gradient(2px 2px at 80% 80%, #4C1D95, transparent),
-    radial-gradient(3.5px 3.5px at 95% 15%, #7C3AED, transparent) !important;
+    radial-gradient(2.5px 2.5px at 10% 20%, #064E3B, transparent),
+    radial-gradient(3.5px 3.5px at 30% 40%, #047857, transparent),
+    radial-gradient(2px 2px at 50% 10%, #064E3B, transparent),
+    radial-gradient(3px 3px at 70% 30%, #F59E0B, transparent),
+    radial-gradient(3.5px 3.5px at 90% 50%, #047857, transparent),
+    radial-gradient(2.5px 2.5px at 20% 70%, #064E3B, transparent),
+    radial-gradient(3px 3px at 40% 90%, #047857, transparent),
+    radial-gradient(2.5px 2.5px at 60% 60%, #F59E0B, transparent),
+    radial-gradient(2px 2px at 80% 80%, #064E3B, transparent),
+    radial-gradient(3.5px 3.5px at 95% 15%, #047857, transparent) !important;
 }
 
 h1, h2, h3, h4, h5, h6, .hero-eyebrow, .section-label, .btn {
@@ -281,10 +281,10 @@ p, .hero-desc, .section-subtitle, .domain-desc, .feature-text, .cta-desc, .page-
 }
 
 .token-keyword { color: #FF7B72; }
-.token-class { color: #D2A8FF; }
+.token-class { color: #6EE7B7; }
 .token-string { color: #A5D6FF; }
 .token-number { color: #79C0FF; }
-.token-function { color: #D2A8FF; }
+.token-function { color: #6EE7B7; }
 .token-operator { color: #FF7B72; }
 
 /* Float Cards */
@@ -374,12 +374,12 @@ p, .hero-desc, .section-subtitle, .domain-desc, .feature-text, .cta-desc, .page-
 /* FOOTER */
 .site-footer {
   background: var(--v-black) !important;
-  color: #E2D5F8 !important; /* Force light text on black footer even in light mode */
+  color: #D1FAE5 !important; /* Force light text on black footer even in light mode */
   border-top: var(--block-border);
 }
 
 .footer-link, .footer-acm-cta a {
-  color: #E2D5F8 !important;
+  color: #D1FAE5 !important;
 }
 
 .footer-acm-cta a:hover {
