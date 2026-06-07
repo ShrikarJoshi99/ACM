@@ -567,10 +567,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setButtonBusy(submitButton, "Creating Account...");
 
+        // Timeout after 30s so the button never stays stuck
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         try {
           const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: "POST",
             credentials: "include",
+            signal: controller.signal,
             headers: {
               "Content-Type": "application/json",
             },
@@ -580,6 +585,8 @@ document.addEventListener("DOMContentLoaded", () => {
               password: formData.get("password"),
             }),
           });
+
+          clearTimeout(timeoutId);
 
           const data = await response.json();
 
@@ -602,11 +609,15 @@ document.addEventListener("DOMContentLoaded", () => {
           registerForm.reset();
 
         } catch (error) {
+          clearTimeout(timeoutId);
           console.error(error);
           restoreButton(submitButton);
+          const msg = error.name === "AbortError"
+            ? "Request timed out. Please try again."
+            : "Unable to connect to server";
           showPopup(
             "Server Error",
-            "Unable to connect to server"
+            msg
           );
         }
       });
