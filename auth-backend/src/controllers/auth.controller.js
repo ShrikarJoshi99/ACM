@@ -100,11 +100,20 @@ export const register = asyncHandler(async (req, res) => {
       Date.now() + 10 * 60 * 1000
   });
 
-  await sendEmail(
-    user.email,
-    "Verify Your Email",
-    buildVerificationEmail(verificationCode)
-  );
+  try {
+    await sendEmail(
+      user.email,
+      "Verify Your Email",
+      buildVerificationEmail(verificationCode)
+    );
+  } catch (emailErr) {
+    // Roll back: remove the user so they can retry registration
+    await User.findByIdAndDelete(user._id);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send verification email. Please try again."
+    });
+  }
 
   res.status(201).json({
     success: true,
