@@ -373,7 +373,7 @@
       let next = fallback;
       try {
         const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-        const API_BASE_URL = isLocal ? "http://localhost:5000/api" : "https://your-production-backend.com/api";
+        const API_BASE_URL = isLocal ? "http://localhost:5000/api" : "https://acmjyothy-backend.onrender.com";
         const res = await fetch(`${API_BASE_URL}/events`);
         const data = await res.json();
         if (data.success && Array.isArray(data.upcoming) && data.upcoming.length > 0) {
