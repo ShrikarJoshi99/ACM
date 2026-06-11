@@ -602,10 +602,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
+          const registeredEmail = formData.get("email");
           showPopup(
             "Success",
-            "Registration successful",
-            { onClose: () => window.location.href = "verify.html" }
+            "Registration successful! Check your inbox for the verification code.",
+            { onClose: () => window.location.href = `verify.html?email=${encodeURIComponent(registeredEmail)}` }
           );
 
           registerForm.reset();
@@ -625,6 +626,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     if (verifyForm) {
+      // Auto-fill email from URL query param (passed from registration)
+      const urlParams = new URLSearchParams(window.location.search);
+      const prefillEmail = urlParams.get("email");
+      const emailInput = verifyForm.querySelector("input[name='email']");
+      if (prefillEmail && emailInput) {
+        emailInput.value = prefillEmail;
+        emailInput.readOnly = true;
+        emailInput.style.opacity = "0.6";
+        emailInput.style.cursor = "not-allowed";
+      }
       verifyForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -657,10 +668,14 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             return;
           }
+          // Auto-login: save token and user data
+          localStorage.setItem("token", data.accessToken);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
           showPopup(
             "Success",
-            "Email verified successfully",
-            { onClose: () => window.location.href = "join-us.html" }
+            "Email verified! You're now signed in.",
+            { onClose: () => window.location.href = "index.html" }
           );
 
           verifyForm.reset();

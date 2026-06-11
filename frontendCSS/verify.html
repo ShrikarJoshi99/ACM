@@ -1,41 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verify Account | ACM JIT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./global.css">
   <link rel="stylesheet" href="./theme.css">
   <style>
-    body { background: #020617; }
+    body {
+      background: #020617;
+    }
+
     .bg-overlay {
       background:
-        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.2), transparent 31%),
-        radial-gradient(circle at 78% 22%, rgba(139,92,246,0.2), transparent 30%),
-        radial-gradient(circle at 50% 86%, rgba(14,165,233,0.14), transparent 32%),
+        radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.2), transparent 31%),
+        radial-gradient(circle at 78% 22%, rgba(139, 92, 246, 0.2), transparent 30%),
+        radial-gradient(circle at 50% 86%, rgba(14, 165, 233, 0.14), transparent 32%),
         linear-gradient(180deg, #020617, #0f172a 55%, #020617);
     }
+
     .auth-page {
       display: grid;
       place-items: center;
       min-height: 100vh;
       padding: 7rem 1rem 4rem;
     }
+
     .auth-card {
       width: 100%;
       max-width: 44rem;
       border-radius: 2rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.06);
-      box-shadow: 0 25px 50px -12px rgba(8,51,68,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 25px 50px -12px rgba(8, 51, 68, 0.3);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding: 1.5rem;
     }
-    @media (min-width: 640px) { .auth-card { padding: 2.5rem; } }
+
+    @media (min-width: 640px) {
+      .auth-card {
+        padding: 2.5rem;
+      }
+    }
+
     .auth-kicker {
       font-size: 0.75rem;
       font-weight: 900;
@@ -43,6 +57,7 @@
       letter-spacing: 0.24em;
       color: var(--cyan-300);
     }
+
     .auth-title {
       margin-top: 0.75rem;
       font-size: clamp(2rem, 4vw, 2.75rem);
@@ -50,27 +65,38 @@
       line-height: 1.12;
       color: #fff;
     }
+
     .auth-desc {
       margin-top: 0.9rem;
       max-width: 36rem;
       line-height: 1.8;
       color: var(--slate-300);
     }
-    .auth-form { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .auth-form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
     .form-input {
-      background: rgba(2,6,23,0.7);
+      background: rgba(2, 6, 23, 0.7);
       padding: 1rem;
       transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     }
+
     .form-input:focus {
       background: #020617;
       border-color: var(--cyan-300);
-      box-shadow: 0 10px 15px -3px rgba(8,51,68,0.4);
+      box-shadow: 0 10px 15px -3px rgba(8, 51, 68, 0.4);
     }
+
     .form-input.violet:focus {
       border-color: var(--violet-300);
-      box-shadow: 0 10px 15px -3px rgba(30,20,68,0.4);
+      box-shadow: 0 10px 15px -3px rgba(30, 20, 68, 0.4);
     }
+
     .btn-submit {
       width: 100%;
       border-radius: 0.75rem;
@@ -80,21 +106,35 @@
       padding: 1rem 1.5rem;
       border: none;
       font-size: 1rem;
-      box-shadow: 0 20px 25px -5px rgba(34,211,238,0.2);
+      box-shadow: 0 20px 25px -5px rgba(34, 211, 238, 0.2);
       transition: transform 0.3s ease, background 0.3s ease;
     }
-    .btn-submit:hover { transform: translateY(-4px); background: #fff; }
+
+    .btn-submit:hover {
+      transform: translateY(-4px);
+      background: #fff;
+    }
+
     .auth-links {
       margin-top: 1.5rem;
       text-align: center;
       font-size: 0.875rem;
       color: var(--slate-400);
     }
-    .auth-links a { color: var(--cyan-200); font-weight: 800; transition: color 0.3s ease; }
-    .auth-links a:hover { color: #fff; }
+
+    .auth-links a {
+      color: var(--cyan-200);
+      font-weight: 800;
+      transition: color 0.3s ease;
+    }
+
+    .auth-links a:hover {
+      color: #fff;
+    }
   </style>
   <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
 </head>
+
 <body>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
@@ -103,16 +143,19 @@
     <section class="auth-card" aria-labelledby="verify-title">
       <p class="auth-kicker">Account Verification</p>
       <h1 id="verify-title" class="auth-title">Confirm your chapter access.</h1>
-      <p class="auth-desc">Enter your student email and the verification code shared during registration to activate your ACM JIT portal account.</p>
+      <p class="auth-desc">Enter your email and the verification code shared during registration to activate your ACM
+        JIT portal account.</p>
 
       <form id="verify-form" class="auth-form">
         <label>
           <span class="form-label">Email Address</span>
-          <input name="email" type="email" placeholder="name@jyothyit.ac.in" class="form-input" autocomplete="email" required>
+          <input name="email" type="email" placeholder="name@jyothyit.ac.in" class="form-input" autocomplete="email"
+            required>
         </label>
         <label>
           <span class="form-label">Verification Code</span>
-          <input name="verificationCode" type="text" placeholder="Enter verification code" class="form-input violet" autocomplete="one-time-code" required>
+          <input name="verificationCode" type="text" placeholder="Enter verification code" class="form-input violet"
+            autocomplete="one-time-code" required>
         </label>
         <button type="submit" class="btn-submit">Confirm Activation</button>
       </form>
@@ -121,20 +164,56 @@
     </section>
   </main>
 
-  <div id="popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px);animation:fadeIn 0.3s ease-out;" onkeydown="if(event.key==='Escape')document.getElementById('popup-btn').click()">
+  <div id="popup"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px);animation:fadeIn 0.3s ease-out;"
+    onkeydown="if(event.key==='Escape')document.getElementById('popup-btn').click()">
     <style>
-      @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-      @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-      #popup-content { animation: slideIn 0.4s ease-out; }
-      #popup-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,211,238,0.3); }
-      #popup-btn:active { transform: translateY(0); }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      #popup-content {
+        animation: slideIn 0.4s ease-out;
+      }
+
+      #popup-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(34, 211, 238, 0.3);
+      }
+
+      #popup-btn:active {
+        transform: translateY(0);
+      }
     </style>
-    <div id="popup-content" style="background:linear-gradient(135deg,rgba(2,6,23,0.95),rgba(15,23,42,0.95));border:1px solid rgba(103,232,249,0.2);border-radius:1rem;padding:2.5rem;max-width:450px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);">
+    <div id="popup-content"
+      style="background:linear-gradient(135deg,rgba(2,6,23,0.95),rgba(15,23,42,0.95));border:1px solid rgba(103,232,249,0.2);border-radius:1rem;padding:2.5rem;max-width:450px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);">
       <h2 id="popup-title" style="font-size:1.5rem;font-weight:900;color:#f1f5f9;margin-bottom:0.75rem;"></h2>
       <p id="popup-message" style="font-size:0.95rem;color:#cbd5e1;line-height:1.6;margin-bottom:2rem;"></p>
-      <button id="popup-btn" type="button" style="width:100%;border:none;background:linear-gradient(135deg,var(--cyan-400),#06b6d4);color:#020617;padding:0.75rem 1.5rem;border-radius:0.75rem;cursor:pointer;font-weight:900;font-size:0.95rem;transition:all 0.3s ease;box-shadow:0 10px 25px -5px rgba(34,211,238,0.2);">Close</button>
+      <button id="popup-btn" type="button"
+        style="width:100%;border:none;background:linear-gradient(135deg,var(--cyan-400),#06b6d4);color:#020617;padding:0.75rem 1.5rem;border-radius:0.75rem;cursor:pointer;font-weight:900;font-size:0.95rem;transition:all 0.3s ease;box-shadow:0 10px 25px -5px rgba(34,211,238,0.2);">Close</button>
     </div>
   </div>
   <script src="main.js"></script>
 </body>
+
 </html>

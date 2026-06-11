@@ -325,16 +325,47 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   }
 
   user.isVerified = true;
-
   user.verificationCode = undefined;
-
   user.verificationCodeExpire = undefined;
 
+  // Auto-login: generate tokens
+  const accessToken = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRE }
+  );
+
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRE }
+  );
+
+  user.refreshToken = refreshToken;
   await user.save();
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+  });
 
   res.status(200).json({
     success: true,
-    message: "Email verified successfully"
+    message: "Email verified successfully",
+    accessToken,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
   });
 
 });
