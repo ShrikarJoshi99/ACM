@@ -535,10 +535,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
-          // Save token
-          localStorage.setItem("token", data.accessToken);
+          // Clear previous session data before saving new login
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
 
-          // Save user
+          // Save new token and user
+          localStorage.setItem("token", data.accessToken);
           localStorage.setItem("user", JSON.stringify(data.user));
 
           showPopup(

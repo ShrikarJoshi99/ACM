@@ -12,7 +12,7 @@ import {
   loginService
 } from "../services/auth.service.js";
 
-// Helper to build the verification email HTML
+
 const buildVerificationEmail = (verificationCode) => `
   <div style="
     font-family: Arial, sans-serif;
@@ -137,21 +137,26 @@ export const login = asyncHandler(async (req, res) => {
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "strict"
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "strict"
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
   });
 
   res.status(200).json({
-  success: true,
-  user,
-  accessToken
-});
+    success: true,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    accessToken
+  });
 
 });
 
@@ -223,22 +228,22 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 
- const resetToken = crypto
-  .randomBytes(3)
-  .toString("hex")
-  .slice(0, 5);
+  const resetToken = crypto
+    .randomBytes(3)
+    .toString("hex")
+    .slice(0, 5);
 
   user.resetPasswordToken = resetToken;
 
   user.resetPasswordExpire =
-   Date.now() + 60 * 60 * 1000
+    Date.now() + 60 * 60 * 1000
 
   await user.save();
 
- await sendEmail(
-  user.email,
-  "Reset Password",
-  `
+  await sendEmail(
+    user.email,
+    "Reset Password",
+    `
     <h2>Password Reset</h2>
 
     <p>
@@ -251,10 +256,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       This token expires in 10 minutes.
     </p>
   `
-  
-);
 
- 
+  );
+
+
 
   res.status(200).json({
     success: true,
@@ -267,38 +272,38 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 // RESET PASSWORD
 export const resetPassword = asyncHandler(async (req, res) => {
 
-const user = await User.findOne({
-  resetPasswordToken: req.params.token
-});
-
-if (!user) {
-  return res.status(400).json({
-    success: false,
-    message: "Token not found"
+  const user = await User.findOne({
+    resetPasswordToken: req.params.token
   });
-}
+
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Token not found"
+    });
+  }
 
 
-if (user.resetPasswordExpire < new Date()) {
-  return res.status(400).json({
-    success: false,
-    message: "Token expired"
+  if (user.resetPasswordExpire < new Date()) {
+    return res.status(400).json({
+      success: false,
+      message: "Token expired"
+    });
+  }
+  user.password = await bcrypt.hash(
+    req.body.password,
+    10
+  );
+
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password reset successful"
   });
-}
-user.password = await bcrypt.hash(
-  req.body.password,
-  10
-);
-
-user.resetPasswordToken = undefined;
-user.resetPasswordExpire = undefined;
-
-await user.save();
-
-res.status(200).json({
-  success: true,
-  message: "Password reset successful"
-});
 
 });
 
