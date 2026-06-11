@@ -69,10 +69,13 @@ export const registerForEvent = asyncHandler(async (req, res) => {
     }
   }
 
-  // Duplicate check
+  // Duplicate check — by userId OR by email
   const existing = await EventRegistration.findOne({
-    email: email.toLowerCase(),
-    eventId
+    eventId,
+    $or: [
+      { userId: req.user?.id },
+      { email: email.toLowerCase() }
+    ]
   });
 
   if (existing) {
@@ -174,9 +177,22 @@ export const getMyRegistrations = asyncHandler(async (req, res) => {
     ]
   }).sort({ createdAt: -1 }).lean();
 
+  // Filter out registrations for events that are closed or past
+  const activeRegistrations = [];
+  for (const reg of registrations) {
+    const event = await Event.findById(reg.eventId).lean();
+    // Keep only if event still exists AND is not past/closed
+    if (event && event.type !== "past") {
+      const status = (event.status || "").toLowerCase();
+      if (!status.includes("closed")) {
+        activeRegistrations.push(reg);
+      }
+    }
+  }
+
   res.status(200).json({
     success: true,
-    count: registrations.length,
-    registrations
+    count: activeRegistrations.length,
+    registrations: activeRegistrations
   });
 });

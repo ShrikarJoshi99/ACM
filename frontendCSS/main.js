@@ -954,10 +954,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    document.addEventListener("click", (e) => {
+    document.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-reg-event-id]");
       if (!btn) return;
-      openModal(btn.dataset.regEventId, btn.dataset.regEventTitle, parseInt(btn.dataset.regEventTeamSize) || 1);
+
+      const token = localStorage.getItem("token");
+      const eventId = btn.dataset.regEventId;
+
+      // Pre-check if user is already registered for this event
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/events/my-registrations`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (data.success && data.registrations) {
+            const alreadyRegistered = data.registrations.some(r => r.eventId === eventId);
+            if (alreadyRegistered) {
+              showPopup("Already Registered", "You have already registered for this event.");
+              return;
+            }
+          }
+        } catch { /* proceed to open modal if check fails */ }
+      }
+
+      openModal(eventId, btn.dataset.regEventTitle, parseInt(btn.dataset.regEventTeamSize) || 1);
     });
 
     /* ── Form submission ── */
