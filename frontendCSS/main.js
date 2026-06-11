@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIGURATION ---
   // When deployed, change the fallback URL to your production backend URL
   const PROD_BACKEND_URL = "https://acmjyothy-backend.onrender.com/api";
-  const isLocal = window.location.hostname === "localhost" || 
-                  window.location.hostname === "127.0.0.1" || 
-                  window.location.protocol === "file:";
+  const isLocal = window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.protocol === "file:";
   const API_BASE_URL = isLocal ? "http://localhost:5000/api" : PROD_BACKEND_URL;
   // ---------------------
 
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
              </button>`;
         } else if (isClosed) {
           actionHtml = `<div style="margin-top:1rem;padding:0.6rem 1.2rem;border-radius:0.75rem;background:rgba(244,63,94,0.08);border:1px solid rgba(253,164,175,0.2);text-align:center;">
-            <span style="font-size:0.85rem;font-weight:800;color:#fda4af;">🔒 Registration Closed</span>
+            <span style="font-size:0.85rem;font-weight:800;color:#fda4af;"> Registration Closed</span>
           </div>`;
         }
 
