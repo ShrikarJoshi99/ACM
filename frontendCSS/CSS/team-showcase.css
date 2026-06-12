@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════════
+   TEAM SHOWCASE — Styles
+   Photo-grid + member-list interactive layout
+   Matches the ACM JIT neo-brutalist / block-based theme
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Container ── */
+.team-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 2rem 0;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .team-showcase {
+    flex-direction: row;
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .team-showcase {
+    gap: 3.5rem;
+  }
+}
+
+/* ── Photo Grid ── */
+.ts-photo-grid {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .ts-photo-grid {
+    gap: 0.75rem;
+    padding-bottom: 0;
+    overflow-x: visible;
+  }
+}
+
+/* ── Columns with staggered offsets ── */
+.ts-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .ts-col {
+    gap: 0.75rem;
+  }
+}
+
+.ts-col-2 {
+  margin-top: 48px;
+}
+
+.ts-col-3 {
+  margin-top: 22px;
+}
+
+@media (min-width: 640px) {
+  .ts-col-2 {
+    margin-top: 56px;
+  }
+  .ts-col-3 {
+    margin-top: 26px;
+  }
+}
+
+@media (min-width: 768px) {
+  .ts-col-2 {
+    margin-top: 68px;
+  }
+  .ts-col-3 {
+    margin-top: 32px;
+  }
+}
+
+/* ── Photo Card ── */
+.ts-photo-card {
+  width: var(--card-w-sm, 110px);
+  height: var(--card-h-sm, 120px);
+  overflow: hidden;
+  border-radius: var(--block-radius, 12px);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.4s ease, transform 0.3s ease;
+  border: var(--block-border, 2px solid var(--v-text));
+  box-shadow: 3px 3px 0px var(--v-text, #064E3B);
+}
+
+@media (min-width: 640px) {
+  .ts-photo-card {
+    width: var(--card-w-md, 130px);
+    height: var(--card-h-md, 140px);
+  }
+}
+
+@media (min-width: 768px) {
+  .ts-photo-card {
+    width: var(--card-w-lg, 155px);
+    height: var(--card-h-lg, 165px);
+  }
+}
+
+.ts-photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) brightness(0.77);
+  transition: filter 0.5s ease;
+}
+
+.ts-photo-card.is-active {
+  box-shadow: var(--block-shadow, 6px 6px 0px var(--v-text));
+  transform: translate(-2px, -2px);
+}
+
+.ts-photo-card.is-active img {
+  filter: grayscale(0) brightness(1);
+}
+
+.ts-photo-card.is-dimmed {
+  opacity: 0.55;
+}
+
+.ts-photo-card:hover {
+  transform: translate(-2px, -2px);
+}
+
+/* ── Member List ── */
+.ts-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0;
+  flex: 1;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .ts-member-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .ts-member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-top: 0.5rem;
+  }
+}
+
+/* ── Member Row ── */
+.ts-member-row {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 0.75rem 1rem;
+  border-radius: var(--block-radius, 12px);
+  border: 2px solid transparent;
+  transition: opacity 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ts-member-row.is-active {
+  border-color: var(--v-text, #064E3B);
+  background: var(--v-card-bg, #111A16);
+  box-shadow: 4px 4px 0px var(--v-text, #064E3B);
+}
+
+.ts-member-row.is-dimmed {
+  opacity: 0.45;
+}
+
+/* ── Name Line ── */
+.ts-name-line {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.ts-dot {
+  width: 1rem;
+  height: 0.75rem;
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  background: var(--v-text, #064E3B);
+  opacity: 0.25;
+}
+
+.ts-member-row.is-active .ts-dot {
+  width: 1.25rem;
+  opacity: 1;
+  background: var(--v-primary, #10B981);
+}
+
+.ts-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.8;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+}
+
+@media (min-width: 768px) {
+  .ts-name {
+    font-size: 1.125rem;
+  }
+}
+
+.ts-member-row.is-active .ts-name {
+  opacity: 1;
+  color: var(--v-text, #D1FAE5);
+}
+
+/* ── Social Icons ── */
+.ts-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: 0.125rem;
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+.ts-member-row.is-active .ts-social-icons {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.ts-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 4px;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.55;
+  transition: all 0.15s ease;
+}
+
+.ts-social-link:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.15);
+}
+
+.ts-social-link svg {
+  display: block;
+}
+
+/* ── Role ── */
+.ts-role {
+  margin-top: 0.375rem;
+  padding-left: 1.6875rem; /* 27px to align under name past the dot */
+  font-size: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.5;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+}
+
+@media (min-width: 768px) {
+  .ts-role {
+    font-size: 0.625rem;
+  }
+}
+
+/* ══════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   ══════════════════════════════════════ */
+body.light-theme .ts-photo-card {
+  box-shadow: 3px 3px 0px var(--v-text);
+}
+
+body.light-theme .ts-photo-card.is-active {
+  box-shadow: var(--block-shadow);
+}
+
+body.light-theme .ts-member-row.is-active {
+  border-color: var(--v-text);
+  background: var(--v-card-bg);
+  box-shadow: 4px 4px 0px var(--v-text);
+}
+
+body.light-theme .ts-social-link {
+  color: var(--v-text);
+}
+
+body.light-theme .ts-social-link:hover {
+  background: rgba(0, 0, 0, 0.06);
+}

@@ -5,15 +5,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Know Us | ACM JIT</title>
+  <meta name="description"
+    content="Meet the core team behind ACM JIT — the students who code, design, organize, and keep the community moving.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./global.css">
-  <link rel="stylesheet" href="./theme.css">
-  <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./CSS/global.css">
+  <link rel="stylesheet" href="./CSS/theme.css">
+  <link rel="stylesheet" href="./CSS/team-showcase.css">
+  <link rel="icon" href="assets/Logo.png" type="image/png">
+  <script>
+    if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
+      document.documentElement.classList.add("light-theme");
+    }
+  </script>
 </head>
 
 <body>
+  <script>
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-theme");
+    }
+  </script>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
 
@@ -22,121 +37,290 @@
       <p class="label">Know Us</p>
       <h1 class="page-title">Meet the humans behind ACM JIT.</h1>
       <p class="page-subtitle">Our chapter is shaped by students who show up, organize, teach, design, code, and keep
-        the community moving. Here are the core team members, domain heads, and sub-committees building the chapter with
-        care.</p>
+        the community moving. Here are the core team members building the chapter with care.</p>
     </header>
 
-    <div class="team-grid">
+    <!-- ═══ TEAM SHOWCASE ═══ -->
+    <section class="team-showcase" id="team-showcase">
 
-      <!-- Yakshith -->
-      <article class="member-card cyan">
-        <div class="member-top">
-          <div class="avatar cyan-violet">Y</div>
-          <div>
-            <h2 class="member-name">YAKSHITH V</h2>
-            <span class="member-role cyan">Lead Developer</span>
-          </div>
-        </div>
-        <div class="socials">
-          <a href="https://github.com/YAKSHITH-1" aria-label="GitHub" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.19-3.37-1.19-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.99c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
-            </svg>
-          </a>
-          <a href="https://www.linkedin.com/in/yakshith01" aria-label="LinkedIn" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M6.94 8.75H3.75V20h3.19V8.75ZM5.35 3.33a1.85 1.85 0 1 0 0 3.7 1.85 1.85 0 0 0 0-3.7ZM20.25 13.8c0-3.02-1.61-4.43-3.76-4.43a3.25 3.25 0 0 0-2.94 1.62h-.04V8.75h-3.06V20h3.19v-5.57c0-1.47.28-2.89 2.1-2.89 1.79 0 1.81 1.68 1.81 2.98V20h3.19v-6.2h-.49Z" />
-            </svg>
-          </a>
-        </div>
-      </article>
+      <!-- ── Left: Photo Grid ── -->
+      <div class="ts-photo-grid">
+        <div class="ts-col ts-col-1" id="ts-col-1"></div>
+        <div class="ts-col ts-col-2" id="ts-col-2"></div>
+        <div class="ts-col ts-col-3" id="ts-col-3"></div>
+      </div>
 
-      <!-- shrikar -->
-      <article class="member-card violet">
-        <div class="member-top">
-          <div class="avatar violet-emerald">SJ</div>
-          <div>
-            <h2 class="member-name">SHRIKAR M JOSHI</h2>
-            <span class="member-role violet">FRONTEND DEVELOPER</span>
-          </div>
-        </div>
-        <div class="socials">
-          <a href="https://github.com/ShrikarJoshi99" aria-label="GitHub" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.19-3.37-1.19-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.99c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
-            </svg>
-          </a>
-          <a href="https://www.linkedin.com/in/ShrikarJoshi" aria-label="LinkedIn" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M6.94 8.75H3.75V20h3.19V8.75ZM5.35 3.33a1.85 1.85 0 1 0 0 3.7 1.85 1.85 0 0 0 0-3.7ZM20.25 13.8c0-3.02-1.61-4.43-3.76-4.43a3.25 3.25 0 0 0-2.94 1.62h-.04V8.75h-3.06V20h3.19v-5.57c0-1.47.28-2.89 2.1-2.89 1.79 0 1.81 1.68 1.81 2.98V20h3.19v-6.2h-.49Z" />
-            </svg>
-          </a>
-        </div>
-      </article>
+      <!-- ── Right: Member List ── -->
+      <div class="ts-member-list" id="ts-member-list"></div>
 
-      <!-- Nisha Menon
-      <article class="member-card emerald">
-        <div class="member-top">
-          <div class="avatar emerald-cyan">NM</div>
-          <div>
-            <h2 class="member-name">Nisha Menon</h2>
-            <span class="member-role emerald">WebDev Lead</span>
-          </div>
-        </div>
-        <div class="socials">
-          <a href="#" aria-label="GitHub" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.19-3.37-1.19-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.99c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
-          </a>
-          <a href="#" aria-label="LinkedIn" class="social-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.75H3.75V20h3.19V8.75ZM5.35 3.33a1.85 1.85 0 1 0 0 3.7 1.85 1.85 0 0 0 0-3.7ZM20.25 13.8c0-3.02-1.61-4.43-3.76-4.43a3.25 3.25 0 0 0-2.94 1.62h-.04V8.75h-3.06V20h3.19v-5.57c0-1.47.28-2.89 2.1-2.89 1.79 0 1.81 1.68 1.81 2.98V20h3.19v-6.2h-.49Z"/></svg>
-          </a>
-        </div>
-      </article> -->
-
-      <!--kishoreSir-->
-      <article class="member-card cyan">
-        <div class="member-top">
-          <div class="avatar cyan-emerald">K</div>
-          <div>
-            <h2 class="member-name">Kishore</h2>
-            <span class="member-role cyan">HOD</span>
-          </div>
-        </div>
-        <p class="member-bio">Head Of Department and Professor of ISE in JYOTHY INSTITUTE OF TECHNOLOGY</p>
-      </article>
-
-      <!--VANDHANA-->
-      <article class="member-card violet">
-        <div class="member-top">
-          <div class="avatar violet-cyan">SR</div>
-          <div>
-            <h2 class="member-name">VANDANA </h2>
-            <span class="member-role violet">Associate professor </span>
-          </div>
-        </div>
-        <p class="member-bio">Associate Professor in Department of ISE in JYOTHY INSTITUTE OF TECHNOLOGY</p>
-      </article>
-
-      <!-- Aman Kumar
-      <article class="member-card emerald">
-        <div class="member-top">
-          <div class="avatar emerald-violet">AK</div>
-          <div>
-            <h2 class="member-name">Aman Kumar</h2>
-            <span class="member-role emerald">Events Lead</span>
-          </div>
-        </div>
-        <p class="member-bio">Coordinates workshops, registrations, logistics, and volunteer teams.</p>
-      </article> -->
-
-    </div>
+    </section>
   </main>
 
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/Logo.png" alt="ACM Logo" style="width: 2rem; height: 2rem; object-fit: contain;" />
+          ACM JIT · ISE Student Chapter
+        </div>
+        <div class="footer-links">
+          <a href="index.html" class="footer-link">Home</a>
+          <a href="events.html" class="footer-link">Events</a>
+          <a href="community.html" class="footer-link">Community</a>
+          <a href="announcements.html" class="footer-link">Announcements</a>
+        </div>
+      </div>
+      <div class="footer-acm-cta">
+        <h2>
+          <a href="https://www.acm.org/chapters/students" target="_blank" rel="noopener noreferrer">
+            Know More About ACM
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        </h2>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 ACM JIT Chapter · Jyothy Institute of Technology, ISE Department
+      </div>
+    </div>
+  </footer>
+
   <script src="main.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       TEAM SHOWCASE — Vanilla JS (no React)
+       Converts the React team-showcase component to plain DOM.
+       ═══════════════════════════════════════════════════════════════ */
+
+    (function () {
+      'use strict';
+
+      // ── Team data ──
+      const MEMBERS = [
+        {
+          id: '1',
+          name: 'Yakshith V',
+          role: 'LEAD DEVELOPER',
+          image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces',
+          social: {
+            github: 'https://github.com/YAKSHITH-1',
+            linkedin: 'https://www.linkedin.com/in/yakshith01',
+          },
+        },
+        {
+          id: '2',
+          name: 'Shrikar M Joshi',
+          role: 'FRONTEND DEVELOPER',
+          image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=faces',
+          social: {
+            github: 'https://github.com/ShrikarJoshi99',
+            linkedin: 'https://www.linkedin.com/in/ShrikarJoshi',
+          },
+        },
+        {
+          id: '3',
+          name: 'Kishore',
+          role: 'HOD — ISE DEPARTMENT',
+          image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=faces',
+          social: {},
+        },
+        {
+          id: '4',
+          name: 'Vandana',
+          role: 'ASSOCIATE PROFESSOR',
+          image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=faces',
+          social: {},
+        },
+        {
+          id: '5',
+          name: 'ACM JIT',
+          role: 'STUDENT CHAPTER',
+          image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop&crop=faces',
+          social: {
+            linkedin: 'https://www.linkedin.com/company/acm-jit',
+          },
+        },
+        {
+          id: '6',
+          name: 'Join Us',
+          role: 'BECOME A MEMBER',
+          image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&h=400&fit=crop&crop=faces',
+          social: {},
+        },
+      ];
+
+      // ── SVG Icons (inline, no react-icons dependency) ──
+      const ICONS = {
+        github: '<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.19-3.37-1.19-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.99c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+        linkedin: '<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M6.94 8.75H3.75V20h3.19V8.75ZM5.35 3.33a1.85 1.85 0 1 0 0 3.7 1.85 1.85 0 0 0 0-3.7ZM20.25 13.8c0-3.02-1.61-4.43-3.76-4.43a3.25 3.25 0 0 0-2.94 1.62h-.04V8.75h-3.06V20h3.19v-5.57c0-1.47.28-2.89 2.1-2.89 1.79 0 1.81 1.68 1.81 2.98V20h3.19v-6.2h-.49Z"/></svg>',
+        twitter: '<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 0 0 1.88-2.38 8.59 8.59 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.32 3.91A12.16 12.16 0 0 1 3 4.79a4.28 4.28 0 0 0 1.32 5.72 4.24 4.24 0 0 1-1.94-.54v.05a4.28 4.28 0 0 0 3.43 4.2 4.27 4.27 0 0 1-1.93.07 4.29 4.29 0 0 0 4 2.97A8.59 8.59 0 0 1 2 19.54a12.13 12.13 0 0 0 6.56 1.92c7.88 0 12.2-6.53 12.2-12.2l-.01-.56A8.72 8.72 0 0 0 22.46 6Z"/></svg>',
+        instagram: '<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.97.24 2.44.41.61.24 1.05.52 1.51.98.46.46.74.9.98 1.51.17.47.36 1.27.41 2.44.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.97-.41 2.44-.24.61-.52 1.05-.98 1.51-.46.46-.9.74-1.51.98-.47.17-1.27.36-2.44.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.24-2.44-.41a4.08 4.08 0 0 1-1.51-.98 4.08 4.08 0 0 1-.98-1.51c-.17-.47-.36-1.27-.41-2.44C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.24-1.97.41-2.44.24-.61.52-1.05.98-1.51.46-.46.9-.74 1.51-.98.47-.17 1.27-.36 2.44-.41C8.84 2.17 9.22 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.87 5.87 0 0 0-2.13 1.38A5.87 5.87 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.87 5.87 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.87 5.87 0 0 0 2.13-1.38 5.87 5.87 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.87 5.87 0 0 0-1.38-2.13A5.87 5.87 0 0 0 19.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88Z"/></svg>',
+      };
+
+      let hoveredId = null;
+
+      // ── Photo card sizes per column ──
+      const COL_SIZES = {
+        col1: { w: [110, 130, 155], h: [120, 140, 165] },
+        col2: { w: [122, 145, 172], h: [132, 155, 182] },
+        col3: { w: [115, 136, 162], h: [125, 146, 172] },
+      };
+
+      // ── Split members into 3 columns ──
+      function getColumns(members) {
+        const col1 = members.filter((_, i) => i % 3 === 0);
+        const col2 = members.filter((_, i) => i % 3 === 1);
+        const col3 = members.filter((_, i) => i % 3 === 2);
+        return [col1, col2, col3];
+      }
+
+      // ── Create a photo card ──
+      function createPhotoCard(member, colKey) {
+        const card = document.createElement('div');
+        card.className = 'ts-photo-card';
+        card.dataset.memberId = member.id;
+
+        // Set responsive sizes via CSS custom properties
+        const sizes = COL_SIZES[colKey];
+        card.style.setProperty('--card-w-sm', sizes.w[0] + 'px');
+        card.style.setProperty('--card-h-sm', sizes.h[0] + 'px');
+        card.style.setProperty('--card-w-md', sizes.w[1] + 'px');
+        card.style.setProperty('--card-h-md', sizes.h[1] + 'px');
+        card.style.setProperty('--card-w-lg', sizes.w[2] + 'px');
+        card.style.setProperty('--card-h-lg', sizes.h[2] + 'px');
+
+        const img = document.createElement('img');
+        img.src = member.image;
+        img.alt = member.name;
+        img.loading = 'lazy';
+        card.appendChild(img);
+
+        // Hover events
+        card.addEventListener('mouseenter', () => setHovered(member.id));
+        card.addEventListener('mouseleave', () => setHovered(null));
+
+        return card;
+      }
+
+      // ── Create a member row (right side) ──
+      function createMemberRow(member) {
+        const row = document.createElement('div');
+        row.className = 'ts-member-row';
+        row.dataset.memberId = member.id;
+
+        // Name line with indicator dot and social icons
+        const nameWrap = document.createElement('div');
+        nameWrap.className = 'ts-name-line';
+
+        const dot = document.createElement('span');
+        dot.className = 'ts-dot';
+        nameWrap.appendChild(dot);
+
+        const name = document.createElement('span');
+        name.className = 'ts-name';
+        name.textContent = member.name;
+        nameWrap.appendChild(name);
+
+        // Social icons container
+        const social = member.social || {};
+        const hasSocial = social.github || social.linkedin || social.twitter || social.instagram;
+
+        if (hasSocial) {
+          const socialWrap = document.createElement('div');
+          socialWrap.className = 'ts-social-icons';
+
+          for (const [platform, url] of Object.entries(social)) {
+            if (url && ICONS[platform]) {
+              const a = document.createElement('a');
+              a.href = url;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer';
+              a.className = 'ts-social-link';
+              a.title = platform.charAt(0).toUpperCase() + platform.slice(1);
+              a.innerHTML = ICONS[platform];
+              a.addEventListener('click', (e) => e.stopPropagation());
+              socialWrap.appendChild(a);
+            }
+          }
+          nameWrap.appendChild(socialWrap);
+        }
+
+        row.appendChild(nameWrap);
+
+        // Role
+        const role = document.createElement('p');
+        role.className = 'ts-role';
+        role.textContent = member.role;
+        row.appendChild(role);
+
+        // Hover events
+        row.addEventListener('mouseenter', () => setHovered(member.id));
+        row.addEventListener('mouseleave', () => setHovered(null));
+
+        return row;
+      }
+
+      // ── Set hovered state and update DOM ──
+      function setHovered(id) {
+        hoveredId = id;
+
+        // Update photo cards
+        document.querySelectorAll('.ts-photo-card').forEach((card) => {
+          const cid = card.dataset.memberId;
+          const isActive = id === cid;
+          const isDimmed = id !== null && !isActive;
+
+          card.classList.toggle('is-active', isActive);
+          card.classList.toggle('is-dimmed', isDimmed);
+
+          const img = card.querySelector('img');
+          if (img) {
+            if (isActive) {
+              img.style.filter = 'grayscale(0) brightness(1)';
+            } else {
+              img.style.filter = 'grayscale(1) brightness(0.77)';
+            }
+          }
+        });
+
+        // Update member rows
+        document.querySelectorAll('.ts-member-row').forEach((row) => {
+          const rid = row.dataset.memberId;
+          const isActive = id === rid;
+          const isDimmed = id !== null && !isActive;
+
+          row.classList.toggle('is-active', isActive);
+          row.classList.toggle('is-dimmed', isDimmed);
+        });
+      }
+
+      // ── Render everything ──
+      function render() {
+        const [col1, col2, col3] = getColumns(MEMBERS);
+
+        const col1El = document.getElementById('ts-col-1');
+        const col2El = document.getElementById('ts-col-2');
+        const col3El = document.getElementById('ts-col-3');
+        const listEl = document.getElementById('ts-member-list');
+
+        col1.forEach((m) => col1El.appendChild(createPhotoCard(m, 'col1')));
+        col2.forEach((m) => col2El.appendChild(createPhotoCard(m, 'col2')));
+        col3.forEach((m) => col3El.appendChild(createPhotoCard(m, 'col3')));
+        MEMBERS.forEach((m) => listEl.appendChild(createMemberRow(m)));
+      }
+
+      // ── Init ──
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', render);
+      } else {
+        render();
+      }
+    })();
+  </script>
 </body>
 
 </html>

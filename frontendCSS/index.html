@@ -11,8 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/Logo.png" type="image/png">
-  <link rel="stylesheet" href="./global.css">
-  <link rel="stylesheet" href="./theme.css">
+  <link rel="stylesheet" href="./CSS/global.css">
+  <link rel="stylesheet" href="./CSS/theme.css">
+  <link rel="stylesheet" href="./CSS/card-curtain-reveal.css">
+  <link rel="stylesheet" href="./CSS/feature-showcase.css">
   <script>
     if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
       document.documentElement.classList.add("light-theme");
@@ -124,7 +126,7 @@
       </div>
     </section>
 
-    <!-- ═══ DOMAINS ═══ -->
+    <!-- ═══ DOMAINS (Curtain Reveal Cards) ═══ -->
     <section class="domains-section reveal">
       <div class="container">
         <div class="domains-header">
@@ -134,165 +136,200 @@
             resources, and regular sessions.</p>
         </div>
         <div class="domains-grid">
-          <article class="domain-card">
-            <div class="domain-icon cyan">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M10 17l-5-5 5-5M14 7l5 5-5 5" />
-                <circle cx="12" cy="12" r="1" />
-              </svg>
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-              </svg>
+
+          <!-- Card 1: Coding & DSA -->
+          <article class="curtain-card" data-accent="ice" id="curtain-card-1">
+            <div class="curtain-body">
+              <div class="curtain-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <h3 class="curtain-title">Coding<br>&amp; DSA</h3>
+              <div class="curtain-desc">
+                <p>Problem-solving sessions, contest prep, peer practice, and the confidence to think
+                  clearly under pressure.</p>
+              </div>
+              <div class="curtain-action">
+                <span class="curtain-action-btn" title="Explore">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div class="curtain-overlay"></div>
             </div>
-            <h3 class="domain-name">Coding &amp; DSA</h3>
-            <p class="domain-desc">Problem-solving sessions, contest prep, peer practice, and the confidence to think
-              clearly under pressure.</p>
-          </article>
-          <article class="domain-card">
-            <div class="domain-icon violet">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="16" rx="2" />
-                <path d="M3 9h18M9 20v-4" />
-              </svg>
-              <circle cx="12" cy="12" r="10" />
-              <line x1="2" y1="12" x2="22" y2="12" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
+            <div class="curtain-footer">
+              <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop&q=80"
+                alt="Coding on screen" loading="lazy" />
             </div>
-            <h3 class="domain-name">Web Development</h3>
-            <p class="domain-desc">Frontend polish, backend APIs, deployment pipelines, and real projects that look and
-              feel production-ready.</p>
           </article>
-          <article class="domain-card">
-            <div class="domain-icon emerald">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path
-                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                <circle cx="12" cy="12" r="2" />
-              </svg>
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-              </svg>
+
+          <!-- Card 2: Web Development -->
+          <article class="curtain-card" data-accent="sage" id="curtain-card-2">
+            <div class="curtain-body">
+              <div class="curtain-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                  </path>
+                </svg>
+              </div>
+              <h3 class="curtain-title">Web<br>Development</h3>
+              <div class="curtain-desc">
+                <p>Frontend polish, backend APIs, deployment pipelines, and real projects that look and
+                  feel production-ready.</p>
+              </div>
+              <div class="curtain-action">
+                <span class="curtain-action-btn" title="Explore">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div class="curtain-overlay"></div>
             </div>
-            <h3 class="domain-name">AI &amp; Machine Learning</h3>
-            <p class="domain-desc">Models, data thinking, notebooks, prototypes, and practical ways to apply machine
-              intelligence.</p>
-          </article>
-          <article class="domain-card">
-            <div class="domain-icon rose">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" />
-                <path d="M7 10h2M7 14h6" />
-              </svg>
-              <path d="M12 19l7-7 3 3-7 7-3-3z" />
-              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-              <path d="M2 2l7.586 7.586" />
-              <circle cx="11" cy="11" r="2" />
-              </svg>
+            <div class="curtain-footer">
+              <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&h=400&fit=crop&q=80"
+                alt="Web development workspace" loading="lazy" />
             </div>
-            <h3 class="domain-name">Design &amp; UI/UX</h3>
-            <p class="domain-desc">Visual systems, product thinking, interfaces, and experiences people actually enjoy
-              using.</p>
           </article>
+
+          <!-- Card 3: AI & Machine Learning -->
+          <article class="curtain-card" data-accent="gold" id="curtain-card-3">
+            <div class="curtain-body">
+              <div class="curtain-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path
+                    d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                  </path>
+                  <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+              </div>
+              <h3 class="curtain-title">AI &amp;<br>Machine Learning</h3>
+              <div class="curtain-desc">
+                <p>Models, data thinking, notebooks, prototypes, and practical ways to apply machine
+                  intelligence.</p>
+              </div>
+              <div class="curtain-action">
+                <span class="curtain-action-btn" title="Explore">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div class="curtain-overlay"></div>
+            </div>
+            <div class="curtain-footer">
+              <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop&q=80"
+                alt="AI neural network visualization" loading="lazy" />
+            </div>
+          </article>
+
+          <!-- Card 4: Design & UI/UX -->
+          <article class="curtain-card" data-accent="coral" id="curtain-card-4">
+            <div class="curtain-body">
+              <div class="curtain-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                  <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                  <path d="M2 2l7.586 7.586"></path>
+                  <circle cx="11" cy="11" r="2"></circle>
+                </svg>
+              </div>
+              <h3 class="curtain-title">Design<br>&amp; UI/UX</h3>
+              <div class="curtain-desc">
+                <p>Visual systems, product thinking, interfaces, and experiences people actually enjoy
+                  using.</p>
+              </div>
+              <div class="curtain-action">
+                <span class="curtain-action-btn" title="Explore">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div class="curtain-overlay"></div>
+            </div>
+            <div class="curtain-footer">
+              <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop&q=80"
+                alt="UI/UX design tools" loading="lazy" />
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
 
-    <!-- ═══ WHAT WE DO ═══ -->
+    <!-- ═══ WHAT WE DO — Blog Cards + Marquee ═══ -->
     <section class="features-section reveal">
       <div class="container">
         <div class="features-header">
           <div class="section-label">What We Do</div>
           <h2 class="section-title">More than a club — a launchpad for your career.</h2>
+          <p class="section-subtitle" style="max-width:32rem; color:#94a3b8; margin-top:0.5rem;">
+            Stay ahead of the curve with hands-on workshops, hackathons, mentorship, and everything in between.
+          </p>
         </div>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-emoji cyan">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-                <line x1="14" y1="4" x2="10" y2="20"></line>
-              </svg>
+
+
+        <!-- Marquee carousel (from demo.tsx) -->
+        <div class="marquee-wrap" id="marquee-wrap">
+          <div class="marquee-fade-left"></div>
+          <div class="marquee-track" id="marquee-track">
+            <!-- Set 1 -->
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tech Talks" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Tech Talks &amp; Guest Speakers</p></div>
             </div>
-            <h3 class="feature-title">Hands-On Workshops</h3>
-            <p class="feature-text">We run regular workshops on web dev, Git, Python, cloud — always with live coding,
-              not just slides.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-emoji amber">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path>
-                <path d="M12 2a7 7 0 0 0-7 7c0 3 2.5 5 5 5.66h4c2.5-.66 5-2.66 5-5.66a7 7 0 0 0-7-7z"></path>
-              </svg>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Project Showcases" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Project Showcases &amp; Demo Days</p></div>
             </div>
-            <h3 class="feature-title">Hackathons &amp; Contests</h3>
-            <p class="feature-text">Internal code sprints, design challenges, and team hackathons to build under real
-              constraints.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-emoji emerald">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Code Sprints" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Code Sprints &amp; Design Challenges</p></div>
             </div>
-            <h3 class="feature-title">Peer Mentorship</h3>
-            <p class="feature-text">Seniors guide juniors through projects, interview prep, and the rough patches of
-              learning something new.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-emoji rose">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-              </svg>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Global ACM Network" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Global ACM Network Access</p></div>
             </div>
-            <h3 class="feature-title">Tech Talks</h3>
-            <p class="feature-text">Students and guest speakers share real-world experiences — from startup life to
-              research breakthroughs.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-emoji violet">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-              </svg>
+            <!-- Set 2 (duplicate for seamless loop) -->
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tech Talks" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Tech Talks &amp; Guest Speakers</p></div>
             </div>
-            <h3 class="feature-title">Project Showcases</h3>
-            <p class="feature-text">Ship your project, present it, get feedback, iterate. Build a portfolio before you
-              graduate.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-emoji fuchsia">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-                </path>
-              </svg>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Project Showcases" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Project Showcases &amp; Demo Days</p></div>
             </div>
-            <h3 class="feature-title">Global ACM Network</h3>
-            <p class="feature-text">Part of the world's largest computing society — access events, resources, and a
-              global community.</p>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Code Sprints" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Code Sprints &amp; Design Challenges</p></div>
+            </div>
+            <div class="marquee-card">
+              <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Global ACM Network" loading="lazy" />
+              <div class="marquee-card-overlay"><p>Global ACM Network Access</p></div>
+            </div>
           </div>
+          <div class="marquee-fade-right"></div>
         </div>
+
       </div>
     </section>
 
@@ -423,6 +460,48 @@
       });
     }, { threshold: 0.15 });
     revealElements.forEach(el => revealObserver.observe(el));
+  </script>
+
+  <script>
+    // Curtain Reveal Cards — hover state toggle (replaces React + Framer Motion)
+    document.querySelectorAll('.curtain-card').forEach(card => {
+      // Desktop: mouse hover
+      card.addEventListener('mouseenter', () => card.classList.add('is-hovered'));
+      card.addEventListener('mouseleave', () => card.classList.remove('is-hovered'));
+      
+      // Mobile: tap to reveal
+      card.addEventListener('click', (e) => {
+        // Only apply click-to-toggle logic on mobile viewports
+        if (window.innerWidth <= 767) {
+          const wasHovered = card.classList.contains('is-hovered');
+          // Close all cards first
+          document.querySelectorAll('.curtain-card').forEach(c => c.classList.remove('is-hovered'));
+          // If it wasn't already hovered, open it
+          if (!wasHovered) {
+            card.classList.add('is-hovered');
+          }
+        }
+      });
+    });
+  </script>
+
+  <script>
+    // Marquee carousel — hover/touch to pause (replaces React useState)
+    const marqueeWrap = document.getElementById('marquee-wrap');
+    const marqueeTrack = document.getElementById('marquee-track');
+    if (marqueeWrap && marqueeTrack) {
+      // Set speed: 4 cards × 2.5s each = 10s
+      marqueeTrack.style.animationDuration = '10s';
+
+      // Desktop: pause on hover
+      marqueeWrap.addEventListener('mouseenter', () => marqueeTrack.classList.add('paused'));
+      marqueeWrap.addEventListener('mouseleave', () => marqueeTrack.classList.remove('paused'));
+
+      // Mobile: tap to pause/resume
+      marqueeWrap.addEventListener('touchstart', () => {
+        marqueeTrack.classList.toggle('paused');
+      }, { passive: true });
+    }
   </script>
 
   <script type="importmap">
