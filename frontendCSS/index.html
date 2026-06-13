@@ -9,12 +9,16 @@
     content="ACM Student Chapter at Jyothy Institute of Technology, ISE Department. Join our community of learners, builders, and innovators.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="icon" href="assets/Logo.png" type="image/png">
   <link rel="stylesheet" href="./CSS/global.css">
   <link rel="stylesheet" href="./CSS/theme.css">
+  <link rel="stylesheet" href="./CSS/stars.css">
   <link rel="stylesheet" href="./CSS/card-curtain-reveal.css">
   <link rel="stylesheet" href="./CSS/feature-showcase.css">
+  <link rel="stylesheet" href="./CSS/animated-roadmap.css">
   <script>
     if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
       document.documentElement.classList.add("light-theme");
@@ -47,10 +51,7 @@
       <div class="container">
         <div class="hero-grid">
           <div class="hero-content">
-            <div class="hero-eyebrow">
-              <span class="dot"></span>
-              Jyothy Institute of Technology · ISE Department
-            </div>
+
             <h1 class="hero-heading">
               Association for Computing Machinery<br>
               <span class="highlight">JIT</span>
@@ -77,10 +78,96 @@
 
           <div class="hero-visual">
             <div class="hero-card-stack">
-              <!-- Stylized Code Snippet -->
-              <!-- 3D Three.js ACM Logo Experience -->
-              <div class="hero-card hero-card-main block-code-card" id="hero-3d-container" style="padding: 0; overflow: hidden; height: 380px; position: relative; background: var(--v-card-bg);">
-                <div id="acm-3d-logo" style="width: 100%; height: 100%;"></div>
+              <!-- Animated Roadmap (replaces 3D model) -->
+              <div class="hero-card hero-card-main block-code-card" id="hero-roadmap-container"
+                style="padding: 0; overflow: hidden; height: 380px; position: relative; background: var(--v-card-bg);">
+                <div class="roadmap-card" id="animated-roadmap">
+                  <div class="roadmap-forest">
+                    <!-- Clouds -->
+                    <svg class="roadmap-cloud" viewBox="0 0 100 60" style="width: 80px; height: 48px; left: 20%; top: 10%;">
+                      <path d="M20 50 Q20 20 45 20 Q55 5 70 20 Q95 20 90 50 Z" />
+                    </svg>
+                    <svg class="roadmap-cloud" viewBox="0 0 100 60" style="width: 60px; height: 36px; left: 60%; top: 5%; animation-delay: -5s;">
+                      <path d="M20 50 Q20 20 45 20 Q55 5 70 20 Q95 20 90 50 Z" />
+                    </svg>
+
+                    <!-- Trees -->
+                    <svg class="roadmap-tree" viewBox="0 0 100 120" style="width: 45px; height: 54px; left: 18%; top: 55%; transform: rotate(-5deg);">
+                      <path d="M50 10 L80 50 L65 50 L90 90 L10 90 L35 50 L20 50 Z" />
+                      <rect x="44" y="90" width="12" height="20" />
+                    </svg>
+                    <svg class="roadmap-tree" viewBox="0 0 100 120" style="width: 35px; height: 42px; left: 45%; top: 25%; transform: rotate(3deg);">
+                      <path d="M50 10 L80 50 L65 50 L90 90 L10 90 L35 50 L20 50 Z" />
+                      <rect x="44" y="90" width="12" height="20" />
+                    </svg>
+                    <svg class="roadmap-tree" viewBox="0 0 100 120" style="width: 60px; height: 72px; left: 75%; top: 65%; transform: rotate(-2deg);">
+                      <path d="M50 10 L80 50 L65 50 L90 90 L10 90 L35 50 L20 50 Z" />
+                      <rect x="44" y="90" width="12" height="20" />
+                    </svg>
+                    
+                    <!-- Bushes -->
+                    <svg class="roadmap-bush" viewBox="0 0 100 60" style="width: 40px; height: 24px; left: 30%; top: 75%;">
+                      <path d="M10 50 Q10 20 35 20 Q50 5 70 20 Q90 20 90 50 Z" />
+                    </svg>
+                    <svg class="roadmap-bush" viewBox="0 0 100 60" style="width: 50px; height: 30px; left: 65%; top: 45%;">
+                      <path d="M10 50 Q10 20 35 20 Q50 5 70 20 Q90 20 90 50 Z" />
+                    </svg>
+                  </div>
+                  <div class="roadmap-contours"></div>
+                  <div class="roadmap-badge">Roadmap 2026</div>
+
+                  <div class="roadmap-particle"></div>
+                  <div class="roadmap-particle"></div>
+                  <div class="roadmap-particle"></div>
+                  <div class="roadmap-particle"></div>
+                  <div class="roadmap-particle"></div>
+
+                  <svg class="roadmap-svg" viewBox="0 0 800 380" preserveAspectRatio="none">
+                    <path class="roadmap-path-bg"
+                      d="M 60 120 Q 200 -20 350 150 Q 500 300 600 220 T 760 260" />
+                    <path class="roadmap-path-glow" id="roadmap-glow"
+                      d="M 60 120 Q 200 -20 350 150 Q 500 300 600 220 T 760 260" />
+                    <path class="roadmap-path-active" id="roadmap-path"
+                      d="M 60 120 Q 200 -20 350 150 Q 500 300 600 220 T 760 260" />
+                  </svg>
+
+                  <div class="milestone milestone--complete" data-delay="1" style="top: 27.3%; left: 5.5%;">
+                    <div class="milestone-dot-wrap">
+                      <div class="milestone-dot"></div>
+                      <div class="milestone-dot-ring"></div>
+                    </div>
+                    <div class="milestone-label">Kick-off</div>
+                  </div>
+
+                  <div class="milestone milestone--complete" data-delay="2" style="top: 20.6%; left: 34.3%;">
+                    <div class="milestone-dot-wrap">
+                      <div class="milestone-dot"></div>
+                      <div class="milestone-dot-ring"></div>
+                    </div>
+                    <div class="milestone-label">Design</div>
+                  </div>
+
+                  <div class="milestone milestone--in-progress" data-delay="3" style="top: 60.8%; left: 62.0%;">
+                    <div class="milestone-dot-wrap">
+                      <div class="milestone-dot"></div>
+                      <div class="milestone-dot-ring"></div>
+                    </div>
+                    <div class="milestone-label">Development</div>
+                  </div>
+
+                  <div class="milestone milestone--pending" data-delay="4" style="top: 53.6%; left: 89.8%;">
+                    <div class="milestone-dot-wrap">
+                      <div class="milestone-dot"></div>
+                      <div class="milestone-dot-ring"></div>
+                    </div>
+                    <div class="milestone-label">Launch</div>
+                  </div>
+
+                  <div class="roadmap-progress">
+                    <div class="roadmap-progress-dot"></div>
+                    50% Complete
+                  </div>
+                </div>
               </div>
 
               <!-- Float Card 1 — Next Event (rendered dynamically) -->
@@ -90,12 +177,6 @@
                 <div class="float-card-sub" id="hero-next-event-sub">Loading…</div>
               </div>
 
-              <!-- Float Card 2 — Members -->
-              <div class="hero-card hero-card-float-2">
-                <div class="float-card-label">Active Members</div>
-                <div class="float-card-value">28<span class="unit">+</span></div>
-                <div class="float-card-sub">and growing every semester</div>
-              </div>
             </div>
           </div>
         </div>
@@ -177,8 +258,7 @@
                   stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="2" y1="12" x2="22" y2="12"></line>
-                  <path
-                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
                   </path>
                 </svg>
               </div>
@@ -294,37 +374,69 @@
           <div class="marquee-track" id="marquee-track">
             <!-- Set 1 -->
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tech Talks" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Tech Talks &amp; Guest Speakers</p></div>
+              <img
+                src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Tech Talks" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Tech Talks &amp; Guest Speakers</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Project Showcases" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Project Showcases &amp; Demo Days</p></div>
+              <img
+                src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Project Showcases" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Project Showcases &amp; Demo Days</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Code Sprints" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Code Sprints &amp; Design Challenges</p></div>
+              <img
+                src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Code Sprints" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Code Sprints &amp; Design Challenges</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Global ACM Network" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Global ACM Network Access</p></div>
+              <img
+                src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Global ACM Network" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Global ACM Network Access</p>
+              </div>
             </div>
             <!-- Set 2 (duplicate for seamless loop) -->
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tech Talks" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Tech Talks &amp; Guest Speakers</p></div>
+              <img
+                src="https://images.pexels.com/photos/1708912/pexels-photo-1708912.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Tech Talks" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Tech Talks &amp; Guest Speakers</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Project Showcases" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Project Showcases &amp; Demo Days</p></div>
+              <img
+                src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Project Showcases" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Project Showcases &amp; Demo Days</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Code Sprints" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Code Sprints &amp; Design Challenges</p></div>
+              <img
+                src="https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Code Sprints" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Code Sprints &amp; Design Challenges</p>
+              </div>
             </div>
             <div class="marquee-card">
-              <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Global ACM Network" loading="lazy" />
-              <div class="marquee-card-overlay"><p>Global ACM Network Access</p></div>
+              <img
+                src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Global ACM Network" loading="lazy" />
+              <div class="marquee-card-overlay">
+                <p>Global ACM Network Access</p>
+              </div>
             </div>
           </div>
           <div class="marquee-fade-right"></div>
@@ -468,7 +580,7 @@
       // Desktop: mouse hover
       card.addEventListener('mouseenter', () => card.classList.add('is-hovered'));
       card.addEventListener('mouseleave', () => card.classList.remove('is-hovered'));
-      
+
       // Mobile: tap to reveal
       card.addEventListener('click', (e) => {
         // Only apply click-to-toggle logic on mobile viewports
@@ -504,167 +616,77 @@
     }
   </script>
 
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  <script>
+    // ══ Animated Roadmap — scroll-driven path + milestone reveal ══
+    (function () {
+      const roadmap = document.getElementById('animated-roadmap');
+      if (!roadmap) return;
+
+      const pathEl = document.getElementById('roadmap-path');
+      const glowEl = document.getElementById('roadmap-glow');
+      const milestones = roadmap.querySelectorAll('.milestone');
+      const particles = roadmap.querySelectorAll('.roadmap-particle');
+
+      // Get total path length for dash animation
+      let totalLength = 0;
+      if (pathEl) {
+        totalLength = pathEl.getTotalLength();
+        pathEl.style.strokeDasharray = totalLength;
+        pathEl.style.strokeDashoffset = totalLength;
       }
-    }
-  </script>
-  <script type="module">
-    import * as THREE from 'three';
-    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-
-    const container = document.getElementById('acm-3d-logo');
-    if (container) {
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
-      camera.position.set(0, 0, 160);
-
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
-
-      // Dynamically fetch the active CSS theme colors
-      const rootStyles = getComputedStyle(document.body);
-      const colorPrimary = rootStyles.getPropertyValue('--v-primary').trim() || '#10B981';
-      const colorCta = rootStyles.getPropertyValue('--v-cta').trim() || '#F59E0B';
-      const colorText = rootStyles.getPropertyValue('--v-text').trim() || '#064E3B';
-
-      // Flat, bright lighting (minimal shadows for blocky aesthetic)
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
-      scene.add(ambientLight);
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      dirLight.position.set(50, 50, 50);
-      scene.add(dirLight);
-
-      // Group to hold everything that rotates together
-      const mainGroup = new THREE.Group();
-      scene.add(mainGroup);
-
-      // Create hard black/text-color edges (Neo-Brutalist signature)
-      const edgeMat = new THREE.LineBasicMaterial({ color: colorText, linewidth: 2 });
-      const matPrimary = new THREE.MeshToonMaterial({ color: colorPrimary });
-      const matCta = new THREE.MeshToonMaterial({ color: colorCta });
-      const matDark = new THREE.MeshToonMaterial({ color: colorText });
-      const matLight = new THREE.MeshToonMaterial({ color: '#f8fafc' });
-
-      function createEdgedMesh(geom, mat) {
-        const mesh = new THREE.Mesh(geom, mat);
-        const edges = new THREE.EdgesGeometry(geom, 15);
-        const line = new THREE.LineSegments(edges, edgeMat);
-        mesh.add(line);
-        return mesh;
+      if (glowEl && totalLength) {
+        glowEl.style.strokeDasharray = totalLength;
+        glowEl.style.strokeDashoffset = totalLength;
       }
 
-      // 1. Relatable Tech Centerpiece: The "Data Core" Server
-      const techCore = new THREE.Group();
-      mainGroup.add(techCore);
+      // Scroll-driven path drawing
+      function updatePath() {
+        if (!pathEl || !totalLength) return;
+        const rect = roadmap.getBoundingClientRect();
+        const windowH = window.innerHeight;
 
-      // Central Data Pillar
-      const pillarGeo = new THREE.CylinderGeometry(14, 14, 50, 8);
-      const pillar = createEdgedMesh(pillarGeo, matPrimary);
-      techCore.add(pillar);
+        // Calculate visibility progress (0 = just entering, 1 = fully scrolled past)
+        const start = rect.top - windowH;
+        const end = rect.bottom;
+        const range = end - start;
+        const progress = Math.min(Math.max(-start / range, 0), 1);
 
-      // Base Platform
-      const baseGeo = new THREE.CylinderGeometry(30, 30, 6, 8);
-      const base = createEdgedMesh(baseGeo, matDark);
-      base.position.y = -28;
-      techCore.add(base);
+        // Map progress [0.1, 0.6] → [0, 1] for the path
+        const pathProgress = Math.min(Math.max((progress - 0.1) / 0.5, 0), 1);
+        const offset = totalLength * (1 - pathProgress);
 
-      // Top Cap
-      const topGeo = new THREE.CylinderGeometry(18, 18, 4, 8);
-      const top = createEdgedMesh(topGeo, matCta);
-      top.position.y = 27;
-      techCore.add(top);
-
-      // Floating Server Rings
-      const rings = new THREE.Group();
-      techCore.add(rings);
-      
-      for(let i=0; i<3; i++) {
-        const radius = 26 + (i % 2) * 8; // alternate radius
-        const ringGeo = new THREE.TorusGeometry(radius, 2.5, 4, 8);
-        const ring = createEdgedMesh(ringGeo, i % 2 === 0 ? matCta : matLight);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = -12 + i * 12;
-        
-        // Add data nodes attached to the ring
-        const numNodes = i % 2 === 0 ? 4 : 6;
-        for(let j=0; j<numNodes; j++) {
-            const nodeGeo = new THREE.BoxGeometry(6, 6, 8);
-            const node = createEdgedMesh(nodeGeo, matDark);
-            const angle = (j / numNodes) * Math.PI * 2;
-            node.position.set(Math.cos(angle)*radius, Math.sin(angle)*radius, 0);
-            node.rotation.z = angle;
-            ring.add(node);
-        }
-        rings.add(ring);
+        pathEl.style.strokeDashoffset = offset;
+        if (glowEl) glowEl.style.strokeDashoffset = offset;
       }
 
-      // Outer floating packets (orbiting the core)
-      const packets = new THREE.Group();
-      techCore.add(packets);
-      const packetGeo = new THREE.BoxGeometry(5, 5, 5);
-      for(let i=0; i<12; i++) {
-         const packet = createEdgedMesh(packetGeo, i % 3 === 0 ? matCta : matPrimary);
-         const angle = (i / 12) * Math.PI * 2;
-         const dist = 50 + Math.random() * 20;
-         packet.position.set(Math.cos(angle)*dist, (Math.random() - 0.5)*60, Math.sin(angle)*dist);
-         
-         packet.userData = {
-            rotSpeedX: (Math.random() - 0.5) * 0.05,
-            rotSpeedY: (Math.random() - 0.5) * 0.05
-         };
-         packets.add(packet);
-      }
-
-      // Interactive mouse movement
-      let mouseX = 0;
-      let mouseY = 0;
-      container.addEventListener('mousemove', (event) => {
-        const rect = container.getBoundingClientRect();
-        mouseX = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
-        mouseY = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
-      });
-
-      function animate() {
-        requestAnimationFrame(animate);
-        const time = Date.now() * 0.001;
-
-        // Snappy rotation following mouse
-        mainGroup.rotation.x += (mouseY * 0.3 - mainGroup.rotation.x) * 0.1;
-        mainGroup.rotation.y += (mouseX * 0.3 + Math.sin(time * 0.5) * 0.1 - mainGroup.rotation.y) * 0.1;
-
-        // Animate the tech core rings (counter-rotating)
-        rings.children.forEach((ring, idx) => {
-          ring.rotation.z += (idx % 2 === 0 ? 0.005 : -0.008); 
+      // IntersectionObserver for milestones & particles
+      const milestoneObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
         });
-        
-        // Animate floating packets
-        packets.rotation.y += 0.003;
-        packets.children.forEach(p => {
-            p.rotation.x += p.userData.rotSpeedX;
-            p.rotation.y += p.userData.rotSpeedY;
+      }, { threshold: 0.3 });
+
+      milestones.forEach(m => milestoneObserver.observe(m));
+      particles.forEach(p => milestoneObserver.observe(p));
+
+      // Also trigger milestones when the roadmap card enters viewport
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            milestones.forEach(m => m.classList.add('is-visible'));
+            particles.forEach(p => p.classList.add('is-visible'));
+            cardObserver.unobserve(entry.target);
+          }
         });
-        
-        // Gently float the entire core
-        techCore.position.y = Math.sin(time * 2) * 2;
+      }, { threshold: 0.2 });
+      cardObserver.observe(roadmap);
 
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('resize', () => {
-        if(!container) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-    }
+      // Listen to scroll for path drawing
+      window.addEventListener('scroll', updatePath, { passive: true });
+      updatePath(); // initial call
+    })();
   </script>
 </body>
 

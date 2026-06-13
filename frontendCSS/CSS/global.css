@@ -2432,28 +2432,9 @@ img {
 }
 
 /* Left */
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  padding: 0.4rem 1rem;
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.15);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--cyan-300);
-  margin-bottom: 1.5rem;
-}
 
-.hero-eyebrow .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--emerald-400);
-  box-shadow: 0 0 8px var(--emerald-400);
-  animation: pulse 2s ease-in-out infinite;
-}
+
+
 
 @keyframes pulse {
 
@@ -2627,9 +2608,9 @@ img {
 .hero-card-float-1 {
   top: -8%;
   right: -5%;
-  width: 55%;
+  width: 35%;
   z-index: 4;
-  padding: 1.25rem;
+  padding: 0.8rem;
   background: rgba(15, 23, 42, 0.9);
   border: 1px solid rgba(34, 211, 238, 0.15);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -2673,17 +2654,17 @@ img {
 }
 
 .float-card-label {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--slate-500);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .float-card-value {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #fff;
 }
@@ -2696,7 +2677,7 @@ img {
 
 .float-card-sub {
   margin-top: 0.25rem;
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: var(--slate-400);
 }
 
@@ -2808,14 +2789,15 @@ img {
   /* Pill shape requires significant left/right padding, reduced vertical padding for shorter height */
   padding: 1.5rem 4rem;
 
-  background: #000000; /* Pitch black */
+  background: #000000;
+  /* Pitch black */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 
   /* Elegant Pill / Stadium Shape */
   border-radius: 9999px;
-  
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3072,8 +3054,10 @@ img {
 @media (max-width: 639px) {
   .feature-card {
     padding: 2.5rem 1.5rem;
-    border-radius: 40px; /* Softer pill for narrow screens */
+    border-radius: 40px;
+    /* Softer pill for narrow screens */
   }
+
   .feature-card:hover {
     border-radius: 40px;
   }

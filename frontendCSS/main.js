@@ -1,3 +1,136 @@
+/* ══════════════════════════════════════════════════
+   STARS BACKGROUND ENGINE
+   Vanilla JS port of the React StarsBackground component.
+   Three animated layers + spring-eased mouse parallax.
+   Fully theme-aware (dark = white stars, light = teal/amber).
+   ══════════════════════════════════════════════════ */
+(function initStars() {
+  const canvas = document.createElement("canvas");
+  canvas.id = "stars-canvas";
+  document.body.insertBefore(canvas, document.body.firstChild);
+  const ctx = canvas.getContext("2d");
+
+  // ── Config ──────────────────────────────────────
+  const LAYERS = [
+    { count: 1000, size: 1,   speed: 0.15 },
+    { count: 400,  size: 1.5, speed: 0.30 },
+    { count: 200,  size: 2.5, speed: 0.55 },
+  ];
+  const PARALLAX_FACTOR = 0.04;
+  const SPRING_STIFFNESS = 0.06;
+
+  // ── State ────────────────────────────────────────
+  let W = 0, H = 0;
+  let mouseX = 0, mouseY = 0;
+  let springX = 0, springY = 0;
+  let velX = 0, velY = 0;
+  let layers = [];
+  let animFrame;
+
+  // ── Theme helper ─────────────────────────────────
+  function getStarColors() {
+    const isLight = document.body.classList.contains("light-theme");
+    if (isLight) {
+      // Teal + amber palette for light theme
+      return ["#047857", "#064E3B", "#F59E0B", "#059669", "#10B981"];
+    }
+    return ["rgba(255,255,255,0.9)", "rgba(255,255,255,0.7)", "rgba(255,255,255,0.5)"];
+  }
+
+  // ── Build star layers ─────────────────────────────
+  function buildLayers() {
+    const colors = getStarColors();
+    layers = LAYERS.map((cfg) => {
+      const stars = [];
+      for (let i = 0; i < cfg.count; i++) {
+        stars.push({
+          x: Math.random() * 4000 - 2000,
+          y: Math.random() * 4000 - 2000,
+          color: colors[Math.floor(Math.random() * colors.length)],
+        });
+      }
+      return { ...cfg, stars, offset: 0 };
+    });
+  }
+
+  // ── Resize ────────────────────────────────────────
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + "px";
+    canvas.style.height = H + "px";
+    ctx.scale(dpr, dpr);
+  }
+
+  // ── Draw frame ───────────────────────────────────
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
+
+    // Spring physics toward mouse target
+    const targetX = mouseX * PARALLAX_FACTOR;
+    const targetY = mouseY * PARALLAX_FACTOR;
+    velX += (targetX - springX) * SPRING_STIFFNESS;
+    velY += (targetY - springY) * SPRING_STIFFNESS;
+    velX *= 0.85;
+    velY *= 0.85;
+    springX += velX;
+    springY += velY;
+
+    layers.forEach((layer) => {
+      // Scroll offset for this layer (continuous vertical drift)
+      layer.offset = (layer.offset + layer.speed) % H;
+
+      layer.stars.forEach((star) => {
+        // Map star coords from [-2000,2000] range to screen
+        const baseX = ((star.x + 2000) / 4000) * W;
+        const baseY = ((star.y + 2000) / 4000) * H;
+
+        // Apply vertical scroll + parallax
+        const drawX = baseX + springX * layer.size;
+        const drawY = ((baseY + layer.offset + springY * layer.size) % H + H) % H;
+
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, layer.size / 2, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.fill();
+      });
+    });
+
+    animFrame = requestAnimationFrame(draw);
+  }
+
+  // ── Mouse tracking ───────────────────────────────
+  document.addEventListener("mousemove", (e) => {
+    mouseX = -(e.clientX - W / 2);
+    mouseY = -(e.clientY - H / 2);
+  });
+
+  // ── Theme change: rebuild star colors ────────────
+  // Watch for class changes on body (theme toggle)
+  const observer = new MutationObserver(() => {
+    buildLayers();
+  });
+  observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+  // ── Init ─────────────────────────────────────────
+  resize();
+  buildLayers();
+  requestAnimationFrame(draw);
+  window.addEventListener("resize", () => { resize(); });
+
+  // Pause when tab is hidden to save resources
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animFrame);
+    } else {
+      requestAnimationFrame(draw);
+    }
+  });
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIGURATION ---
   // When deployed, change the fallback URL to your production backend URL
@@ -80,18 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOpen = st.includes("open") && !st.includes("closed");
         const isClosed = st.includes("closed");
 
-        let actionHtml = "";
-        if (isOpen) {
-          actionHtml = `<button type="button" class="btn-register-event" data-reg-event-id="${escapeHtml(event._id)}" data-reg-event-title="${escapeHtml(event.title)}" data-reg-event-team-size="${escapeHtml(event.teamSize || 1)}">
-               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-               Register Now
-             </button>`;
-        } else if (isClosed) {
-          actionHtml = `<div style="margin-top:1rem;padding:0.6rem 1.2rem;border-radius:0.75rem;background:rgba(244,63,94,0.08);border:1px solid rgba(253,164,175,0.2);text-align:center;">
-            <span style="font-size:0.85rem;font-weight:800;color:#fda4af;"> Registration Closed</span>
-          </div>`;
-        }
-
         return `
           <article style="
             border-radius:1.5rem;border:1px solid ${ac.border};
@@ -109,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <span style="border-radius:9999px;padding:0.25rem 0.75rem;font-size:0.75rem;font-weight:900;white-space:nowrap;${statusStyle(event.status)}">${escapeHtml(event.status)}</span>
             </div>
             <p style="margin-top:1rem;line-height:1.75;color:#cbd5e1;">${escapeHtml(event.description)}</p>
-            ${actionHtml}
           </article>`;
       }).join("");
     } else {
@@ -1050,6 +1170,215 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  /* ══════════════════════════════════════
+     Event Countdown Cards (Vanilla JS)
+     Adapted from the React EventCountdownCard component
+  ══════════════════════════════════════ */
+
+  /**
+   * Creates one countdown card HTML string.
+   * @param {Object} event - event object from API  { _id, title, date, description, status, teamSize, ... }
+   * @param {number} index - index for stagger delay
+   * @returns {string} HTML string for a single countdown card
+   */
+  const createCountdownCardHTML = (event, index) => {
+    const eventId = escapeHtml(event._id || "");
+    const title = escapeHtml(event.title || "Upcoming Event");
+    const dateStr = escapeHtml(event.date || "");
+    const attendees = event.attendees || Math.floor(Math.random() * 40 + 15); // fallback random 15-55
+    const st = (event.status || "").toLowerCase();
+    const isOpen = st.includes("open") && !st.includes("closed");
+
+    // Use an Unsplash stock image based on event index for variety
+    const stockImages = [
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=800&h=600&fit=crop"
+    ];
+    const image = stockImages[index % stockImages.length];
+
+    const buttonText = "Reserve Your Spot";
+    const buttonDataAttrs = isOpen
+      ? `data-reg-event-id="${eventId}" data-reg-event-title="${title}" data-reg-event-team-size="${escapeHtml(String(event.teamSize || 1))}"`
+      : "";
+
+    return `
+      <div class="countdown-card" data-countdown-card data-event-date="${escapeHtml(dateStr)}" style="animation-delay:${index * 0.08}s">
+        <!-- Image -->
+        <div class="countdown-card__image-wrap">
+          <img class="countdown-card__image" src="${image}" alt="${title}" loading="lazy" />
+          <div class="countdown-card__image-gradient"></div>
+          <div class="countdown-card__urgency-badge" data-urgency-badge hidden>Starts Soon!</div>
+        </div>
+
+        <!-- Content -->
+        <div class="countdown-card__content">
+          <!-- Title & Meta -->
+          <div>
+            <h3 class="countdown-card__title">${title}</h3>
+            <div class="countdown-card__meta">
+              <span class="countdown-card__meta-item">
+                <svg><use href="#icon-calendar"/></svg>
+                <span>${dateStr}</span>
+              </span>
+              <span class="countdown-card__meta-item">
+                <svg><use href="#icon-users"/></svg>
+                <span>${attendees} attending</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Countdown Timer -->
+          <div data-countdown-timer>
+            <div class="countdown-card__countdown-header">
+              <svg><use href="#icon-clock"/></svg>
+              <span>Event starts in:</span>
+            </div>
+            <div class="countdown-card__timer-grid" style="margin-top:0.75rem">
+              <div class="countdown-card__timer-unit">
+                <div class="countdown-card__timer-value" data-days>00</div>
+                <div class="countdown-card__timer-label">Days</div>
+              </div>
+              <div class="countdown-card__timer-unit">
+                <div class="countdown-card__timer-value" data-hours>00</div>
+                <div class="countdown-card__timer-label">Hours</div>
+              </div>
+              <div class="countdown-card__timer-unit">
+                <div class="countdown-card__timer-value" data-minutes>00</div>
+                <div class="countdown-card__timer-label">Min</div>
+              </div>
+              <div class="countdown-card__timer-unit countdown-card__timer-unit--seconds">
+                <div class="countdown-card__timer-value" data-seconds>00</div>
+                <div class="countdown-card__timer-label">Sec</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Started fallback (hidden by default) -->
+          <div data-countdown-started style="display:none">
+            <div class="countdown-card__started">
+              <div class="countdown-card__started-title">Event Started!</div>
+              <div class="countdown-card__started-desc">Join now to participate</div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <button type="button" class="countdown-card__btn btn-register-event" ${buttonDataAttrs}>
+            ${buttonText}
+          </button>
+        </div>
+      </div>`;
+  };
+
+  /**
+   * Parses a display-date like "June 15, 2026" or "2026-06-15" into a Date.
+   * Returns null if parsing fails.
+   */
+  const parseEventDate = (dateStr) => {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d;
+    // Try appending a time for bare dates like "June 15, 2026"
+    const d2 = new Date(dateStr + " 00:00:00");
+    if (!isNaN(d2.getTime())) return d2;
+    return null;
+  };
+
+  /**
+   * Starts live countdown timers on all rendered countdown cards.
+   */
+  const startCountdownTimers = () => {
+    const cards = document.querySelectorAll("[data-countdown-card]");
+    if (!cards.length) return;
+
+    const pad = (n) => String(n).padStart(2, "0");
+
+    const tick = () => {
+      const now = Date.now();
+
+      cards.forEach((card) => {
+        const dateStr = card.dataset.eventDate;
+        let targetDate = parseEventDate(dateStr);
+
+        // If no parseable date, default to ~2 days from page load
+        if (!targetDate) {
+          if (!card._fallbackDate) {
+            card._fallbackDate = new Date(Date.now() + 2 * 86400000 + 5 * 3600000 + 30 * 60000);
+          }
+          targetDate = card._fallbackDate;
+        }
+
+        const diff = Math.max(0, Math.floor((targetDate.getTime() - now) / 1000));
+
+        const timerEl = card.querySelector("[data-countdown-timer]");
+        const startedEl = card.querySelector("[data-countdown-started]");
+        const btn = card.querySelector(".countdown-card__btn");
+        const badge = card.querySelector("[data-urgency-badge]");
+
+        if (diff <= 0) {
+          // Event started
+          if (timerEl) timerEl.style.display = "none";
+          if (startedEl) startedEl.style.display = "";
+          if (btn) btn.textContent = "Join Event";
+          if (badge) badge.hidden = true;
+        } else {
+          if (timerEl) timerEl.style.display = "";
+          if (startedEl) startedEl.style.display = "none";
+
+          const days = Math.floor(diff / 86400);
+          const hours = Math.floor((diff % 86400) / 3600);
+          const minutes = Math.floor((diff % 3600) / 60);
+          const seconds = diff % 60;
+
+          const daysEl = card.querySelector("[data-days]");
+          const hoursEl = card.querySelector("[data-hours]");
+          const minutesEl = card.querySelector("[data-minutes]");
+          const secondsEl = card.querySelector("[data-seconds]");
+
+          if (daysEl) daysEl.textContent = pad(days);
+          if (hoursEl) hoursEl.textContent = pad(hours);
+          if (minutesEl) minutesEl.textContent = pad(minutes);
+          if (secondsEl) secondsEl.textContent = pad(seconds);
+
+          // Urgency badge: show if less than 24 hours
+          if (badge) {
+            badge.hidden = diff >= 86400;
+          }
+        }
+      });
+    };
+
+    // Tick immediately, then every second
+    tick();
+    setInterval(tick, 1000);
+  };
+
+  /**
+   * Fetches upcoming events from the API and renders countdown cards.
+   */
+  const renderCountdownCards = async () => {
+    const grid = document.getElementById("countdown-cards-grid");
+    const section = document.getElementById("countdown-cards-section");
+    if (!grid || !section) return;
+
+    const events = await fetchEvents();
+
+    if (events.upcoming.length) {
+      // Render cards (max 4 to keep section compact)
+      const cardsToShow = events.upcoming.slice(0, 4);
+      grid.innerHTML = cardsToShow.map((event, i) => createCountdownCardHTML(event, i)).join("");
+
+      // Start live countdown timers
+      startCountdownTimers();
+      section.style.display = "";
+    } else {
+      // Hide section if no upcoming events
+      section.style.display = "none";
+    }
+  };
+
+  renderCountdownCards();
   renderPublicEvents();
   renderPublicAnnouncements();
   setupAdminPanel();

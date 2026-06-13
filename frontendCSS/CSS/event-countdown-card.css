@@ -1,0 +1,359 @@
+/* ══════════════════════════════════════
+   Event Countdown Card — Vanilla CSS
+   Adapted from the React EventCountdownCard component
+   ══════════════════════════════════════ */
+
+/* ── Card Container ── */
+.countdown-card {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 1rem;
+  border: 4px solid rgba(255, 255, 255, 0.08);
+  background: var(--v-card-bg, #111A16);
+  color: var(--v-text, #D1FAE5);
+  overflow: hidden;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    border-color 0.3s ease;
+
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  filter: blur(8px);
+  animation: countdownCardEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.countdown-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes countdownCardEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Staggered entrance for multiple cards */
+.countdown-card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.countdown-card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.countdown-card:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+/* ── Image Section ── */
+.countdown-card__image-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 12rem;
+}
+
+.countdown-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.countdown-card:hover .countdown-card__image {
+  transform: scale(1.1);
+}
+
+.countdown-card__image-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), transparent 60%, transparent);
+  pointer-events: none;
+}
+
+/* ── Urgency Badge ── */
+.countdown-card__urgency-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ef4444;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: badgePop 0.4s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.countdown-card__urgency-badge[hidden] {
+  display: none;
+}
+
+@keyframes badgePop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Content Section ── */
+.countdown-card__content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Title & Meta ── */
+.countdown-card__title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--v-text, #D1FAE5);
+  margin: 0;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+  transition: opacity 0.3s ease;
+}
+
+.countdown-card:hover .countdown-card__title {
+  opacity: 1;
+}
+
+.countdown-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.countdown-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.7;
+}
+
+.countdown-card__meta-item svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Countdown Display ── */
+.countdown-card__countdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.7;
+}
+
+.countdown-card__countdown-header svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.countdown-card__timer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.countdown-card__timer-unit {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.countdown-card:hover .countdown-card__timer-unit {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.countdown-card__timer-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--v-text, #D1FAE5);
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+}
+
+/* Seconds pulsing animation */
+.countdown-card__timer-unit--seconds .countdown-card__timer-value {
+  animation: secondsPulse 1s ease-in-out infinite;
+}
+
+@keyframes secondsPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+.countdown-card__timer-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.15rem;
+}
+
+/* ── Event Started State ── */
+.countdown-card__started {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.countdown-card__started-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--v-primary, #10B981);
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+}
+
+.countdown-card__started-desc {
+  font-size: 0.85rem;
+  color: var(--v-text, #D1FAE5);
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+/* ── Action Button ── */
+.countdown-card__btn {
+  width: 100%;
+  height: 2.75rem;
+  border: none;
+  border-radius: 0.625rem;
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--v-primary, #10B981), var(--v-secondary, #059669));
+  color: #fff;
+  box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.3);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.countdown-card__btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 32px -4px rgba(16, 185, 129, 0.45);
+}
+
+.countdown-card__btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.3);
+}
+
+/* ── Light Theme Overrides ── */
+body.light-theme .countdown-card {
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: var(--block-shadow, 6px 6px 0px var(--v-text));
+}
+
+body.light-theme .countdown-card:hover {
+  box-shadow: var(--block-shadow-hover, 2px 2px 0px var(--v-text));
+  transform: translate(4px, 4px);
+}
+
+body.light-theme .countdown-card__timer-unit {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .countdown-card__btn {
+  color: #fff;
+}
+
+/* ── Countdown Cards Container ── */
+.countdown-cards-section {
+  margin-top: 2.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.countdown-cards-section .section-head {
+  margin-bottom: 1.5rem;
+}
+
+.countdown-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 680px) {
+  .countdown-card {
+    max-width: 100%; /* Allow full width on mobile if desired */
+  }
+
+  .countdown-cards-grid {
+    flex-direction: column;
+    align-items: center; /* Center the cards on mobile */
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .countdown-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  .countdown-card:hover {
+    transform: none;
+  }
+
+  .countdown-card:hover .countdown-card__image {
+    transform: none;
+  }
+
+  .countdown-card__urgency-badge {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .countdown-card__timer-unit--seconds .countdown-card__timer-value {
+    animation: none;
+  }
+
+  .countdown-card__btn:hover {
+    transform: none;
+  }
+
+  .countdown-card__btn:active {
+    transform: none;
+  }
+}

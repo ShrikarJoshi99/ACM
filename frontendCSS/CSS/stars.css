@@ -1,0 +1,16 @@
+/* ══════════════════════════════════════
+   Stars Background Canvas — Vanilla JS
+   Theme-aware: dark = white stars, light = teal/amber stars
+   ══════════════════════════════════════ */
+
+#stars-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* z-index: -1 keeps canvas naturally behind everything
+     without touching any other element's positioning */
+  z-index: -1;
+}
