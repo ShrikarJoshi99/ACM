@@ -32,6 +32,26 @@
   flex-direction: column;
 }
 
+/* ── Interactive Hint ── */
+.curtain-hint {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.curtain-card.is-hovered .curtain-hint {
+  opacity: 0;
+}
+
 /* ── Title that slides up on hover ── */
 .curtain-title {
   font-family: 'Space Grotesk', 'Poppins', sans-serif;
@@ -256,6 +276,57 @@
 /* On mobile, show everything without hover (no curtain) */
 /* Mobile hover is now handled via JS tap events */
 
+@media (max-width: 767px) {
+  .curtain-card {
+    border-radius: 10px;
+  }
+
+  .curtain-body {
+    padding: 1.25rem 1rem;
+  }
+
+  .curtain-hint {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.65rem;
+  }
+
+  .curtain-title {
+    font-size: 1.25rem;
+    transform: translateY(100px);
+  }
+
+  .curtain-desc {
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .curtain-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.75rem;
+  }
+
+  .curtain-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .curtain-footer img {
+    max-height: 140px;
+  }
+
+  .curtain-action-btn {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .curtain-action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
 /* ═══════════════════════════════════════
    LIGHT THEME
    ═══════════════════════════════════════ */
@@ -282,4 +353,8 @@ body.light-theme .curtain-desc {
 body.light-theme .curtain-action-btn {
   border-color: var(--v-text, #064E3B);
   color: var(--v-text, #064E3B);
+}
+
+body.light-theme .curtain-hint {
+  color: rgba(6, 78, 59, 0.4);
 }

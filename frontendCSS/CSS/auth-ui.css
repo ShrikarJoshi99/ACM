@@ -1,0 +1,305 @@
+/* ═══════════════════════════════════════════════════════════════
+   AUTH UI — Split Panel Layout
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Layout Container */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 1rem 2rem; /* Account for navbar */
+}
+
+.auth-shell {
+  width: 100%;
+  max-width: 1200px;
+  background: transparent;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr 1fr;
+    min-height: 600px;
+  }
+}
+
+/* ── LEFT PANEL (Image & Quote) ── */
+.auth-panel-left {
+  display: none;
+  position: relative;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem;
+  overflow: hidden;
+  color: white;
+}
+
+@media (min-width: 900px) {
+  .auth-panel-left {
+    display: flex;
+  }
+}
+
+.auth-panel-left-bg {
+  position: absolute;
+  inset: 0;
+  transition: background-image 0.5s ease-in-out;
+  z-index: 1;
+}
+
+/* Bottom gradient overlay so text is readable */
+.auth-panel-left::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 150px;
+  background: linear-gradient(to top, #020617, transparent);
+  z-index: 2;
+}
+
+.auth-panel-left-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+}
+
+/* Typewriter Quote Area */
+.auth-panel-quote {
+  padding-bottom: 1rem;
+}
+
+.auth-panel-quote blockquote {
+  margin: 0;
+}
+
+.auth-typewriter-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  min-height: 3.5rem; /* Prevent layout shift while typing */
+}
+
+.auth-panel-cite {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: normal;
+}
+
+.typewriter-cursor {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+
+/* ── RIGHT PANEL (Form) ── */
+.auth-panel-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 350px; /* Matched to w-[350px] from React */
+}
+
+.auth-kicker {
+  display: none; /* Removed kicker to match screenshot exactly */
+}
+
+.auth-title {
+  font-size: 1.5rem; /* Matched text-2xl */
+  font-weight: 700;
+  color: var(--v-text, #fff);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.auth-desc {
+  color: var(--v-text, #94a3b8);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.5;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--v-text, #e2e8f0);
+}
+
+.auth-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.75rem 0.75rem;
+  background: var(--v-bg, #020617);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem; /* rounded-lg */
+  color: var(--v-text, #fff);
+  font-size: 0.875rem; /* text-sm */
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.auth-input::placeholder {
+  color: var(--v-text, #94a3b8);
+  opacity: 0.5;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--v-bg, #020617);
+}
+
+/* Password eye toggle */
+.auth-input--password {
+  padding-right: 3rem; /* Make room for icon */
+}
+
+/* Removes default eye icon in Edge/IE */
+.auth-input--password::-ms-reveal,
+.auth-input--password::-ms-clear {
+  display: none;
+}
+
+.auth-toggle-password {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--v-text, #94a3b8);
+  opacity: 0.7;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.auth-toggle-password:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.auth-toggle-password svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.auth-btn-submit {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  color: var(--v-text, #fff);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.375rem; /* rounded-md */
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-btn-submit:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--v-text, #94a3b8);
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-links a {
+  color: var(--v-text, #fff);
+  font-weight: 500;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.auth-links a:hover {
+  opacity: 0.8;
+}
+
+.auth-forgot-link {
+  font-weight: 400;
+  opacity: 0.8;
+  text-decoration: none !important;
+}
+
+.auth-forgot-link:hover {
+  text-decoration: underline !important;
+  opacity: 1;
+}
+
+.auth-divider {
+  display: none;
+}
+
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--v-text, #94a3b8);
+  opacity: 0.8;
+}
+
+.auth-links a {
+  color: var(--v-primary, #06b6d4);
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.auth-links a:hover {
+  opacity: 0.8;
+}
+
+.auth-divider {
+  margin: 0 0.75rem;
+  opacity: 0.3;
+}
+
+/* Light theme specific overrides for button */
+body.light-theme .auth-btn-submit {
+  color: white; /* Needs white text if button is dark green */
+}

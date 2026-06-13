@@ -5,325 +5,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up | ACM JIT</title>
+  <meta name="description" content="Create your ACM JIT student account — join the chapter, access resources, and participate in events.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./CSS/global.css">
   <link rel="stylesheet" href="./CSS/theme.css">
   <link rel="stylesheet" href="./CSS/stars.css">
-  <style>
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, #1f2937 0%, transparent 40%),
-        radial-gradient(circle at bottom right, #0f172a 0%, transparent 40%),
-        #020617;
-      font-family: Georgia, 'Times New Roman', Times, serif;
-    }
-
-    .auth-page {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
-
-    .auth-shell {
-      width: 100%;
-      max-width: 1050px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: #0f172a;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow:
-        0 0 30px rgba(6, 182, 212, 0.15),
-        0 0 80px rgba(59, 130, 246, 0.12);
-    }
-
-    .auth-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 2.5rem;
-      background: linear-gradient(135deg,
-          #06b6d4,
-          #3b82f6,
-          #10B981);
-      color: white;
-      position: relative;
-    }
-
-    .auth-left::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(45deg,
-          rgba(255, 255, 255, 0.05),
-          rgba(255, 255, 255, 0.05) 10px,
-          transparent 10px,
-          transparent 20px);
-    }
-
-    .auth-left>* {
-      position: relative;
-      z-index: 2;
-    }
-
-    .auth-left-label {
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      font-weight: 700;
-      opacity: 0.9;
-      font-size: 0.75rem;
-    }
-
-    .auth-left-title {
-      font-size: 2.8rem;
-      font-weight: 900;
-      margin: 0.75rem 0;
-      line-height: 1.1;
-    }
-
-    .auth-left-desc {
-      font-size: 0.95rem;
-      line-height: 1.8;
-      max-width: 400px;
-    }
-
-    .auth-promise {
-      margin-top: 2rem;
-      padding: 1rem 1.25rem;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-    }
-
-    .auth-promise-label {
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-
-    .auth-promise-text {
-      font-size: 1.1rem;
-      font-weight: 800;
-      margin-top: 0.4rem;
-    }
-
-    .auth-right {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2.5rem;
-      background: #0f172a;
-    }
-
-    .auth-form-wrap {
-      width: 100%;
-      max-width: 380px;
-    }
-
-    .auth-kicker {
-      color: #06b6d4;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    .auth-title {
-      color: white;
-      font-size: 2rem;
-      font-weight: 900;
-      margin-top: 0.4rem;
-    }
-
-    .auth-desc {
-      color: #94a3b8;
-      margin-top: 0.5rem;
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    .auth-form {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      background: #1e293b;
-      border: 2px solid transparent;
-      border-radius: 12px;
-      color: white;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      box-sizing: border-box;
-    }
-
-    .form-input::placeholder {
-      color: #94a3b8;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: #06b6d4;
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
-    }
-
-    .btn-submit {
-      margin-top: 0.25rem;
-      padding: 0.9rem;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg,
-          #06b6d4,
-          #3b82f6);
-      color: white;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.4);
-    }
-
-    .auth-links {
-      text-align: center;
-      margin-top: 1rem;
-      color: #94a3b8;
-      font-size: 0.9rem;
-    }
-
-    .auth-links a {
-      color: #06b6d4;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .auth-links a:hover {
-      color: white;
-    }
-
-    @media (max-width: 900px) {
-      .auth-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .auth-left {
-        display: none;
-      }
-
-      .auth-right {
-        padding: 2rem;
-      }
-
-      .auth-title {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./CSS/auth-ui.css">
   <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <script>
+    if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
+      document.documentElement.classList.add("light-theme");
+    }
+  </script>
 </head>
 
 <body>
+  <script>
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-theme");
+    }
+  </script>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
 
   <main class="auth-page">
     <section class="auth-shell" aria-labelledby="register-title">
-      <div class="auth-left">
-        <div>
-          <p class="auth-left-label">Chapter Access</p>
-          <h1 class="auth-left-title">Join the ACM JIT chapter.</h1>
-          <p class="auth-left-desc">Create your student account to participate in technical programs, community builds,
-            workshops, and chapter opportunities.</p>
-        </div>
-        <div class="auth-promise">
-          <p class="auth-promise-label">Member advantage</p>
-          <p class="auth-promise-text">Build publicly. Learn together.</p>
+      <!-- Left panel — visual / quote -->
+      <div class="auth-panel-left">
+        <div class="auth-panel-left-bg"></div>
+        <div class="auth-panel-left-content">
+          <div class="auth-panel-quote">
+            <blockquote>
+              <p class="auth-typewriter-text" id="typewriter-text"></p>
+            </blockquote>
+          </div>
         </div>
       </div>
 
-      <div class="auth-right">
+      <!-- Right panel — form -->
+      <div class="auth-panel-right">
         <div class="auth-form-wrap">
-          <p class="auth-kicker"> Registration</p>
           <h2 id="register-title" class="auth-title">Create Your Account</h2>
           <p class="auth-desc">Use your student details to begin membership verification for the ACM JIT portal.</p>
 
-          <form id="register-form" class="auth-form">
-            <label>
-              <span class="form-label">Full Name</span>
-              <input name="fullName" type="text" placeholder="Enter your full name" class="form-input"
-                autocomplete="name" required>
-            </label>
-            <label>
-              <span class="form-label">Email</span>
-              <input name="email" type="email" placeholder="name@gmail.com" class="form-input" autocomplete="email"
-                required>
-            </label>
-            <label>
-              <span class="form-label">Password</span>
-              <input name="password" type="password" placeholder="Create a strong password" class="form-input violet"
-                autocomplete="new-password" required>
-            </label>
-            <button type="submit" class="btn-submit">Sign Up</button>
+          <form id="register-form" class="auth-form" autocomplete="on">
+            <div class="auth-field">
+              <label for="reg-name" class="auth-label">Full Name</label>
+              <input id="reg-name" name="fullName" type="text" placeholder="Enter your full name" class="auth-input" autocomplete="name" required>
+            </div>
+
+            <div class="auth-field">
+              <label for="reg-email" class="auth-label">Email</label>
+              <input id="reg-email" name="email" type="email" placeholder="name@gmail.com" class="auth-input" autocomplete="email" required>
+            </div>
+
+            <div class="auth-field">
+              <label for="reg-password" class="auth-label">Password</label>
+              <div class="auth-input-group">
+                <input id="reg-password" name="password" type="password" placeholder="Create a strong password" class="auth-input auth-input--password" autocomplete="new-password" required>
+                <button type="button" class="auth-toggle-password" aria-label="Show password" data-target="reg-password">
+                  <!-- Eye icon -->
+                  <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <!-- Eye-off icon -->
+                  <svg class="icon-eye-off" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="auth-btn-submit">Sign Up</button>
           </form>
 
-          <p class="auth-links">Already have an account? <a href="join-us.html">Sign In</a></p>
+          <div class="auth-links">
+            <p>Already have an account? <a href="join-us.html">Sign In</a></p>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Popup (preserved from original) -->
   <div id="popup"
     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px);animation:fadeIn 0.3s ease-out;"
     onkeydown="if(event.key==='Escape')document.getElementById('popup-btn').click()">
     <style>
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.95);
-        }
-
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      @keyframes slideIn {
-        from {
-          transform: translateY(-20px);
-          opacity: 0;
-        }
-
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      #popup-content {
-        animation: slideIn 0.4s ease-out;
-      }
-
-      #popup-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(34, 211, 238, 0.3);
-      }
-
-      #popup-btn:active {
-        transform: translateY(0);
-      }
+      @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+      @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      #popup-content { animation: slideIn 0.4s ease-out; }
+      #popup-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,211,238,0.3); }
+      #popup-btn:active { transform: translateY(0); }
     </style>
     <div id="popup-content"
       style="background:linear-gradient(135deg,rgba(13,13,13,0.95),rgba(21,21,21,0.95));border:1px solid rgba(103,232,249,0.2);border-radius:1rem;padding:2.5rem;max-width:450px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);">
@@ -333,7 +111,9 @@
         style="width:100%;border:none;background:linear-gradient(135deg,var(--cyan-400),#06b6d4);color:#0d0d0d;padding:0.75rem 1.5rem;border-radius:0.75rem;cursor:pointer;font-weight:900;font-size:0.95rem;transition:all 0.3s ease;box-shadow:0 10px 25px -5px rgba(34,211,238,0.2);">Close</button>
     </div>
   </div>
+
   <script src="main.js"></script>
+  <script src="./JS/auth-ui.js"></script>
 </body>
 
 </html>

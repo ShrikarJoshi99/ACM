@@ -33,11 +33,43 @@ body.light-theme, .light-theme:root {
   --v-text: #064E3B;
   --v-white: #ffffff;
   --v-black: #0f172a;
-  --v-card-bg: #ffffff;
+  --v-card-bg: #D1FAE5;
   
   --block-border: 2px solid var(--v-text);
   --block-shadow: 6px 6px 0px var(--v-text);
   --block-shadow-hover: 2px 2px 0px var(--v-text);
+}
+
+/* Navbar mobile light mode fixes */
+body.light-theme .nav-toggle, html.light-theme .nav-toggle {
+  color: var(--v-text) !important;
+  border-color: rgba(6, 78, 59, 0.2) !important;
+  background: rgba(6, 78, 59, 0.05) !important;
+}
+
+body.light-theme .nav-toggle:hover, html.light-theme .nav-toggle:hover {
+  color: var(--v-primary) !important;
+  border-color: var(--v-primary) !important;
+}
+
+@media (max-width: 767px) {
+  body.light-theme .nav-links {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  body.light-theme .nav-link {
+    color: var(--v-text);
+  }
+  
+  body.light-theme .nav-link:hover, body.light-theme .nav-link.active {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--v-primary);
+  }
+  
+  body.light-theme .nav-link.active::after {
+    background: var(--v-primary);
+  }
 }
 
 body {

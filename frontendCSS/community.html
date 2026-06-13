@@ -4,15 +4,27 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Community Hub | ACM JIT</title>
+  <meta name="description" content="ACM JIT Community Hub — resources, blogs, technical guides, and our interactive chapter journey timeline.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./CSS/global.css">
   <link rel="stylesheet" href="./CSS/theme.css">
   <link rel="stylesheet" href="./CSS/stars.css">
+  <link rel="stylesheet" href="./CSS/radial-orbital-timeline.css">
   <link rel="icon" href="acm-favicon.svg" type="image/svg+xml">
+  <script>
+    if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
+      document.documentElement.classList.add("light-theme");
+    }
+  </script>
 </head>
 <body>
+  <script>
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-theme");
+    }
+  </script>
   <div class="bg-overlay"></div>
   <div id="global-navbar"></div>
 
@@ -20,42 +32,41 @@
     <header class="page-header">
       <p class="label">Community Hub</p>
       <h1 class="page-title">Learn in public. Share with care.</h1>
-      <p class="page-subtitle">Your central place for resources, blogs, and knowledge sharing within our community.</p>
+      <p class="page-subtitle">Your central place for resources, blogs, and knowledge sharing. Click any node in the orbit below to explore what our community has to offer.</p>
     </header>
 
-    <div class="cards-grid">
-      <article class="hub-card cyan">
-        <svg class="hub-icon cyan" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H7a3 3 0 0 0-3 3V5.5Z" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M7 18V3M9.5 7H17M9.5 11H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <h2 class="hub-title">Study Material / Resources</h2>
-        <p class="hub-desc">Curated notes, starter repositories, lab references, and practice packs that help students move faster without feeling lost.</p>
-        <a href="#" class="hub-link cyan">Open resources</a>
-      </article>
+    <div class="orbital-timeline" id="orbital-timeline">
+      <div class="orbital-orbit-area">
+        <!-- Orbit ring -->
+        <div class="orbital-ring"></div>
 
-      <article class="hub-card violet">
-        <svg class="hub-icon violet" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <h2 class="hub-title">Student Blogs</h2>
-        <p class="hub-desc">Member-written reflections, build stories, explainers, and honest learning notes from people sitting in the same classrooms.</p>
-        <a href="#" class="hub-link violet">Read stories</a>
-      </article>
+        <!-- Center nucleus -->
+        <div class="orbital-nucleus">
+          <div class="orbital-nucleus-ring"></div>
+          <div class="orbital-nucleus-ring-2"></div>
+          <div class="orbital-nucleus-inner"></div>
+        </div>
 
-      <article class="hub-card emerald">
-        <svg class="hub-icon emerald" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h2 class="hub-title">Technical Guides</h2>
-        <p class="hub-desc">Compact guides for tools, frameworks, coding practices, interview prep, deployment, and the small details that unlock progress.</p>
-        <a href="#" class="hub-link emerald">Browse guides</a>
-      </article>
+        <!-- Nodes are injected by orbital-timeline.js -->
+      </div>
     </div>
   </main>
 
-  <script src="pixel-canvas.js"></script>
   <script src="main.js"></script>
+  <script src="./JS/orbital-timeline.js"></script>
+
+  <script>
+    // Scroll Reveal Animation
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealElements.forEach(el => revealObserver.observe(el));
+  </script>
 </body>
 </html>
