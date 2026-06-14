@@ -269,6 +269,32 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 
+// VERIFY RESET TOKEN
+export const verifyResetToken = asyncHandler(async (req, res) => {
+  const user = await User.findOne({
+    resetPasswordToken: req.params.token
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Token not found or invalid"
+    });
+  }
+
+  if (user.resetPasswordExpire < new Date()) {
+    return res.status(400).json({
+      success: false,
+      message: "Token expired"
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Token is valid"
+  });
+});
+
 // RESET PASSWORD
 export const resetPassword = asyncHandler(async (req, res) => {
 

@@ -8,6 +8,7 @@ import {
   logout,
   refreshToken,
   forgotPassword,
+  verifyResetToken,
   resetPassword,
   verifyEmail,
   getProfile
@@ -62,6 +63,8 @@ router.post("/logout", logout);
 router.post("/refresh-token", refreshToken);
 
 router.post("/forgot-password", forgotPassword);
+
+router.post("/verify-reset-token/:token", verifyResetToken);
 
 router.post("/reset-password/:token", resetPassword);
 

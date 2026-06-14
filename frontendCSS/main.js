@@ -817,10 +817,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const identifierInput = forgotPasswordForm.querySelector("[name='identifier']");
       const resetTokenInput = forgotPasswordForm.querySelector("[name='resetToken']");
       const newPasswordInput = forgotPasswordForm.querySelector("[name='newPassword']");
+      const confirmPasswordInput = forgotPasswordForm.querySelector("[name='confirmPassword']");
       const requestField = forgotPasswordForm.querySelector("[data-reset-request-field]");
       const tokenNote = forgotPasswordForm.querySelector("[data-reset-token-note]");
+      const passwordFields = forgotPasswordForm.querySelectorAll("[data-password-field]");
 
       let resetTokenSent = false;
+      let tokenVerified = false;
 
       forgotPasswordForm.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -867,15 +870,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (resetTokenInput) resetTokenInput.disabled = false;
 
-            if (newPasswordInput) newPasswordInput.disabled = false;
-
             if (tokenNote) {
               tokenNote.style.display = "";
               tokenNote.textContent =
                 "Reset token sent successfully.";
             }
 
-            submitButton.textContent = "Reset Password";
+            submitButton.textContent = "Verify Token";
 
             resetTokenInput?.focus();
 
@@ -892,13 +893,53 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        const token = formData.get("resetToken");
+
+        if (!tokenVerified) {
+          setButtonBusy(submitButton, "Verifying...");
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/verify-reset-token/${token}`, {
+              method: "POST",
+              credentials: "include",
+            });
+
+            const data = await response.json();
+            restoreButton(submitButton);
+
+            if (!response.ok) {
+              showPopup("Error", data.message || "Invalid or expired token");
+              return;
+            }
+
+            tokenVerified = true;
+            if (resetTokenInput) {
+              resetTokenInput.readOnly = true;
+              resetTokenInput.style.opacity = "0.7";
+            }
+
+            passwordFields.forEach(field => field.style.display = "");
+            if (newPasswordInput) newPasswordInput.disabled = false;
+            if (confirmPasswordInput) confirmPasswordInput.disabled = false;
+
+            submitButton.textContent = "Reset Password";
+            newPasswordInput?.focus();
+          } catch (error) {
+            console.error(error);
+            restoreButton(submitButton);
+            showPopup("Server Error", "Unable to connect to server");
+          }
+          return;
+        }
+
+        if (formData.get("newPassword") !== formData.get("confirmPassword")) {
+          showPopup("Error", "Passwords do not match");
+          return;
+        }
+
         setButtonBusy(submitButton, "Resetting...");
 
         try {
-
-          const token = formData.get("resetToken");
-
-
 
           const response = await fetch(
             `${API_BASE_URL}/auth/reset-password/${token}`,
@@ -947,14 +988,23 @@ document.addEventListener("DOMContentLoaded", () => {
           forgotPasswordForm.reset();
 
           resetTokenSent = false;
+          tokenVerified = false;
 
           if (requestField) requestField.style.display = "";
 
           if (identifierInput) identifierInput.disabled = false;
 
-          if (resetTokenInput) resetTokenInput.disabled = true;
+          if (resetTokenInput) {
+            resetTokenInput.disabled = true;
+            resetTokenInput.readOnly = false;
+            resetTokenInput.style.opacity = "1";
+          }
 
           if (newPasswordInput) newPasswordInput.disabled = true;
+
+          if (confirmPasswordInput) confirmPasswordInput.disabled = true;
+
+          passwordFields.forEach(field => field.style.display = "none");
 
           if (tokenNote) tokenNote.style.display = "none";
 

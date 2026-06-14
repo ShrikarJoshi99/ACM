@@ -25,7 +25,6 @@ const sendEmail = async (email, subject, message) => {
       throw new Error(data.message || 'Brevo API error');
     }
 
-    console.log(`✓ Email sent via Brevo to ${email} (messageId: ${data.messageId})`);
     return data;
   } catch (err) {
     console.error("━━━ EMAIL SEND EXCEPTION ━━━");
