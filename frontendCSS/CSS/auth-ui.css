@@ -28,18 +28,22 @@
 
 /* ── LEFT PANEL (Image & Quote) ── */
 .auth-panel-left {
-  display: none;
+  display: flex;
   position: relative;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 3rem;
+  padding: 2rem;
   overflow: hidden;
   color: white;
+  min-height: 250px;
+  border-radius: 1rem 1rem 0 0;
 }
 
 @media (min-width: 900px) {
   .auth-panel-left {
-    display: flex;
+    padding: 3rem;
+    min-height: auto;
+    border-radius: 0;
   }
 }
 

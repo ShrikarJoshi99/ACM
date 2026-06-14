@@ -11,7 +11,8 @@ import {
   verifyResetToken,
   resetPassword,
   verifyEmail,
-  getProfile
+  getProfile,
+  updateProfileName
 } from "../controllers/auth.controller.js";
 
 
@@ -77,6 +78,12 @@ router.get(
   "/profile",
   protect,
   getProfile
+);
+
+router.put(
+  "/profile/name",
+  protect,
+  updateProfileName
 );
 
 router.get(

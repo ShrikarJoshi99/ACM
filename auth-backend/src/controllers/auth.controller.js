@@ -414,3 +414,27 @@ export const getProfile = asyncHandler(async (req, res) => {
   });
 
 });
+
+// UPDATE PROFILE NAME
+export const updateProfileName = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  
+  if (!name || name.trim() === "") {
+    return res.status(400).json({ success: false, message: "Name is required" });
+  }
+
+  const user = await User.findById(req.user.id).select("-password");
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+
+  user.name = name.trim();
+  user.fullName = name.trim(); // Update fullName if present in schema
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Name updated successfully",
+    user
+  });
+});

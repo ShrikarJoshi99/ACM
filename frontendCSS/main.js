@@ -12,9 +12,9 @@
 
   // ── Config ──────────────────────────────────────
   const LAYERS = [
-    { count: 1000, size: 1,   speed: 0.15 },
-    { count: 400,  size: 1.5, speed: 0.30 },
-    { count: 200,  size: 2.5, speed: 0.55 },
+    { count: 1000, size: 1, speed: 0.15 },
+    { count: 400, size: 1.5, speed: 0.30 },
+    { count: 200, size: 2.5, speed: 0.55 },
   ];
   const PARALLAX_FACTOR = 0.04;
   const SPRING_STIFFNESS = 0.06;
@@ -58,9 +58,9 @@
     const dpr = window.devicePixelRatio || 1;
     W = window.innerWidth;
     H = window.innerHeight;
-    canvas.width  = W * dpr;
+    canvas.width = W * dpr;
     canvas.height = H * dpr;
-    canvas.style.width  = W + "px";
+    canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.scale(dpr, dpr);
   }
@@ -1533,12 +1533,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const nameParts = (profileData.fullName || profileData.name || "User").split(" ");
           const initials = nameParts.length > 1 ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase() : nameParts[0].substr(0, 2).toUpperCase();
 
-          const knowUsLink = menu.querySelector('a[href*="know-us.html"]');
-          if (knowUsLink && !document.getElementById("profile-avatar-container")) {
-            knowUsLink.insertAdjacentHTML('afterend', `
-            <div id="profile-avatar-container" class="profile-avatar-container" style="display:flex;align-items:center;position:relative;margin-left:0.5rem;margin-right:0.5rem;">
-              <button type="button" id="profile-avatar-btn" style="width:2.3rem;height:2.3rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));border:1px solid rgba(255,255,255,0.15);color:#0d0d0d;font-weight:900;font-size:0.85rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 20px rgba(34,211,238,0.25);transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);font-family:'Inter',sans-serif;" onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 0 15px rgba(34,211,238,0.6)';" onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 20px rgba(34,211,238,0.25)';" title="View Profile">
-                ${initials}
+          const rightControls = document.getElementById("nav-right-controls") || document.getElementById("nav-menu-button");
+          if (rightControls && !document.getElementById("profile-avatar-container")) {
+            rightControls.insertAdjacentHTML('beforeend', `
+            <div id="profile-avatar-container" class="profile-avatar-container" style="display:flex;align-items:center;position:relative;">
+              <button type="button" id="profile-avatar-btn" style="width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(255,255,255,0.05);border:2px solid transparent;background-clip:padding-box;position:relative;cursor:pointer;display:grid;place-items:center;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);padding:0;" onmouseover="this.style.transform='scale(1.1)';this.querySelector('.avatar-glow').style.opacity='1';" onmouseout="this.style.transform='none';this.querySelector('.avatar-glow').style.opacity='0';" title="View Profile">
+                <div class="avatar-glow" style="position:absolute;inset:-4px;border-radius:50%;background:rgba(255,255,255,0.2);z-index:-1;opacity:0;transition:opacity 0.3s ease;filter:blur(4px);"></div>
+                <img src="https://api.dicebear.com/7.x/micah/svg?seed=${encodeURIComponent(profileData.email)}&backgroundColor=transparent" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;z-index:1;background:rgba(255,255,255,0.1);" />
               </button>
             </div>
           `);
@@ -1551,39 +1552,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
               // Inject modal markup
               const modalHTML = `
-              <div id="profile-info-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;transition:opacity 0.3s ease;font-family:'Inter',sans-serif;padding:1rem;">
-                <div id="profile-modal-body" style="background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:2rem;max-width:540px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);transform:scale(0.95);transition:transform 0.3s ease;overflow:hidden;color:#f1f5f9;">
+              <div id="profile-info-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;justify-content:flex-end;z-index:9999;opacity:0;transition:opacity 0.3s ease;font-family:'Inter',sans-serif;">
+                <div id="profile-modal-body" style="background:rgba(10,15,30,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-left:1px solid rgba(255,255,255,0.1);max-width:400px;width:100%;height:100%;display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,0.5);transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);color:#f1f5f9;position:relative;">
+                  
                   <!-- Header -->
-                  <div style="background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));padding:2rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:1.5rem;position:relative;">
-                    <button id="close-profile-modal-btn" style="position:absolute;top:1rem;right:1.25rem;background:transparent;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.color='#fff';this.style.transform='scale(1.15)';" onmouseout="this.style.color='#94a3b8';this.style.transform='none';" title="Close">×</button>
+                  <div style="padding:2rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;position:relative;">
+                    <button id="close-profile-modal-btn" style="position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.color='#fff';this.style.transform='scale(1.15)';" onmouseout="this.style.color='#94a3b8';this.style.transform='none';" title="Close">×</button>
                     
-                    <div style="width:4.5rem;height:4.5rem;border-radius:50%;background:linear-gradient(135deg, var(--cyan-400), var(--violet-400));display:grid;place-items:center;font-size:1.75rem;font-weight:900;color:#0d0d0d;box-shadow:0 8px 24px rgba(34,211,238,0.3);">
-                      ${initials}
+                    <div style="width:6rem;height:6rem;border-radius:50%;position:relative;margin-bottom:1rem;">
+                      <div style="position:absolute;inset:-3px;border-radius:50%;background:rgba(255,255,255,0.2);animation:pulse-glow 2s infinite;"></div>
+                      <img src="https://api.dicebear.com/7.x/micah/svg?seed=${encodeURIComponent(profileData.email)}&backgroundColor=transparent" alt="Avatar" style="width:100%;height:100%;border-radius:50%;position:relative;z-index:1;background:rgba(20,20,35,1);object-fit:cover;" />
                     </div>
-                    <div>
-                      <h3 style="font-size:1.5rem;font-weight:900;color:#fff;margin:0;">${profileData.fullName || profileData.name || "User"}</h3>
-                      <p style="font-size:0.9rem;color:#94a3b8;margin:0.25rem 0 0 0;">${profileData.email}</p>
-                      <span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:800;background:rgba(34,211,238,0.1);color:var(--cyan-300);text-transform:uppercase;">
-                        ${profileData.role || 'Student'}
-                      </span>
+                    
+                    <div id="profile-name-display-container" style="display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0;">
+                      <h3 id="profile-name-display" style="font-size:1.4rem;font-weight:900;color:#fff;margin:0;text-align:center;">${profileData.fullName || profileData.name || "User"}</h3>
+                      <button id="edit-profile-name-btn" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;padding:0.25rem;transition:color 0.2s;display:flex;align-items:center;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#94a3b8';" title="Edit Name">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      </button>
                     </div>
+                    <div id="profile-name-edit-container" style="display:none;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;width:100%;">
+                      <input type="text" id="profile-name-input" value="${profileData.fullName || profileData.name || "User"}" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.4rem 0.6rem;border-radius:0.5rem;font-size:1rem;flex:1;min-width:140px;max-width:220px;outline:none;" />
+                      <button id="save-profile-name-btn" style="background:#fff;color:#000;border:none;padding:0.4rem 0.75rem;border-radius:0.5rem;font-weight:700;cursor:pointer;font-size:0.85rem;">Save</button>
+                      <button id="cancel-profile-name-btn" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;padding:0.25rem;font-size:1.2rem;display:grid;place-items:center;">✖</button>
+                    </div>
+                    <p style="font-size:0.9rem;color:#94a3b8;margin:0.25rem 0 0 0;text-align:center;">${profileData.email}</p>
+                    <span style="display:inline-block;margin-top:0.75rem;padding:0.35rem 1rem;border-radius:9999px;font-size:0.75rem;font-weight:800;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;text-transform:uppercase;letter-spacing:1px;">
+                      ${profileData.role || 'Student'}
+                    </span>
                   </div>
 
                   <!-- Body / Registered Events -->
-                  <div style="padding:2rem;max-height:360px;overflow-y:auto;" id="profile-registered-events-section">
+                  <div style="padding:1.5rem;flex:1;overflow-y:auto;" id="profile-registered-events-section">
                     <h4 style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;font-family:'Inter',sans-serif;">
                       <span>🪽</span> Registered Events
                     </h4>
                     
                     <div id="my-events-loader" style="text-align:center;padding:2rem 0;color:#94a3b8;">
-                      <div style="width:1.5rem;height:1.5rem;border:2px solid var(--cyan-400);border-top-color:transparent;border-radius:50%;margin:0 auto 0.75rem;animation:spin 0.8s linear infinite;"></div>
+                      <div style="width:1.5rem;height:1.5rem;border:2px solid #fff;border-top-color:transparent;border-radius:50%;margin:0 auto 0.75rem;animation:spin 0.8s linear infinite;"></div>
                       Loading your events...
                     </div>
                     <div id="my-events-list" style="display:none;flex-direction:column;gap:1rem;"></div>
                   </div>
 
                   <!-- Footer -->
-                  <div style="padding:1.5rem 2rem;background:rgba(10,10,10,0.5);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                  <div style="padding:1.5rem;background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
                     <!-- Theme Mode Toggle -->
                     <div class="theme-switch-container" style="display:flex;align-items:center;gap:0.75rem;">
                       <button id="theme-toggle-btn" type="button" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:2.5rem;height:2.5rem;border-radius:0.75rem;cursor:pointer;display:grid;place-items:center;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);outline:none;position:relative;" title="Toggle Light/Dark Theme">
@@ -1614,6 +1626,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               <style>
                 @keyframes spin { to { transform: rotate(360deg); } }
+                @keyframes pulse-glow { 0% { opacity: 0.6; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.6; transform: scale(0.98); } }
                 #profile-registered-events-section::-webkit-scrollbar { width: 6px; }
                 #profile-registered-events-section::-webkit-scrollbar-track { background: transparent; }
                 #profile-registered-events-section::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
@@ -1681,16 +1694,16 @@ document.addEventListener("DOMContentLoaded", () => {
               // Animate in
               setTimeout(() => {
                 if (modal) modal.style.opacity = "1";
-                if (modalBody) modalBody.style.transform = "scale(1)";
+                if (modalBody) modalBody.style.transform = "translateX(0)";
               }, 10);
 
               // Close handlers
               const closeModal = () => {
                 if (modal) modal.style.opacity = "0";
-                if (modalBody) modalBody.style.transform = "scale(0.95)";
+                if (modalBody) modalBody.style.transform = "translateX(100%)";
                 setTimeout(() => {
                   modal?.remove();
-                }, 300);
+                }, 400);
               };
 
               document.getElementById("close-profile-modal-btn")?.addEventListener("click", closeModal);
@@ -1703,6 +1716,61 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
                 window.location.reload();
+              });
+
+              // Name edit handlers
+              const nameDisplayContainer = document.getElementById("profile-name-display-container");
+              const nameEditContainer = document.getElementById("profile-name-edit-container");
+              const nameDisplay = document.getElementById("profile-name-display");
+              const nameInput = document.getElementById("profile-name-input");
+              const saveNameBtn = document.getElementById("save-profile-name-btn");
+
+              document.getElementById("edit-profile-name-btn")?.addEventListener("click", () => {
+                nameDisplayContainer.style.display = "none";
+                nameEditContainer.style.display = "flex";
+                nameInput.focus();
+              });
+
+              document.getElementById("cancel-profile-name-btn")?.addEventListener("click", () => {
+                nameEditContainer.style.display = "none";
+                nameDisplayContainer.style.display = "flex";
+                nameInput.value = nameDisplay.textContent; // reset
+              });
+
+              saveNameBtn?.addEventListener("click", async () => {
+                const newName = nameInput.value.trim();
+                if (!newName) return;
+
+                saveNameBtn.textContent = "...";
+                saveNameBtn.disabled = true;
+
+                try {
+                  const res = await fetch(`${API_BASE_URL}/auth/profile/name`, {
+                    method: 'PUT',
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name: newName })
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    nameDisplay.textContent = newName;
+                    const cachedUser = JSON.parse(localStorage.getItem('user') || "{}");
+                    cachedUser.name = newName;
+                    cachedUser.fullName = newName;
+                    localStorage.setItem('user', JSON.stringify(cachedUser));
+                  } else {
+                    alert("Failed to update name: " + (data.message || "Unknown error"));
+                  }
+                } catch (e) {
+                  alert("Error updating name.");
+                }
+
+                saveNameBtn.textContent = "Save";
+                saveNameBtn.disabled = false;
+                nameEditContainer.style.display = "none";
+                nameDisplayContainer.style.display = "flex";
               });
 
               // Fetch registrations from new endpoint!
