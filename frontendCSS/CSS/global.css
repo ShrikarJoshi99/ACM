@@ -943,36 +943,67 @@ a {
   position: relative;
   margin-left: 2.5rem;
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
-  padding: 1.5rem;
+  padding: 1.75rem;
   box-shadow: 0 25px 50px -12px rgba(2, 6, 23, 0.3);
   backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  isolation: isolate;
+  overflow: hidden;
 }
 
-@media (min-width: 640px) {
-  .timeline-item {
-    margin-left: 4rem;
-  }
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, transparent);
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 .timeline-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px) rotateX(5deg) scale(1.02);
+  box-shadow: 0 30px 60px -10px rgba(2, 6, 23, 0.4);
+  border-color: transparent;
 }
 
+.timeline-item:hover::before {
+  background: linear-gradient(
+    45deg,
+    var(--cyan-300),
+    var(--violet-300),
+    var(--emerald-300),
+    var(--amber)
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 4s ease infinite;
+  opacity: 1;
+}
+
+/* Keep category-specific hover border colors for fallback */
 .timeline-item.cyan:hover {
   border-color: rgba(103, 232, 249, 0.5);
 }
-
 .timeline-item.violet:hover {
   border-color: rgba(196, 181, 253, 0.5);
 }
-
 .timeline-item.emerald:hover {
   border-color: rgba(110, 231, 183, 0.5);
 }
+/* Amber for fourth item */
+.timeline-item:nth-child(4):hover {
+  border-color: rgba(245, 158, 11, 0.5);
+}
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Timeline dot enhancements */
 .timeline-dot {
   position: absolute;
   left: -2.85rem;
@@ -980,27 +1011,38 @@ a {
   height: 1rem;
   width: 1rem;
   border-radius: 9999px;
+  transition: all 0.4s ease;
+  z-index: 2;
 }
 
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.3);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+/* Color-specific dot backgrounds */
+.timeline-dot.cyan { background: var(--cyan-300); }
+.timeline-dot.violet { background: var(--violet-300); }
+.timeline-dot.emerald { background: var(--emerald-300); }
+.timeline-item:nth-child(4) .timeline-dot { background: var(--amber); }
+
 @media (min-width: 640px) {
+  .timeline-item {
+    margin-left: 4rem;
+  }
   .timeline-dot {
     left: -3.15rem;
   }
+
+  .timeline-item {
+    padding: 2rem;
+  }
 }
 
-.timeline-dot.cyan {
-  background: var(--cyan-300);
-  box-shadow: 0 0 12px rgba(103, 232, 249, 0.5);
-}
-
-.timeline-dot.violet {
-  background: var(--violet-300);
-  box-shadow: 0 0 12px rgba(196, 181, 253, 0.5);
-}
-
-.timeline-dot.emerald {
-  background: var(--emerald-300);
-  box-shadow: 0 0 12px rgba(110, 231, 183, 0.5);
+/* Ensure content stays above pseudo-element */
+.timeline-item > * {
+  position: relative;
+  z-index: 1;
 }
 
 .item-meta {
@@ -5313,5 +5355,105 @@ body.light-theme .splash-blob-2 {
     opacity: 0;
     visibility: hidden;
     display: none;
+  }
+}
+/* -- Announcements Grid & Cards -- */
+.announcements-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.space-card {
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  /* Minimalist gradient & translucent background to let the stars shine through! */
+  background: linear-gradient(180deg, rgba(30, 30, 40, 0.5) 0%, rgba(10, 10, 15, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.18); /* Subtle top highlight */
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.space-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  border-top-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(180deg, rgba(40, 40, 50, 0.6) 0%, rgba(15, 15, 20, 0.5) 100%);
+}
+
+.announcements-grid.visible .space-card {
+  animation: glideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes glideUpFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* The icon wrapper */
+.space-icon-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--slate-300);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.space-card:hover .space-icon-wrapper {
+  transform: scale(1.05);
+}
+
+/* Category Specific Accents */
+.space-card.general .space-icon-wrapper { color: var(--cyan-300); border-color: rgba(103, 232, 249, 0.2); }
+.space-card.general:hover .space-icon-wrapper { background: rgba(103, 232, 249, 0.1); box-shadow: 0 0 12px rgba(103, 232, 249, 0.2); }
+
+.space-card.event .space-icon-wrapper { color: var(--violet-300); border-color: rgba(196, 181, 253, 0.2); }
+.space-card.event:hover .space-icon-wrapper { background: rgba(196, 181, 253, 0.1); box-shadow: 0 0 12px rgba(196, 181, 253, 0.2); }
+
+.space-card.alert .space-icon-wrapper { color: var(--rose-300); border-color: rgba(253, 164, 175, 0.2); }
+.space-card.alert:hover .space-icon-wrapper { background: rgba(253, 164, 175, 0.1); box-shadow: 0 0 12px rgba(253, 164, 175, 0.2); }
+
+.announcement-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.space-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  z-index: 1;
+}
+
+.announcements-grid.visible .space-card {
+  animation: spaceFloatIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes spaceFloatIn {
+  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 639px) {
+  .space-card {
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.5rem;
   }
 }

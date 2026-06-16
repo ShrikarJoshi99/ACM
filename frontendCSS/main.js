@@ -470,25 +470,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const renderPublicAnnouncements = () => {
     const list = document.getElementById("announcements-list");
-    if (!list) return;
+    if (!list) {
+      console.warn("[Announcements] announcements-list element not found");
+      return;
+    }
 
     const announcements = readAnnouncements();
+    console.log("[Announcements] read announcements:", announcements);
 
     if (announcements.length) {
-      list.innerHTML = announcements.map((ann) => {
+      list.innerHTML = announcements.map((ann, index) => {
+        const cat = escapeHtml(ann.category);
+        
+        let iconSvg = '';
+        if (cat === "event") {
+          iconSvg = `<svg class="announcement-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5"></path><path d="M12 15l-3-3a22 22 0 0 1 3.86-8.86c.86-1.14 2.14-2.14 3.14-2.14 1 0 2 1 2 2 0 1-1 2.28-2.14 3.14A22 22 0 0 1 15 12z"></path></svg>`;
+        } else if (cat === "alert") {
+          iconSvg = `<svg class="announcement-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+        } else {
+          iconSvg = `<svg class="announcement-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M19.5 8.5c1.5 1.5 2.5 4 1 6-1.5 2-4.5 2-6 1L9.5 8.5c-1.5-1-4.5-1-6 1-1.5 2-.5 4.5 1 6"></path></svg>`;
+        }
+
         return `
-      <article class="timeline-item ${escapeHtml(ann.category)}">
-        <span class="timeline-dot ${escapeHtml(ann.category)}"></span>
-        <div class="item-meta">
-          <span class="item-badge ${escapeHtml(ann.category)}">${escapeHtml(ann.badge)}</span>
-          <time class="item-time">${escapeHtml(ann.time)}</time>
+      <article class="space-card ${cat}" style="animation-delay: ${index * 0.1}s">
+        <div class="space-icon-wrapper">
+          ${iconSvg}
         </div>
-        <h2 class="item-title">${escapeHtml(ann.title)}</h2>
-        <p class="item-body">${escapeHtml(ann.body)}</p>
+        <div class="space-content">
+          <div class="item-meta">
+            <span class="item-badge ${cat}">${escapeHtml(ann.badge)}</span>
+            <time class="item-time">${escapeHtml(ann.time)}</time>
+          </div>
+          <h2 class="item-title">${escapeHtml(ann.title)}</h2>
+          <p class="item-body">${escapeHtml(ann.body)}</p>
+        </div>
       </article>`;
       }).join("");
+      console.log("[Announcements] rendered", announcements.length, "items");
     } else {
-      list.innerHTML = '<p style="color:#cbd5e1;">No announcements yet.</p>';
+      list.innerHTML = '<p style="color:#ff6b6b; font-size:1.2rem; font-weight:600; text-align:center; padding:2rem;">No announcements yet.</p>';
+      console.log("[Announcements] no announcements, showing placeholder");
     }
   };
 
@@ -1881,5 +1902,40 @@ document.addEventListener("DOMContentLoaded", () => {
       mount.innerHTML =
         '<div style="position:fixed;inset:0 0 auto;z-index:50;background:#020617;padding:1rem;text-align:center;font-size:0.875rem;color:#a5f3fc;">ACM JIT</div>';
     });
+  /* ── Scroll Reveal Animation ── */
+  const revealElements = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealElements.forEach(el => revealObserver.observe(el));
+
 });
+
+// Stats Cards Initialization
+(function initStatsCards() {
+  const grid = document.getElementById('stats-cards-grid');
+  if (!grid) return;
+
+  const stats = [
+    { number: '4+', label: 'Technical Domains' },
+    { number: '5+', label: 'Events Conducted' },
+    { number: '28+', label: 'Active Members' },
+    { number: '∞', label: 'Ideas Welcome' }
+  ];
+
+  grid.innerHTML = stats.map(stat => `
+    <div class="stat-card">
+      <div class="stat-card-overlay"></div>
+      <div class="stat-card-content">
+        <div class="stat-number">${stat.number}</div>
+        <div class="stat-label">${stat.label}</div>
+      </div>
+    </div>
+  `).join('');
+})();
 

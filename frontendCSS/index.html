@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="./CSS/card-curtain-reveal.css">
   <link rel="stylesheet" href="./CSS/feature-showcase.css">
   <link rel="stylesheet" href="./CSS/animated-roadmap.css">
+  <link rel="stylesheet" href="./CSS/frosted-card.css">
   <script>
     if (localStorage.getItem("theme") === "light" || !localStorage.getItem("theme")) {
       document.documentElement.classList.add("light-theme");
@@ -193,26 +194,11 @@
       </div>
     </section>
 
-    <!-- ═══ STATS BAR ═══ -->
-    <section class="stats-bar reveal">
+    <!-- ═══ STATS CARDS ═══ -->
+    <section class="stats-cards-section reveal">
       <div class="container">
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-number cyan">4+</div>
-            <div class="stat-text">Technical Domains</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number violet">5+</div>
-            <div class="stat-text">Events Conducted</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number emerald">28+</div>
-            <div class="stat-text">Active Members</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number amber">∞</div>
-            <div class="stat-text">Ideas Welcome</div>
-          </div>
+        <div class="stats-cards-grid" id="stats-cards-grid">
+          <!-- Stats Cards will be inserted here by JavaScript -->
         </div>
       </div>
     </section>
@@ -571,19 +557,7 @@
     })();
   </script>
   <script src="main.js"></script>
-  <script>
-    // Scroll Reveal Animation
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    revealElements.forEach(el => revealObserver.observe(el));
-  </script>
+
 
   <script>
     // Curtain Reveal Cards — hover state toggle (replaces React + Framer Motion)
