@@ -2588,7 +2588,6 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(16px);
-  overflow: hidden;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -3345,7 +3344,7 @@ img {
   opacity: 0;
   transform: translateY(40px) scale(0.95);
   filter: blur(10px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .reveal.visible {

@@ -6,7 +6,6 @@
   position: relative;
   width: 100%;
   height: 380px;
-  overflow: hidden;
   border-radius: var(--block-radius);
   background: transparent;
 }
@@ -34,38 +33,86 @@
   opacity: 0.9;
 }
 
-.roadmap-ufo { animation: wanderUFO 45s ease-in-out infinite; }
-.roadmap-satellite { animation: wanderSat 60s ease-in-out infinite alternate; }
-.roadmap-rocket { animation: wanderRock 30s linear infinite; }
-.roadmap-galaxy { animation: wanderGal 100s linear infinite; }
-.roadmap-helmet { animation: wanderHelm 55s ease-in-out infinite alternate; }
+.roadmap-ufo {
+  animation: wanderUFO 45s ease-in-out infinite;
+}
+
+.roadmap-satellite {
+  animation: wanderSat 60s ease-in-out infinite alternate;
+}
+
+.roadmap-rocket {
+  animation: wanderRock 30s linear infinite;
+}
+
+.roadmap-galaxy {
+  animation: wanderGal 100s linear infinite;
+}
+
+.roadmap-helmet {
+  animation: wanderHelm 55s ease-in-out infinite alternate;
+}
 
 @keyframes wanderUFO {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(30vw, 20vh) rotate(15deg); }
-  66% { transform: translate(-20vw, 40vh) rotate(-10deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(30vw, 20vh) rotate(15deg);
+  }
+
+  66% {
+    transform: translate(-20vw, 40vh) rotate(-10deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 @keyframes wanderSat {
-  0% { transform: translate(0, 0) rotate(15deg); }
-  100% { transform: translate(-40vw, 30vh) rotate(35deg); }
+  0% {
+    transform: translate(0, 0) rotate(15deg);
+  }
+
+  100% {
+    transform: translate(-40vw, 30vh) rotate(35deg);
+  }
 }
 
 @keyframes wanderRock {
-  0% { transform: translate(0, 0) rotate(45deg); }
-  100% { transform: translate(120vw, -120vh) rotate(45deg); }
+  0% {
+    transform: translate(0, 0) rotate(45deg);
+  }
+
+  100% {
+    transform: translate(120vw, -120vh) rotate(45deg);
+  }
 }
 
 @keyframes wanderGal {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(15vw, -15vh) rotate(180deg); }
-  100% { transform: translate(0, 0) rotate(360deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(15vw, -15vh) rotate(180deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
 }
 
 @keyframes wanderHelm {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(30vw, -20vh) rotate(-20deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(30vw, -20vh) rotate(-20deg);
+  }
 }
 
 /* Decorative contour lines */
@@ -123,7 +170,7 @@
   stroke-dasharray: 8 6;
   stroke-linecap: round;
   stroke-dashoffset: 1200;
-  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4));
+  filter: none;
   transition: stroke-dashoffset 0.05s linear;
 }
 
@@ -158,16 +205,27 @@
 }
 
 /* Staggered delays */
-.milestone[data-delay="1"] { transition-delay: 0.3s; }
-.milestone[data-delay="2"] { transition-delay: 0.6s; }
-.milestone[data-delay="3"] { transition-delay: 0.9s; }
-.milestone[data-delay="4"] { transition-delay: 1.2s; }
+.milestone[data-delay="1"] {
+  transition-delay: 0.3s;
+}
 
-/* Marker dot */
+.milestone[data-delay="2"] {
+  transition-delay: 0.6s;
+}
+
+.milestone[data-delay="3"] {
+  transition-delay: 0.9s;
+}
+
+.milestone[data-delay="4"] {
+  transition-delay: 1.2s;
+}
+
+/* Marker dot — Neo-Brutalist style */
 .milestone-dot-wrap {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,55 +233,70 @@
 }
 
 .milestone-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2.5px solid;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2.5px solid var(--v-text);
   position: relative;
   z-index: 2;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
+.milestone:hover .milestone-dot {
+  transform: rotate(8deg) scale(1.1);
+}
+
+/* Hide the ring — no longer needed */
 .milestone-dot-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--v-primary);
-  opacity: 0.1;
+  display: none;
 }
 
-/* Status-based dot colors */
+/* ── Completed: solid fill + checkmark + offset shadow ── */
 .milestone--complete .milestone-dot {
   background: var(--v-primary);
-  border-color: var(--v-secondary);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  border-color: var(--v-text);
+  box-shadow: 2px 2px 0px var(--v-text);
 }
 
-.milestone--complete .milestone-dot-ring {
-  background: var(--v-primary);
-  opacity: 0.15;
+.milestone--complete .milestone-dot::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--v-white);
+  line-height: 1;
 }
 
+/* ── In-progress: blue fill + spinning dashed border ── */
 .milestone--in-progress .milestone-dot {
   background: #3B82F6;
-  border-color: #2563EB;
-  animation: roadmap-pulse 2s ease-in-out infinite;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+  border: 2.5px dashed var(--v-text);
+  box-shadow: 2px 2px 0px var(--v-text);
+  animation: roadmap-spin 6s linear infinite;
 }
 
-.milestone--in-progress .milestone-dot-ring {
-  background: #3B82F6;
-  opacity: 0.15;
-  animation: roadmap-ring-pulse 2s ease-in-out infinite;
+.milestone--in-progress .milestone-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: var(--v-white);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
 
+/* ── Pending: outlined dashed, empty ── */
 .milestone--pending .milestone-dot {
   background: var(--v-card-bg);
-  border-color: var(--v-text);
-  opacity: 0.5;
-}
-
-.milestone--pending .milestone-dot-ring {
-  opacity: 0.05;
+  border: 2.5px solid var(--v-text);
+  box-shadow: 2px 2px 0px var(--v-text);
+  opacity: 0.8;
 }
 
 /* Milestone label */
@@ -242,8 +315,38 @@
   letter-spacing: 0.02em;
 }
 
+/* Label Position Modifiers to prevent overlap */
+.milestone--label-bottom .milestone-label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.milestone--label-bottom:hover .milestone-label {
+  transform: translate(calc(-50% + 2px), 2px);
+}
+
+.milestone--label-top .milestone-label {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.milestone--label-top:hover .milestone-label {
+  transform: translate(calc(-50% + 2px), 2px);
+}
+
+.milestone--label-left .milestone-label {
+  position: absolute;
+  right: calc(100% + 10px);
+}
+.milestone--label-left:hover .milestone-label {
+  transform: translate(2px, 2px);
+}
+
 .milestone:hover .milestone-label {
   transform: translate(2px, 2px);
+
   box-shadow: 1px 1px 0px var(--v-text);
   background: var(--v-primary);
   color: var(--v-white);
@@ -366,20 +469,58 @@
 
 /* ── Animations ── */
 @keyframes roadmap-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
 }
 
 @keyframes roadmap-ring-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.15; }
-  50% { transform: scale(1.5); opacity: 0.05; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.05;
+  }
 }
 
 @keyframes roadmap-float {
-  0% { opacity: 0; transform: translateY(0) scale(0.5); }
-  20% { opacity: 0.6; transform: translateY(-5px) scale(1); }
-  80% { opacity: 0.4; transform: translateY(-20px) scale(0.8); }
-  100% { opacity: 0; transform: translateY(-30px) scale(0.3); }
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+
+  20% {
+    opacity: 0.6;
+    transform: translateY(-5px) scale(1);
+  }
+
+  80% {
+    opacity: 0.4;
+    transform: translateY(-20px) scale(0.8);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.3);
+  }
+}
+
+@keyframes roadmap-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ── Responsive ── */
@@ -395,13 +536,13 @@
   }
 
   .milestone-dot-wrap {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
   .milestone-dot {
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
   }
 
   .roadmap-badge {

@@ -25,14 +25,15 @@
   let springX = 0, springY = 0;
   let velX = 0, velY = 0;
   let layers = [];
+  let particles = [];
   let animFrame;
 
   // ── Theme helper ─────────────────────────────────
   function getStarColors() {
-    const isLight = document.body.classList.contains("light-theme");
+    const isLight = document.documentElement.classList.contains("light-theme") || document.body.classList.contains("light-theme");
     if (isLight) {
-      // Teal + amber palette for light theme
-      return ["#047857", "#064E3B", "#F59E0B", "#059669", "#10B981"];
+      // Slightly deeper, more visible pastel aurora palette
+      return ["#34D399", "#60A5FA", "#FBBF24", "#6EE7B7", "#A78BFA", "#FCD34D"];
     }
     return ["rgba(255,255,255,0.9)", "rgba(255,255,255,0.7)", "rgba(255,255,255,0.5)"];
   }
@@ -40,17 +41,35 @@
   // ── Build star layers ─────────────────────────────
   function buildLayers() {
     const colors = getStarColors();
-    layers = LAYERS.map((cfg) => {
-      const stars = [];
-      for (let i = 0; i < cfg.count; i++) {
-        stars.push({
-          x: Math.random() * 4000 - 2000,
-          y: Math.random() * 4000 - 2000,
-          color: colors[Math.floor(Math.random() * colors.length)],
+    const isLight = document.documentElement.classList.contains("light-theme") || document.body.classList.contains("light-theme");
+    
+    if (isLight) {
+      particles = [];
+      for (let i = 0; i < 6; i++) {
+        particles.push({
+          x: Math.random() * (W || window.innerWidth),
+          y: Math.random() * (H || window.innerHeight),
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5,
+          radius: Math.random() * 300 + 300,
+          color: colors[i % colors.length]
         });
       }
-      return { ...cfg, stars, offset: 0 };
-    });
+      layers = [];
+    } else {
+      particles = [];
+      layers = LAYERS.map((cfg) => {
+        const stars = [];
+        for (let i = 0; i < cfg.count; i++) {
+          stars.push({
+            x: Math.random() * 4000 - 2000,
+            y: Math.random() * 4000 - 2000,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        return { ...cfg, stars, offset: 0 };
+      });
+    }
   }
 
   // ── Resize ────────────────────────────────────────
@@ -79,25 +98,55 @@
     springX += velX;
     springY += velY;
 
-    layers.forEach((layer) => {
-      // Scroll offset for this layer (continuous vertical drift)
-      layer.offset = (layer.offset + layer.speed) % H;
+    const isLight = document.documentElement.classList.contains("light-theme") || document.body.classList.contains("light-theme");
+    
+    if (isLight) {
+      // Draw Animated Gradient Mesh
+      ctx.filter = 'blur(160px)';
+      ctx.globalAlpha = 0.45; // Slightly more visible
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Soft bounce off edges
+        if (p.x < -p.radius) p.vx = Math.abs(p.vx);
+        if (p.x > W + p.radius) p.vx = -Math.abs(p.vx);
+        if (p.y < -p.radius) p.vy = Math.abs(p.vy);
+        if (p.y > H + p.radius) p.vy = -Math.abs(p.vy);
 
-      layer.stars.forEach((star) => {
-        // Map star coords from [-2000,2000] range to screen
-        const baseX = ((star.x + 2000) / 4000) * W;
-        const baseY = ((star.y + 2000) / 4000) * H;
-
-        // Apply vertical scroll + parallax
-        const drawX = baseX + springX * layer.size;
-        const drawY = ((baseY + layer.offset + springY * layer.size) % H + H) % H;
+        // Apply mouse parallax to the glowing blobs too
+        const drawX = p.x + springX * 5;
+        const drawY = p.y + springY * 5;
 
         ctx.beginPath();
-        ctx.arc(drawX, drawY, layer.size / 2, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
+        ctx.arc(drawX, drawY, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
         ctx.fill();
+      }
+      ctx.filter = 'none';
+      ctx.globalAlpha = 1.0;
+    } else {
+      layers.forEach((layer) => {
+        // Scroll offset for this layer (continuous vertical drift)
+        layer.offset = (layer.offset + layer.speed) % H;
+
+        layer.stars.forEach((star) => {
+          // Map star coords from [-2000,2000] range to screen
+          const baseX = ((star.x + 2000) / 4000) * W;
+          const baseY = ((star.y + 2000) / 4000) * H;
+
+          // Apply vertical scroll + parallax
+          const drawX = baseX + springX * layer.size;
+          const drawY = ((baseY + layer.offset + springY * layer.size) % H + H) % H;
+
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, layer.size / 2, 0, Math.PI * 2);
+          ctx.fillStyle = star.color;
+          ctx.fill();
+        });
       });
-    });
+    }
 
     animFrame = requestAnimationFrame(draw);
   }
@@ -1292,10 +1341,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="countdown-card__meta-item">
                 <svg><use href="#icon-calendar"/></svg>
                 <span>${dateStr}</span>
-              </span>
-              <span class="countdown-card__meta-item">
-                <svg><use href="#icon-users"/></svg>
-                <span>${attendees} attending</span>
               </span>
             </div>
           </div>

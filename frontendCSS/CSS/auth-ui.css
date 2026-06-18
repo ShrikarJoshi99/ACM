@@ -303,7 +303,32 @@
   opacity: 0.3;
 }
 
-/* Light theme specific overrides for button */
+/* Light theme specific overrides */
+body.light-theme .auth-input {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+}
+
+body.light-theme .auth-input:focus {
+  border-color: var(--v-primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
 body.light-theme .auth-btn-submit {
-  color: white; /* Needs white text if button is dark green */
+  background: var(--v-primary);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+body.light-theme .auth-btn-submit:hover {
+  background: var(--v-text);
+  color: #ffffff;
+}
+
+body.light-theme .auth-toggle-password {
+  color: var(--v-text);
+}
+
+body.light-theme .auth-toggle-password:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
