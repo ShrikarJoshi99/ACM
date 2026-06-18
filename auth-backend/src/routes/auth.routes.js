@@ -44,12 +44,7 @@ router.post(
   register
 );
 
-router.post("/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "Route works"
-  });
-});
+
 
 router.post(
   "/login",
@@ -63,14 +58,15 @@ router.post("/logout", logout);
 
 router.post("/refresh-token", refreshToken);
 
-router.post("/forgot-password", forgotPassword);
+router.post("/forgot-password", limiter, forgotPassword);
 
-router.post("/verify-reset-token/:token", verifyResetToken);
+router.post("/verify-reset-token/:token", limiter, verifyResetToken);
 
-router.post("/reset-password/:token", resetPassword);
+router.post("/reset-password/:token", limiter, resetPassword);
 
 router.post(
   "/verify-email",
+  limiter,
   verifyEmail
 );
 

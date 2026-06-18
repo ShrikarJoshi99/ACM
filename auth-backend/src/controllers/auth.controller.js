@@ -6,6 +6,7 @@ import User from "../models/user.model.js";
 
 import asyncHandler from "../utils/asyncHandler.js";
 import sendEmail from "../utils/sendEmail.js";
+import { normalizeEmail } from "../utils/stringUtils.js";
 
 import {
   registerService,
@@ -78,7 +79,7 @@ const buildVerificationEmail = (verificationCode) => `
 // REGISTER
 export const register = asyncHandler(async (req, res) => {
 
-  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+  const email = normalizeEmail(req.body.email);
 
   const existingUser = await User.findOne({ email });
 
@@ -93,8 +94,9 @@ export const register = asyncHandler(async (req, res) => {
     Math.floor(1000 + Math.random() * 9000).toString();
 
   const user = await registerService({
-    ...req.body,
+    name: String(req.body.name || "").trim(),
     email,
+    password: String(req.body.password || ""),
     verificationCode,
     verificationCodeExpire:
       Date.now() + 10 * 60 * 1000
@@ -109,11 +111,15 @@ export const register = asyncHandler(async (req, res) => {
   } catch (emailErr) {
     // Roll back: remove the user so they can retry registration
     await User.findByIdAndDelete(user._id);
-    return res.status(500).json({
+    const response = {
       success: false,
-      message: "Failed to send verification email. Please try again.",
-      debugError: emailErr.message || emailErr.name || JSON.stringify(emailErr)
-    });
+      message: "Failed to send verification email. Please try again."
+    };
+    // Only include debug info in development
+    if (process.env.NODE_ENV !== "production") {
+      response.debugError = emailErr.message || emailErr.name || JSON.stringify(emailErr);
+    }
+    return res.status(500).json(response);
   }
 
   res.status(201).json({
@@ -127,7 +133,7 @@ export const register = asyncHandler(async (req, res) => {
 // LOGIN
 export const login = asyncHandler(async (req, res) => {
 
-  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+  const email = normalizeEmail(req.body.email);
 
   const { user, accessToken, refreshToken } =
     await loginService(
@@ -217,7 +223,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
 // FORGOT PASSWORD
 export const forgotPassword = asyncHandler(async (req, res) => {
 
-  const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+  const email = normalizeEmail(req.body.email);
 
   const user = await User.findOne({ email });
 
@@ -228,12 +234,15 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 
-  const resetToken = crypto
-    .randomBytes(3)
-    .toString("hex")
-    .slice(0, 5);
+  const rawToken = crypto.randomBytes(32).toString("hex");
 
-  user.resetPasswordToken = resetToken;
+  // Hash the token before storing in DB
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+
+  user.resetPasswordToken = hashedToken;
 
   user.resetPasswordExpire =
     Date.now() + 60 * 60 * 1000
@@ -250,10 +259,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       Use the token below to reset your password:
     </p>
 
-    <h3>${resetToken}</h3>
+    <h3>${rawToken}</h3>
 
     <p>
-      This token expires in 10 minutes.
+      This token expires in 1 hour.
     </p>
   `
 
@@ -271,8 +280,13 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
 // VERIFY RESET TOKEN
 export const verifyResetToken = asyncHandler(async (req, res) => {
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
   const user = await User.findOne({
-    resetPasswordToken: req.params.token
+    resetPasswordToken: hashedToken
   });
 
   if (!user) {
@@ -298,8 +312,13 @@ export const verifyResetToken = asyncHandler(async (req, res) => {
 // RESET PASSWORD
 export const resetPassword = asyncHandler(async (req, res) => {
 
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
   const user = await User.findOne({
-    resetPasswordToken: req.params.token
+    resetPasswordToken: hashedToken
   });
 
   if (!user) {
@@ -338,11 +357,11 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const verifyEmail = asyncHandler(async (req, res) => {
 
   const { email, code } = req.body;
-  const normalizedEmail = email ? email.trim().toLowerCase() : "";
+  const normalizedEmail = normalizeEmail(email);
 
   const user = await User.findOne({
     email: normalizedEmail,
-    verificationCode: code,
+    verificationCode: String(code || ""),
     verificationCodeExpire: {
       $gt: new Date()
     }
@@ -418,7 +437,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 // UPDATE PROFILE NAME
 export const updateProfileName = asyncHandler(async (req, res) => {
   const { name } = req.body;
-  
+
   if (!name || name.trim() === "") {
     return res.status(400).json({ success: false, message: "Name is required" });
   }
@@ -429,7 +448,7 @@ export const updateProfileName = asyncHandler(async (req, res) => {
   }
 
   user.name = name.trim();
-  user.fullName = name.trim(); // Update fullName if present in schema
+  // Note: fullName field does not exist in User schema; removing assignment
   await user.save();
 
   res.status(200).json({

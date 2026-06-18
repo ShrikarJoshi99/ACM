@@ -2,21 +2,20 @@ import EventRegistration from "../models/eventRegistration.model.js";
 import Event from "../models/event.model.js";
 import User from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { normalizeEmail, normalizeString } from "../utils/stringUtils.js";
 
 // POST /api/events/register — authenticated user registers for an event
 export const registerForEvent = asyncHandler(async (req, res) => {
-  const {
-    eventId,
-    eventTitle,
-    fullName,
-    email,
-    phone,
-    collegeName,
-    usn,
-    teamSize,
-    teamMembers,
-    notes
-  } = req.body;
+  const eventId = normalizeString(req.body.eventId);
+  const eventTitle = normalizeString(req.body.eventTitle);
+  const fullName = normalizeString(req.body.fullName);
+  const email = normalizeEmail(req.body.email);
+  const phone = normalizeString(req.body.phone);
+  const collegeName = normalizeString(req.body.collegeName);
+  const usn = normalizeString(req.body.usn);
+  const teamSize = req.body.teamSize;
+  const teamMembers = req.body.teamMembers;
+  const notes = req.body.notes;
 
   // Basic validation
   if (!eventId || !eventTitle || !fullName || !email || !phone || !collegeName || !usn || !teamSize) {
@@ -74,7 +73,7 @@ export const registerForEvent = asyncHandler(async (req, res) => {
     eventId,
     $or: [
       { userId: req.user?.id },
-      { email: email.toLowerCase() }
+      { email: email }
     ]
   });
 
@@ -90,7 +89,7 @@ export const registerForEvent = asyncHandler(async (req, res) => {
     eventTitle,
     userId: req.user?.id || undefined,
     fullName,
-    email: email.toLowerCase(),
+    email: email,
     phone,
     collegeName,
     usn,
@@ -113,11 +112,13 @@ export const getRegistrations = asyncHandler(async (req, res) => {
   const filter = {};
 
   if (eventId) {
-    filter.eventId = eventId;
+    filter.eventId = String(eventId);
   }
 
   if (search) {
-    const regex = new RegExp(search, "i");
+    // Escape special regex characters to prevent ReDoS
+    const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, "i");
     filter.$or = [
       { fullName: regex },
       { email: regex },
@@ -167,7 +168,7 @@ export const getMyRegistrations = asyncHandler(async (req, res) => {
     });
   }
 
-  const email = user.email.toLowerCase();
+  const email = normalizeEmail(user.email);
 
   // Find registrations matching this user's email or userId
   const registrations = await EventRegistration.find({
@@ -177,10 +178,20 @@ export const getMyRegistrations = asyncHandler(async (req, res) => {
     ]
   }).sort({ createdAt: -1 }).lean();
 
+  // Optimization: Fetch all events in a single query to avoid N+1 problem
+  const eventIds = [...new Set(registrations.map(reg => reg.eventId))];
+  const eventsMap = {};
+  if (eventIds.length > 0) {
+    const events = await Event.find({ _id: { $in: eventIds }}).lean();
+    events.forEach(event => {
+      eventsMap[event._id.toString()] = event;
+    });
+  }
+
   // Filter out registrations for events that are closed or past
   const activeRegistrations = [];
   for (const reg of registrations) {
-    const event = await Event.findById(reg.eventId).lean();
+    const event = eventsMap[reg.eventId];
     // Keep only if event still exists AND is not past/closed
     if (event && event.type !== "past") {
       const status = (event.status || "").toLowerCase();

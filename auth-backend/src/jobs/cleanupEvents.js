@@ -4,10 +4,19 @@ import EventRegistration from "../models/eventRegistration.model.js";
 const cleanupOldEvents = async () => {
   try {
     const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000);
+    const twoYearsAgo = new Date(Date.now() - 2 * 365 * 24 * 60 * 60 * 1000);
 
-    // Find events where registrationCloseDate is less than or equal to 20 mins ago
+    // Find events to clean up:
+    // 1. Events where registrationCloseDate is set and is older than 20 minutes (temporary events)
+    // 2. Past events (type: "past") where the event date is older than 2 years
     const oldEvents = await Event.find({
-      registrationCloseDate: { $lte: twentyMinutesAgo }
+      $or: [
+        { registrationCloseDate: { $lte: twentyMinutesAgo } },
+        {
+          type: "past",
+          date: { $lte: twoYearsAgo }
+        }
+      ]
     });
 
     if (oldEvents.length === 0) return;
@@ -24,6 +33,8 @@ const cleanupOldEvents = async () => {
       _id: { $in: oldEvents.map(e => e._id) }
     });
   } catch (error) {
+    // Log error in production
+    console.error("Error in cleanupOldEvents:", error);
   }
 };
 

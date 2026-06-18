@@ -5,12 +5,14 @@ const teamMemberSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 100
     },
     usn: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 50 // Assuming USN is like a student ID, adjust as needed
     }
   },
   { _id: false }
@@ -21,13 +23,15 @@ const eventRegistrationSchema = new mongoose.Schema(
     eventId: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 50 // Adjust based on expected ID length
     },
 
     eventTitle: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 200
     },
 
     userId: {
@@ -38,32 +42,37 @@ const eventRegistrationSchema = new mongoose.Schema(
     fullName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 100
     },
 
     email: {
       type: String,
       required: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
+      maxlength: 255
     },
 
     phone: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 20
     },
 
     collegeName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 200
     },
 
     usn: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      maxlength: 50
     },
 
     teamSize: {
@@ -78,7 +87,8 @@ const eventRegistrationSchema = new mongoose.Schema(
     notes: {
       type: String,
       trim: true,
-      default: ""
+      default: "",
+      maxlength: 1000
     }
   },
   {
@@ -91,6 +101,11 @@ eventRegistrationSchema.index(
   { email: 1, eventId: 1 },
   { unique: true }
 );
+
+// Additional indexes for query performance
+eventRegistrationSchema.index({ eventId: 1 });
+eventRegistrationSchema.index({ userId: 1 });
+eventRegistrationSchema.index({ email: 1 });
 
 export default mongoose.model(
   "EventRegistration",

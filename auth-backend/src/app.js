@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
@@ -20,6 +21,14 @@ app.set("trust proxy", 1);
 app.use(express.json());
 
 app.use(cookieParser());
+
+// Security headers
+app.use(helmet());
+
+// Health check endpoint (for uptime monitoring)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 app.use(
   cors({

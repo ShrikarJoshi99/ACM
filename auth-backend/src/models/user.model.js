@@ -4,7 +4,9 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
+      trim: true,
+      maxlength: 100
     },
 
     email: {
@@ -12,12 +14,14 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
+      maxlength: 255
     },
 
     password: {
       type: String,
-      required: true
+      required: true,
+      maxlength: 1000 // Prevent extremely long passwords that could cause DoS during hashing
     },
 
     role: {
@@ -27,7 +31,8 @@ const userSchema = new mongoose.Schema(
     },
 
     refreshToken: {
-      type: String
+      type: String,
+      maxlength: 2048 // JWTs should not exceed this size
     },
 
     isVerified: {
@@ -35,11 +40,21 @@ const userSchema = new mongoose.Schema(
       default: false
     },
 
-   verificationCode: String,
+   verificationCode: {
+      type: String,
+      maxlength: 4,
+      minlength: 4
+      // Verification code is generated as a 4-digit number (1000-9999)
+    },
 
   verificationCodeExpire: Date,
 
-    resetPasswordToken: String,
+    resetPasswordToken: {
+      type: String,
+      maxlength: 64,
+      minlength: 64
+      // Stores SHA256 hash of reset token (64 hex characters)
+    },
 
     resetPasswordExpire: Date
   },
